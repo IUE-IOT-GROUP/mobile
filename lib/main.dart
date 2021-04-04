@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.orange,
         accentColor: Colors.black,
+        unselectedWidgetColor: Colors.grey,
         fontFamily: "Raleway",
       ),
       home: LoginScreen(),

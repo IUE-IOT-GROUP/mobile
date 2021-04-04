@@ -67,62 +67,109 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(31, 30, 44, 1),
       body: Card(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(50),
-                child: Text(
-                  "Welcome to IMS!",
-                  style: TextStyle(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    color: Theme.of(context).accentColor,
-                    //fontFamily: "RobotoCondensed",
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+        color: Color.fromRGBO(31, 30, 44, 1),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(50),
+              child: Text(
+                "IoT Management System",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: "Raleway",
+                  fontSize: 24,
+                  //fontWeight: FontWeight.bold,
                 ),
               ),
-              TextField(
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10, right: 10),
+              child: TextField(
+                style: TextStyle(color: Colors.grey),
                 controller: usernameController,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Username"),
+                  fillColor: Colors.grey,
+                  focusColor: Color.fromRGBO(34, 33, 47, 0.7),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  hintText: "Username",
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
               ),
-              TextField(
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10, right: 10),
+              child: TextField(
+                style: TextStyle(color: Colors.grey),
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Password"),
+                  border: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromRGBO(34, 33, 47, 1)),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  hintText: "Password",
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: Text("Remember me"),
-                    ),
-                    Checkbox(
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 8, left: 5, right: 5),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(3),
+                    child: Checkbox(
                       value: false,
                       onChanged: (_) {
                         //remember me
                       },
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
+                  ),
+                  Text(
+                    "Remember me",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                  TextButton(
+                    onPressed: () => {},
+                    child: Text(
+                      "Forget Password?",
+                      style: TextStyle(color: Colors.grey),
                     ),
-                    RaisedButton(
-                      child: Text("Login"),
-                      color: Colors.green,
-                      onPressed: () => login(context),
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            ElevatedButton(
+              child: Text(
+                "Sign In",
+                style: TextStyle(color: Colors.black),
+              ),
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(),
+                  ),
                 ),
-              )
-            ],
-          ),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                minimumSize: MaterialStateProperty.all<Size>(
+                    Size(MediaQuery.of(context).size.width * 0.4, 30)),
+              ),
+              onPressed: () => login(context),
+            )
+          ],
         ),
       ),
     );

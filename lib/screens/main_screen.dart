@@ -23,6 +23,34 @@ class _MainScreenState extends State<MainScreen> {
   List<Place> places = DUMMY_PLACES;
   final SecureStorage secureStorage = SecureStorage();
   String username = '';
+  String new_device_name = "";
+  String new_device_ip = "";
+  String new_device_type = "";
+
+  fetchAndAddNewDevice() async {
+    String name = await secureStorage.readSecureData("new_device_name");
+    String type = await secureStorage.readSecureData("new_device_type");
+    String ip = await secureStorage.readSecureData("new_device_ip");
+    Random random = new Random();
+    final id = random.nextInt(10000).toString();
+    if (name != null && type != null && ip != null) {
+      setState(() {
+        new_device_name = name;
+        new_device_ip = ip;
+        new_device_type = type;
+        Device new_device = new Device(
+            id: id,
+            name: new_device_name,
+            protocol: "HTTP",
+            ipAddress: new_device_ip,
+            type: DeviceType("12", new_device_type));
+        devices.add(new_device);
+      });
+    }
+    secureStorage.deleteSecureData("new_device_name");
+    secureStorage.deleteSecureData("new_device_type");
+    secureStorage.deleteSecureData("new_device_ip");
+  }
 
   loadUsername() async {
     String response = await secureStorage.readSecureData("username");
@@ -37,6 +65,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
 
     loadUsername();
+    fetchAndAddNewDevice();
   }
 
   AppBar showAppBar() {
@@ -80,18 +109,8 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void fetchAndAddNewDevice(BuildContext ctx, List<Device> devices) {
-    final routeArgs =
-        ModalRoute.of(ctx)!.settings.arguments as Map<String, Device>;
-    Device? new_device = routeArgs["device"];
-    if (new_device != null) devices.add(new_device);
-  }
-
   @override
   Widget build(BuildContext context) {
-    // fetchAndAddNewDevice(context, devices);    bu satır patlatıyor
-    // final routeArgs = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -109,7 +128,7 @@ class _MainScreenState extends State<MainScreen> {
             Icons.add,
             color: Colors.green,
           ),
-          onPressed: mockingAddDevice,
+          onPressed: () => startAddNewDevice(context),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
