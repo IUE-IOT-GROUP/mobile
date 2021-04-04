@@ -8,6 +8,7 @@ import "../models/device_type.dart";
 import "../widgets/device_list.dart";
 import "../widgets/place_list.dart";
 import "dart:math";
+import "../SecureStorage.dart";
 
 class MainScreen extends StatefulWidget {
   static const routeName = "/main-screen";
@@ -20,8 +21,27 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<Device> devices = [];
   List<Place> places = DUMMY_PLACES;
+  final SecureStorage secureStorage = SecureStorage();
+  String username = '';
+
+  loadUsername() async {
+    String response = await secureStorage.readSecureData("username");
+
+    setState(() {
+      username = response;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadUsername();
+  }
+
   AppBar showAppBar() {
     return AppBar(
+      title: Text(username),
       bottom: TabBar(
         tabs: [
           Tab(icon: Icon(Icons.devices), text: "Your Devices"),

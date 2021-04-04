@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import "../SecureStorage.dart";
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,7 +9,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final storage = new FlutterSecureStorage();
+  final SecureStorage secureStorage = SecureStorage();
+
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -57,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     } else {
       print(enteredUsername);
-      await storage.write(key: "username", value: enteredUsername);
+      secureStorage.writeSecureData("username", enteredUsername);
       Navigator.of(ctx).pushNamed(MainScreen.routeName);
     }
   }
