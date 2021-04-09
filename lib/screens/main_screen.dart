@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/create_device_screen.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import "../models/device.dart";
 import "../models/place.dart";
 import "../models/device_type.dart";
