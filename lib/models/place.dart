@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import "./room.dart";
+import 'package:prototype/models/device.dart';
 
 class Place {
-  final String id;
+  final int id;
   final String name;
   final String imageUrl;
-  final List<Room> roomList;
+  final List<Place> placeList;
+  final List<Device> deviceList;
 
-  const Place(
-      @required this.id, @required this.name, this.imageUrl, this.roomList);
+  const Place(@required this.id, @required this.name, this.imageUrl,
+      this.placeList, this.deviceList);
 }

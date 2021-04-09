@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import "./models/device.dart";
 import "./models/place.dart";
 import "./models/user.dart";
@@ -47,24 +46,28 @@ const DUMMY_DEVICES = const [
 
 const DUMMY_PLACES = const [
   Place(
-      "p1",
+      1,
       "Home",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg/800px-Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg",
+      [],
       []),
   Place(
-      "p2",
+      2,
       "Work",
       "https://upload.wikimedia.org/wikipedia/commons/3/30/Home_free_icon.svg",
+      [],
       []),
   Place(
-      "p3",
+      3,
       "Summerplace",
       "https://upload.wikimedia.org/wikipedia/commons/3/30/Home_free_icon.svg",
+      [],
       []),
   Place(
-      "p4",
+      4,
       "Factory",
       "https://upload.wikimedia.org/wikipedia/commons/3/30/Home_free_icon.svg",
+      [],
       []),
 ];
 
@@ -82,6 +85,7 @@ const DUMMY_USERS = const [
       id: "u2", email: "sample2@gmail.com", userName: "user2", password: "123"),
   User(
       id: "u3", email: "sample3@gmail.com", userName: "user3", password: "123"),
+  User(id: "u4", email: "sample4@gmail.com", userName: "erel", password: "123"),
 ];
 
 const DUMMY_DEVICE_TYPES = const [

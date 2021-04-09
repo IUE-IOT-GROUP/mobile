@@ -9,16 +9,21 @@ import "../widgets/device_list.dart";
 import "../widgets/place_list.dart";
 import "dart:math";
 import "../SecureStorage.dart";
+import "../widgets/bottom_button.dart";
+import "../screens/create_place_screen.dart";
 
+//https://stackoverflow.com/questions/53399223/flutter-different-floating-action-button-in-tabbar
+//I have taken the "different FAB onPressed() function on different tabs" structure from this site.
 class MainScreen extends StatefulWidget {
   static const routeName = "/main-screen";
   final String username = "";
-
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
+  TabController? _tabController;
   List<Device> devices = [];
   List<Place> places = DUMMY_PLACES;
   final SecureStorage secureStorage = SecureStorage();
@@ -63,38 +68,33 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
     loadUsername();
     fetchAndAddNewDevice();
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _tabController!.addListener(_handleTabIndex);
   }
 
-  AppBar showAppBar() {
-    return AppBar(
-      title: Text(username),
-      bottom: TabBar(
-        tabs: [
-          Tab(icon: Icon(Icons.devices), text: "Your Devices"),
-          Tab(icon: Icon(Icons.home), text: "Your Areas"),
-        ],
-      ),
-    );
+  @override
+  void dispose() {
+    _tabController!.removeListener(_handleTabIndex);
+    _tabController!.dispose();
+    super.dispose();
+  }
+
+  void _handleTabIndex() {
+    setState(() {});
   }
 
   void startAddNewDevice(BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(
+    Navigator.of(ctx).popAndPushNamed(
       CreateDevice.routeName,
     );
   }
 
-  void mockingAddDevice() {
-    Random random = new Random();
-    int id_int = random.nextInt(100);
-    String id = id_int.toString();
-    Device device = new Device(
-        id: id, name: "test", protocol: "test", type: null, ipAddress: "test");
-    setState(() {
-      devices.add(device);
-    });
+  void startAddNewPlace(BuildContext ctx) {
+    Navigator.of(ctx).popAndPushNamed(
+      CreatePlace.routeName,
+    );
   }
 
   void deleteDevice(String id) {
@@ -111,24 +111,35 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
+    return WillPopScope(
+      onWillPop: () async => false,
       child: Scaffold(
-        appBar: showAppBar(),
+        appBar: AppBar(
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(
+                text: "Your Devices",
+                icon: Icon(Icons.devices),
+              ),
+              Tab(
+                text: "Your Places",
+                icon: Icon(Icons.home),
+              ),
+            ],
+          ),
+        ),
         body: TabBarView(
+          controller: _tabController,
           children: [
             DeviceList(devices, deleteDevice),
             PlaceList(places),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          elevation: 10,
-          backgroundColor: Colors.black54,
-          child: Icon(
-            Icons.add,
-            color: Colors.green,
-          ),
-          onPressed: () => startAddNewDevice(context),
+        floatingActionButton: BottomButton(
+          createDevice: () => startAddNewDevice(context),
+          createPlace: () => startAddNewPlace(context),
+          tabController: _tabController,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

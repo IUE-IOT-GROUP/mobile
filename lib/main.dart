@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prototype/screens/create_device_screen.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'screens/login_screen.dart';
+import "screens/create_place_screen.dart";
 
 void main() => runApp(MyApp());
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         MainScreen.routeName: (ctx) => MainScreen(),
         CreateDevice.routeName: (ctx) => CreateDevice(),
+        CreatePlace.routeName: (ctx) => CreatePlace(),
       },
     );
   }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/main_screen.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import "../SecureStorage.dart";
+import "../models/user.dart";
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final SecureStorage secureStorage = SecureStorage();
+  final List<User> userList = DUMMY_USERS;
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -22,14 +24,14 @@ class _LoginScreenState extends State<LoginScreen> {
     enteredPassword = passwordController.text;
   }
 
-  warning(BuildContext ctx) {
+  warning(BuildContext ctx, String warningMessage) {
     initCredentials();
     AlertDialog alert = AlertDialog(
       title: Text('WARNING'),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text("Username or password can't be blank!"),
+            Text(warningMessage),
           ],
         ),
       ),
@@ -51,16 +53,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void login(BuildContext ctx) async {
     initCredentials();
-    //if check'ler
-    //user'i bul ve ID'sini gönder
+    bool isCorrect = false;
     if (enteredUsername == "" || enteredPassword == "") {
       setState(() {
-        warning(ctx);
+        warning(ctx, "Username or password can't be blank!");
       });
     } else {
-      print(enteredUsername);
-      secureStorage.writeSecureData("username", enteredUsername);
-      Navigator.of(ctx).pushNamed(MainScreen.routeName);
+      for (User user in userList) {
+        if (user.userName == enteredUsername &&
+            user.password == enteredPassword) {
+          isCorrect = true;
+          secureStorage.writeSecureData("username", enteredUsername);
+          Navigator.of(ctx).pushNamed(MainScreen.routeName);
+        }
+      }
+      if (!isCorrect)
+        warning(ctx,
+            "Username or password is incorrect! Please check your credentials.");
     }
   }
 
@@ -88,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               margin: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
+                autofocus: false,
                 style: TextStyle(color: Colors.grey),
                 controller: usernameController,
                 decoration: InputDecoration(
@@ -107,6 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               margin: EdgeInsets.only(left: 10, right: 10),
               child: TextField(
+                autofocus: false,
                 style: TextStyle(color: Colors.grey),
                 controller: passwordController,
                 obscureText: true,

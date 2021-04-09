@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import "../models/place.dart";
+import "./place_item.dart";
 
 class PlaceList extends StatelessWidget {
-  final List<Place> places;
+  List<Place> places;
 
   PlaceList(this.places);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView.builder(
-          itemCount: places.length,
-          itemBuilder: (ctx, index) {
-            return Card(
-              elevation: 10,
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-              child: InkWell(
-                child: Image.asset("assets/images/home.png"),
-                onTap: () {},
-              ),
-            );
-          }),
+    return GridView(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 200,
+        childAspectRatio: 3 / 2,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+      ),
+      padding: const EdgeInsets.all(25),
+      children: places.map((data) => PlaceItem(data)).toList(),
     );
   }
 }
