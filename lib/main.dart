@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(),
       initialRoute: "/",
       routes: {
-        MainScreen.routeName: (ctx) => MainScreen(),
+        MainScreen.routeName: (ctx) => MainScreen(0),
         CreateDevice.routeName: (ctx) => CreateDevice(),
         CreatePlace.routeName: (ctx) => CreatePlace(),
       },

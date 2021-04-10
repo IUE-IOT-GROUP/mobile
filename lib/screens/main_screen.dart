@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/create_device_screen.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import "../models/device.dart";
 import "../models/place.dart";
 import "../models/device_type.dart";
@@ -17,6 +16,9 @@ import "../screens/create_place_screen.dart";
 class MainScreen extends StatefulWidget {
   static const routeName = "/main-screen";
   final String username = "";
+  int initialState;
+
+  MainScreen(this.initialState);
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -70,7 +72,8 @@ class _MainScreenState extends State<MainScreen>
     super.initState();
     loadUsername();
     fetchAndAddNewDevice();
-    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _tabController = TabController(
+        length: 2, vsync: this, initialIndex: widget.initialState);
     _tabController!.addListener(_handleTabIndex);
   }
 
@@ -111,38 +114,35 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(
-                text: "Your Devices",
-                icon: Icon(Icons.devices),
-              ),
-              Tab(
-                text: "Your Places",
-                icon: Icon(Icons.home),
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
+    return Scaffold(
+      appBar: AppBar(
+        bottom: TabBar(
           controller: _tabController,
-          children: [
-            DeviceList(devices, deleteDevice),
-            PlaceList(places),
+          tabs: [
+            Tab(
+              text: "Your Devices",
+              icon: Icon(Icons.devices),
+            ),
+            Tab(
+              text: "Your Places",
+              icon: Icon(Icons.home),
+            ),
           ],
         ),
-        floatingActionButton: BottomButton(
-          createDevice: () => startAddNewDevice(context),
-          createPlace: () => startAddNewPlace(context),
-          tabController: _tabController,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          DeviceList(devices, deleteDevice),
+          PlaceList(places),
+        ],
+      ),
+      floatingActionButton: BottomButton(
+        createDevice: () => startAddNewDevice(context),
+        createPlace: () => startAddNewPlace(context),
+        tabController: _tabController,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

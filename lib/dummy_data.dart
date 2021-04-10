@@ -45,30 +45,10 @@ const DUMMY_DEVICES = const [
 ];
 
 const DUMMY_PLACES = const [
-  Place(
-      1,
-      "Home",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg/800px-Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg",
-      [],
-      []),
-  Place(
-      2,
-      "Work",
-      "https://upload.wikimedia.org/wikipedia/commons/3/30/Home_free_icon.svg",
-      [],
-      []),
-  Place(
-      3,
-      "Summerplace",
-      "https://upload.wikimedia.org/wikipedia/commons/3/30/Home_free_icon.svg",
-      [],
-      []),
-  Place(
-      4,
-      "Factory",
-      "https://upload.wikimedia.org/wikipedia/commons/3/30/Home_free_icon.svg",
-      [],
-      []),
+  Place(1, "Home", [], []),
+  Place(2, "Work", [], []),
+  Place(3, "Summerplace", [], []),
+  Place(4, "Factory", [], []),
 ];
 
 const DUMMY_ROOMS = const [
