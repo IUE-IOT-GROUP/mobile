@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/main_screen.dart';
 import "../SecureStorage.dart";
 import "../models/user.dart";
+import 'package:http/http.dart' as http;
+import '../global.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,64 +19,75 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final SecureStorage secureStorage = SecureStorage();
   final List<User> userList = DUMMY_USERS;
+  bool isLoading = true;
 
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  var enteredUsername;
+  var enteredEmail;
   var enteredPassword;
+  var errors = [];
 
-  void initCredentials() {
-    enteredUsername = usernameController.text;
-    enteredPassword = passwordController.text;
+  Future<bool> postRequest() async {
+    bool success = false;
+    var url = "${Global.baseUrl}/login";
+    var body = {
+      "email": enteredEmail,
+      "password": enteredPassword,
+      "device_name": await getDeviceId()
+    };
+
+    await Global.post(url, body).then((http.Response response) {
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        success = true;
+        secureStorage.writeSecureData("token", response.body);
+      }
+    });
+
+    return success;
   }
 
-  warning(BuildContext ctx, String warningMessage) {
-    initCredentials();
-    AlertDialog alert = AlertDialog(
-      title: Text('WARNING'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            Text(warningMessage),
-          ],
-        ),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: Text('OK'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        )
-      ],
-    );
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        });
+  getDeviceId() async {
+    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        return build.androidId;
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        return data.identifierForVendor;
+      }
+    } on PlatformException {
+      print('Failed to get platform version');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = "erel@ozturk.com";
+  }
+
+  void initCredentials() {
+    enteredEmail = emailController.text;
+    enteredPassword = passwordController.text;
   }
 
   void login(BuildContext ctx) async {
     initCredentials();
-    bool isCorrect = false;
-    if (enteredUsername == "" || enteredPassword == "") {
+
+    bool isAuthenticated = await postRequest();
+    if (enteredEmail == "" || enteredPassword == "") {
       setState(() {
-        warning(ctx, "Username or password can't be blank!");
+        Global.warning(ctx, "Email or password can't be blank!");
       });
+    } else if (!isAuthenticated) {
+      Global.warning(ctx,
+          "Username or password is incorrect! Please check your credentials.");
     } else {
-      for (User user in userList) {
-        if (user.userName == enteredUsername &&
-            user.password == enteredPassword) {
-          isCorrect = true;
-          secureStorage.writeSecureData("username", enteredUsername);
-          Navigator.of(ctx).pushNamed(MainScreen.routeName);
-        }
-      }
-      if (!isCorrect)
-        warning(ctx,
-            "Username or password is incorrect! Please check your credentials.");
+      Navigator.of(ctx).pushReplacementNamed(MainScreen.routeName);
     }
   }
 
@@ -99,14 +117,14 @@ class _LoginScreenState extends State<LoginScreen> {
               child: TextField(
                 autofocus: false,
                 style: TextStyle(color: Colors.grey),
-                controller: usernameController,
+                controller: emailController,
                 decoration: InputDecoration(
                   fillColor: Colors.grey,
                   focusColor: Color.fromRGBO(34, 33, 47, 0.7),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  hintText: "Username",
+                  hintText: "E-mail",
                   hintStyle: TextStyle(color: Colors.grey),
                 ),
               ),

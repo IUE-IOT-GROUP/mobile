@@ -1,18 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/create_device_screen.dart';
 import "../models/device.dart";
 import "../models/place.dart";
 import "../models/device_type.dart";
+import "../models/user.dart";
 import "../widgets/device_list.dart";
 import "../widgets/place_list.dart";
 import "dart:math";
 import "../SecureStorage.dart";
 import "../widgets/bottom_button.dart";
 import "../screens/create_place_screen.dart";
+import 'package:http/http.dart' as http;
+import '../global.dart';
 
-//https://stackoverflow.com/questions/53399223/flutter-different-floating-action-button-in-tabbar
-//I have taken the "different FAB onPressed() function on different tabs" structure from this site.
 class MainScreen extends StatefulWidget {
   static const routeName = "/main-screen";
   final String username = "";
@@ -25,14 +28,24 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-  TabController? _tabController;
-  List<Device> devices = [];
-  List<Place> places = DUMMY_PLACES;
+  static List<Device> devices = [];
+  static List<Place> places = DUMMY_PLACES;
   final SecureStorage secureStorage = SecureStorage();
   String username = '';
   String new_device_name = "";
   String new_device_ip = "";
   String new_device_type = "";
+  int selectedIndex = 0;
+  static List<Widget> widgetOptions = <Widget>[
+    PlaceList(places),
+    DeviceList(devices, deleteDevice),
+  ];
+
+  void onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
 
   fetchAndAddNewDevice() async {
     String name = await secureStorage.readSecureData("new_device_name");
@@ -59,33 +72,29 @@ class _MainScreenState extends State<MainScreen>
     secureStorage.deleteSecureData("new_device_ip");
   }
 
-  loadUsername() async {
-    String response = await secureStorage.readSecureData("username");
-
+  Future<User?> loadUser() async {
+    bool success = false;
+    String url = "${Global.baseUrl}/me";
+    await Global.h_get(url, appendToken: true).then((http.Response response) {
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        success = true;
+        return User.fromJson(jsonDecode(response.body));
+      }
+    });
     setState(() {
-      username = response;
+      //username = response;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    loadUsername();
+    Future<User?> currentUser = loadUser();
+    print("şimdi bascak");
+    print(currentUser.toString());
     fetchAndAddNewDevice();
-    _tabController = TabController(
-        length: 2, vsync: this, initialIndex: widget.initialState);
-    _tabController!.addListener(_handleTabIndex);
-  }
-
-  @override
-  void dispose() {
-    _tabController!.removeListener(_handleTabIndex);
-    _tabController!.dispose();
-    super.dispose();
-  }
-
-  void _handleTabIndex() {
-    setState(() {});
   }
 
   void startAddNewDevice(BuildContext ctx) {
@@ -100,49 +109,74 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
-  void deleteDevice(String id) {
-    setState(() {
-      for (int i = 0; i < devices.length; i++) {
-        if (devices[i].id == id) {
-          print("Coming from main screen:");
-          print("${devices[i].id}\n${devices[i].name}");
-        }
+  static void deleteDevice(String id) {
+    for (int i = 0; i < devices.length; i++) {
+      if (devices[i].id == id) {
+        print("Coming from main screen:");
+        print("${devices[i].id}\n${devices[i].name}");
       }
-      devices.removeWhere((dev) => dev.id == id);
-    });
+    }
+    devices.removeWhere((dev) => dev.id == id);
   }
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).primaryColor;
+    var accentColor = Theme.of(context).accentColor;
     return Scaffold(
       appBar: AppBar(
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(
-              text: "Your Devices",
-              icon: Icon(Icons.devices),
-            ),
-            Tab(
-              text: "Your Places",
-              icon: Icon(Icons.home),
-            ),
-          ],
+        backgroundColor: primaryColor,
+        leading: IconButton(
+          icon: Icon(
+            Icons.settings,
+            color: accentColor,
+          ),
+          onPressed: () => null,
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          DeviceList(devices, deleteDevice),
-          PlaceList(places),
+        title: Text(
+          "Welcome $username",
+          style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.add,
+                color: accentColor,
+              ),
+              onPressed: () => selectedIndex == 0
+                  ? Navigator.of(context).pushNamed(CreatePlace.routeName)
+                  : Navigator.of(context).pushNamed(CreateDevice.routeName))
         ],
       ),
-      floatingActionButton: BottomButton(
-        createDevice: () => startAddNewDevice(context),
-        createPlace: () => startAddNewPlace(context),
-        tabController: _tabController,
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: primaryColor,
+        selectedItemColor: accentColor,
+        unselectedIconTheme: IconThemeData(opacity: 0.5),
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        selectedIconTheme: IconThemeData(opacity: 1),
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Places",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.monitor,
+              ),
+              label: "Devices"),
+        ],
+        currentIndex: selectedIndex,
+        onTap: onItemTapped,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: Container(
+        child: widgetOptions.elementAt(selectedIndex),
+      ),
+      // floatingActionButton: BottomButton(
+      //   createDevice: () => startAddNewDevice(context),
+      //   createPlace: () => startAddNewPlace(context),
+      //   tabController: _tabController,
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

@@ -7,8 +7,13 @@ class User {
   final String? password;
 
   const User(
-      {@required this.id,
-      this.email,
-      @required this.userName,
-      @required this.password});
+      {@required this.id, this.email, @required this.userName, this.password});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json["id"],
+      email: json["email"],
+      userName: json["username"],
+    );
+  }
 }

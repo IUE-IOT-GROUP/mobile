@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:prototype/screens/create_device_screen.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'screens/login_screen.dart';
 import "screens/create_place_screen.dart";
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -12,8 +21,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "prototype",
       theme: ThemeData(
-        primaryColor: Colors.orange,
-        accentColor: Colors.black,
+        primaryColor: Color.fromRGBO(31, 30, 44, 1),
+        accentColor: Colors.grey,
         unselectedWidgetColor: Colors.grey,
         fontFamily: "Raleway",
       ),
