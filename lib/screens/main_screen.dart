@@ -73,13 +73,11 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Future<User?> loadUser() async {
-    bool success = false;
     String url = "${Global.baseUrl}/me";
     await Global.h_get(url, appendToken: true).then((http.Response response) {
       print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
-        success = true;
         return User.fromJson(jsonDecode(response.body));
       }
     });
@@ -133,9 +131,15 @@ class _MainScreenState extends State<MainScreen>
           ),
           onPressed: () => null,
         ),
-        title: Text(
-          "Welcome $username",
-          style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
+        title: FutureBuilder<User?>(
+          future: loadUser,
+          builder: (contex, snapshot) {
+            if (snapshot.hasData) {
+              return Text(snapshot.data!.userName);
+            } else {
+              return Text("${snapshot.error}");
+            }
+          },
         ),
         actions: [
           IconButton(
