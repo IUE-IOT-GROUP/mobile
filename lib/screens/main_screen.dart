@@ -16,18 +16,32 @@ import "../screens/create_place_screen.dart";
 import 'package:http/http.dart' as http;
 import '../global.dart';
 
+Future<User> loadUser() async {
+  String url = "${Global.baseUrl}/me";
+  final response = await Global.h_get(url, appendToken: true);
+  print(response.statusCode);
+  print(response.body);
+  if (response.statusCode == 200) {
+    return User.fromJson(jsonDecode(response.body)['data']);
+  } else {
+    throw Exception('Failed to fetch user');
+  }
+}
+
 class MainScreen extends StatefulWidget {
   static const routeName = "/main-screen";
   final String username = "";
   int initialState;
 
   MainScreen(this.initialState);
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+  late Future<User> futureUser;
+
   static List<Device> devices = [];
   static List<Place> places = DUMMY_PLACES;
   final SecureStorage secureStorage = SecureStorage();
@@ -72,26 +86,12 @@ class _MainScreenState extends State<MainScreen>
     secureStorage.deleteSecureData("new_device_ip");
   }
 
-  Future<User?> loadUser() async {
-    String url = "${Global.baseUrl}/me";
-    await Global.h_get(url, appendToken: true).then((http.Response response) {
-      print(response.statusCode);
-      print(response.body);
-      if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body));
-      }
-    });
-    setState(() {
-      //username = response;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    Future<User?> currentUser = loadUser();
+    futureUser = loadUser();
     print("şimdi bascak");
-    print(currentUser.toString());
+    print(futureUser.toString());
     fetchAndAddNewDevice();
   }
 
@@ -132,13 +132,15 @@ class _MainScreenState extends State<MainScreen>
           onPressed: () => null,
         ),
         title: FutureBuilder<User?>(
-          future: loadUser,
-          builder: (contex, snapshot) {
+          future: futureUser,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
-              return Text(snapshot.data!.userName);
-            } else {
-              return Text("${snapshot.error}");
+              if (snapshot.data != null) {
+                return Text("Welcome, ${snapshot.data.name}");
+              }
             }
+
+            return CircularProgressIndicator();
           },
         ),
         actions: [

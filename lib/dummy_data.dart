@@ -58,14 +58,14 @@ const DUMMY_ROOMS = const [
   Room("r4", "Bathroom", []),
 ];
 
-const DUMMY_USERS = const [
+var DUMMY_USERS = [
   User(
-      id: "u1", email: "sample1@gmail.com", userName: "user1", password: "123"),
+      id: 1, email: "sample1@gmail.com", name: "user1"),
   User(
-      id: "u2", email: "sample2@gmail.com", userName: "user2", password: "123"),
+      id: 2, email: "sample2@gmail.com", name: "user2"),
   User(
-      id: "u3", email: "sample3@gmail.com", userName: "user3", password: "123"),
-  User(id: "u4", email: "sample4@gmail.com", userName: "erel", password: "123"),
+      id: 3, email: "sample3@gmail.com", name: "user3"),
+  User(id: 4, email: "sample4@gmail.com", name: "erel"),
 ];
 
 const DUMMY_DEVICE_TYPES = const [

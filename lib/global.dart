@@ -35,6 +35,8 @@ class Global {
 
     String token;
 
+    // fire loading event
+
     var headers = {
       "Content-Type": "application/json",
       "Accept": "application/json"
@@ -45,7 +47,7 @@ class Global {
       headers.putIfAbsent("Authorization", () => "Bearer " + token);
     }
 
-    return await http
+    var response = await http
         .get(
       uri,
       headers: headers,
@@ -53,6 +55,10 @@ class Global {
         .then((http.Response response) {
       return response;
     });
+
+    // fire loading finished event
+
+    return response;
   }
 
   static alert(BuildContext ctx, String title, String message) {

@@ -12,6 +12,9 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
 
+  // listen to loading event
+  bool isLoading = false;
+
   runApp(MyApp());
 }
 
