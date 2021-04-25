@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import "./device_type.dart";
 
 class Device {
-  final String? id;
+  final int? id;
   final String? name;
   final String? protocol;
   final String? ipAddress;

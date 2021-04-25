@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:prototype/SecureStorage.dart';
 import 'package:prototype/models/device.dart';
+import 'package:prototype/screens/device_item_screen.dart';
 import "../screens/main_screen.dart";
+import "../SecureStorage.dart";
 
 class DeviceList extends StatelessWidget {
   final List<Device> devices;
   final Function removeDevice;
-
+  SecureStorage secureStorage = SecureStorage();
   DeviceList(this.devices, this.removeDevice);
+  void DeviceTapped(int? deviceId, BuildContext ctx) {
+    secureStorage.writeSecureData("device id", deviceId.toString());
+    Navigator.of(ctx).pushNamed(
+      DeviceItemScreen.routeName,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
@@ -24,6 +34,7 @@ class DeviceList extends StatelessWidget {
               elevation: 5,
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
               child: ListTile(
+                onTap: () => DeviceTapped(devices[index].id, context),
                 leading: Icon(
                   Icons.monitor,
                   size: 50,

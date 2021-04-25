@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/create_device_screen.dart';
@@ -15,6 +14,7 @@ import "../widgets/bottom_button.dart";
 import "../screens/create_place_screen.dart";
 import 'package:http/http.dart' as http;
 import '../global.dart';
+import "../widgets/navDrawer.dart";
 
 Future<User> loadUser() async {
   String url = "${Global.baseUrl}/me";
@@ -39,7 +39,8 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
 
   static List<Device> devices = [];
@@ -66,7 +67,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     String type = await secureStorage.readSecureData("new_device_type");
     String ip = await secureStorage.readSecureData("new_device_ip");
     Random random = new Random();
-    final id = random.nextInt(10000).toString();
+    final id = random.nextInt(10000);
     if (name != null && type != null && ip != null) {
       setState(() {
         new_device_name = name;
@@ -122,15 +123,9 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     var primaryColor = Theme.of(context).primaryColor;
     var accentColor = Theme.of(context).accentColor;
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(
         backgroundColor: primaryColor,
-        leading: IconButton(
-          icon: Icon(
-            Icons.settings,
-            color: accentColor,
-          ),
-          onPressed: () => null,
-        ),
         title: FutureBuilder<User?>(
           future: futureUser,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
