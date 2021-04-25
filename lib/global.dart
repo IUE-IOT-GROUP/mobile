@@ -17,12 +17,7 @@ class Global {
     //show circular
 
     return await http
-        .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: jsonEncode(body))
+        .post(uri, headers: {"Content-Type": "application/json", "Accept": "application/json"}, body: jsonEncode(body))
         .then((http.Response response) {
       // hide circular
       return response;
@@ -30,30 +25,19 @@ class Global {
   }
 
   static Future<Response> h_get(String url, {bool appendToken = false}) async {
-    Uri uri = Uri.parse(
-      url,
-    );
-
+    Uri uri = Uri.parse(url);
     String token;
 
     // fire loading event
 
-    var headers = {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    };
+    var headers = {"Content-Type": "application/json", "Accept": "application/json"};
 
     if (appendToken) {
       token = await secureStorage.readSecureData("token");
       headers.putIfAbsent("Authorization", () => "Bearer " + token);
     }
 
-    var response = await http
-        .get(
-      uri,
-      headers: headers,
-    )
-        .then((http.Response response) {
+    var response = await http.get(uri, headers: headers).then((http.Response response) {
       return response;
     });
 
