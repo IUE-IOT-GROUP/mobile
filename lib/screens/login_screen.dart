@@ -48,6 +48,14 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           Global.isLoading = true;
         });
+
+        Global.h_get("${Global.baseUrl}/me", appendToken: true).then((http.Response response) {
+          var user = User.fromJson(jsonDecode(response.body)['data']);
+
+          secureStorage.writeSecureData("name", user.name);
+          secureStorage.writeSecureData("email", user.email);
+          secureStorage.writeSecureData("id", user.id.toString());
+        });
       }
     });
 
