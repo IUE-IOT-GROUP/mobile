@@ -18,7 +18,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final SecureStorage secureStorage = SecureStorage();
   final List<User> userList = DUMMY_USERS;
 
   final emailController = TextEditingController();
@@ -44,17 +43,18 @@ class _LoginScreenState extends State<LoginScreen> {
     await Global.post(url, body).then((http.Response response) {
       if (response.statusCode == 200) {
         success = true;
-        secureStorage.writeSecureData("token", response.body);
+        Global.secureStorage.writeSecureData("token", response.body);
         setState(() {
           Global.isLoading = true;
         });
 
-        Global.h_get("${Global.baseUrl}/me", appendToken: true).then((http.Response response) {
+        Global.h_get("${Global.baseUrl}/me", appendToken: true)
+            .then((http.Response response) {
           var user = User.fromJson(jsonDecode(response.body)['data']);
 
-          secureStorage.writeSecureData("name", user.name);
-          secureStorage.writeSecureData("email", user.email);
-          secureStorage.writeSecureData("id", user.id.toString());
+          Global.secureStorage.writeSecureData("name", user.name);
+          Global.secureStorage.writeSecureData("email", user.email);
+          Global.secureStorage.writeSecureData("id", user.id.toString());
         });
       }
     });
@@ -114,19 +114,16 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(31, 30, 44, 1),
+      backgroundColor: Global.pColor(context),
       body: Stack(
-        children: <Widget>[
-          bodyCard(),
-          Global.showCircularProgress()
-        ],
+        children: <Widget>[bodyCard(), Global.showCircularProgress()],
       ),
     );
   }
 
   Widget bodyCard() {
     return Card(
-      color: Color.fromRGBO(31, 30, 44, 1),
+      color: Global.pColor(context),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -171,8 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Color.fromRGBO(34, 33, 47, 1)),
+                  borderSide: BorderSide(color: Color.fromRGBO(34, 33, 47, 1)),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 hintText: "Password",

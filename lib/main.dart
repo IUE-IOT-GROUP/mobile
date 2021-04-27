@@ -5,6 +5,7 @@ import 'package:prototype/screens/main_screen.dart';
 import 'screens/login_screen.dart';
 import "screens/create_place_screen.dart";
 import "screens/device_item_screen.dart";
+import "screens/place_item_screen.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,10 +34,11 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(),
       initialRoute: "/",
       routes: {
-        MainScreen.routeName: (ctx) => MainScreen(0),
+        MainScreen.routeName: (ctx) => MainScreen(),
         CreateDevice.routeName: (ctx) => CreateDevice(),
         CreatePlace.routeName: (ctx) => CreatePlace(),
         DeviceItemScreen.routeName: (ctx) => DeviceItemScreen(),
+        PlaceItemScreen.routeName: (ctx) => PlaceItemScreen(),
       },
     );
   }

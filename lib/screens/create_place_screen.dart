@@ -22,7 +22,7 @@ class _CreatePlaceState extends State<CreatePlace> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Global.showCircularProgress(),
+          //Global.showCircularProgress(),
           buildScreen(mq, selectedPlace)
         ],
       ),

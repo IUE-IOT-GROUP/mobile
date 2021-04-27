@@ -4,14 +4,20 @@ import 'package:prototype/models/device.dart';
 import 'package:prototype/screens/device_item_screen.dart';
 import "../screens/main_screen.dart";
 import "../SecureStorage.dart";
+import "../global.dart";
 
-class DeviceList extends StatelessWidget {
+class DeviceList extends StatefulWidget {
   final List<Device> devices;
   final Function removeDevice;
-  SecureStorage secureStorage = SecureStorage();
   DeviceList(this.devices, this.removeDevice);
+
+  @override
+  _DeviceListState createState() => _DeviceListState();
+}
+
+class _DeviceListState extends State<DeviceList> {
   void DeviceTapped(int? deviceId, BuildContext ctx) {
-    secureStorage.writeSecureData("device id", deviceId.toString());
+    Global.secureStorage.writeSecureData("device id", deviceId.toString());
     Navigator.of(ctx).pushNamed(
       DeviceItemScreen.routeName,
     );
@@ -22,19 +28,21 @@ class DeviceList extends StatelessWidget {
     final mq = MediaQuery.of(context);
 
     return Container(
-      height: 100,
+      color: Global.pColor(context),
+
       // mq.size.height -
       //     MainScreen.showAppBar("name").preferredSize.height -
       //     mq.padding.top
       child: ListView.builder(
-          itemCount: devices.length,
+          itemCount: widget.devices.length,
           itemExtent: 100,
           itemBuilder: (ctx, index) {
             return Card(
+              color: Global.aColor(context),
               elevation: 5,
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
               child: ListTile(
-                onTap: () => DeviceTapped(devices[index].id, context),
+                onTap: () => DeviceTapped(widget.devices[index].id, context),
                 leading: Icon(
                   Icons.monitor,
                   size: 50,
@@ -50,7 +58,7 @@ class DeviceList extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(devices[index].name!),
+                        Text(widget.devices[index].name!),
                       ],
                     ),
                     Row(
@@ -80,8 +88,13 @@ class DeviceList extends StatelessWidget {
                         icon: Icon(Icons.delete, color: Colors.red, size: 45),
                         onPressed: () {
                           print("index coming from list:$index");
-                          print("id coming from list:${devices[index].id}");
-                          removeDevice(devices[index].id);
+                          print(
+                              "id coming from list:${widget.devices[index].id}");
+                          WidgetsBinding.instance!.addPostFrameCallback((_) {
+                            setState(() {
+                              widget.removeDevice(widget.devices[index].id);
+                            });
+                          });
                         },
                       )
                     ],

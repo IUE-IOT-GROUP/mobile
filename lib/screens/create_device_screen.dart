@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
+import 'package:prototype/global.dart';
 import 'package:prototype/models/device_type.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/widgets/create_device_textfield.dart';
@@ -14,7 +15,6 @@ class CreateDevice extends StatefulWidget {
 }
 
 class _CreateDeviceState extends State<CreateDevice> {
-  final SecureStorage secureStorage = SecureStorage();
   static final List devices = DUMMY_DEVICES;
   static final List<Place> places = DUMMY_PLACES;
   final nameController = TextEditingController();
@@ -91,10 +91,11 @@ class _CreateDeviceState extends State<CreateDevice> {
           String enteredIp = ipAddressController.text;
           String enteredMac = macAddressController.text;
 
-          secureStorage.writeSecureData("new_device_name", enteredName);
-          secureStorage.writeSecureData("new_device_ip", enteredIp);
-          secureStorage.writeSecureData(
-              "new_device_type", "temporarily disabled");
+          Global.secureStorage.writeSecureData("new_device_name", enteredName);
+          Global.secureStorage.writeSecureData("new_device_ip", enteredIp);
+          Global.secureStorage
+              .writeSecureData("new_device_type", "temporarily disabled");
+          Global.initialState = 1;
           Navigator.of(context).popAndPushNamed(MainScreen.routeName);
         },
         backgroundColor: Colors.green,

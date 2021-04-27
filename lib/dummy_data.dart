@@ -48,7 +48,25 @@ const DUMMY_PLACES = const [
   Place(1, "Home", [], []),
   Place(2, "Work", [], []),
   Place(3, "Summerplace", [], []),
-  Place(4, "Factory", [], []),
+  Place(4, "Factory", [
+    Place(5, "test1", [], [
+      Device(
+        id: 1,
+        name: "Temperature",
+        protocol: "HTTP",
+        type: DeviceType("dt4", "sensor type-4"),
+      ),
+      Device(
+        id: 2,
+        name: "Humidity",
+        protocol: "MQTT",
+        type: DeviceType("dt3", "sensor type-3"),
+      ),
+    ]),
+    Place(6, "test2", [], []),
+    Place(7, "test3", [], []),
+    Place(8, "test4", [], []),
+  ], []),
 ];
 
 const DUMMY_ROOMS = const [
@@ -59,12 +77,9 @@ const DUMMY_ROOMS = const [
 ];
 
 var DUMMY_USERS = [
-  User(
-      id: 1, email: "sample1@gmail.com", name: "user1"),
-  User(
-      id: 2, email: "sample2@gmail.com", name: "user2"),
-  User(
-      id: 3, email: "sample3@gmail.com", name: "user3"),
+  User(id: 1, email: "sample1@gmail.com", name: "user1"),
+  User(id: 2, email: "sample2@gmail.com", name: "user2"),
+  User(id: 3, email: "sample3@gmail.com", name: "user3"),
   User(id: 4, email: "sample4@gmail.com", name: "erel"),
 ];
 
