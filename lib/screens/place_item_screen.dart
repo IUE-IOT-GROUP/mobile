@@ -12,10 +12,10 @@ class PlaceItemScreen extends StatefulWidget {
 
 class _PlaceItemScreenState extends State<PlaceItemScreen> {
   static Place? currentPlace;
+
   @override
   Widget build(BuildContext context) {
-    final routeArgs =
-        ModalRoute.of(context)?.settings.arguments as Map<String, Place>;
+    final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, Place>;
     currentPlace = routeArgs["place"] as Place;
 
     final mq = MediaQuery.of(context).size;
@@ -26,10 +26,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
             width: mq.width * 0.8,
             height: mq.height * 0.3,
             margin: EdgeInsets.only(
-                left: mq.width * 0.1,
-                right: mq.width * 0.1,
-                top: mq.height * 0.04,
-                bottom: mq.height * 0.02),
+                left: mq.width * 0.1, right: mq.width * 0.1, top: mq.height * 0.04, bottom: mq.height * 0.02),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
             ),
@@ -57,16 +54,18 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                       mainAxisSpacing: 20,
                     ),
                     padding: const EdgeInsets.all(25),
-                    children: currentPlace!.placeList
-                        .map((data) => PlaceItem(data))
-                        .toList(),
+                    children: currentPlace!.placeList.map((data) => PlaceItem(data)).toList(),
                   ),
                 )
-              : Container(
-                  color: Colors.red,
-                  height: mq.height * 0.6,
-                  child: DeviceList(currentPlace!.deviceList, () => null),
-                )
+              : currentPlace!.deviceList.isNotEmpty
+                  ? Container(
+                      decoration: BoxDecoration(color: Colors.red),
+                      height: mq.height * 0.6,
+                      child: DeviceList(currentPlace!.deviceList, () => null),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(color: Colors.white),
+                    )
         ],
       ),
     );

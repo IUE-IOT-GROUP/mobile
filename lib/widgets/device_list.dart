@@ -28,8 +28,7 @@ class _DeviceListState extends State<DeviceList> {
     final mq = MediaQuery.of(context);
 
     return Container(
-      color: Global.pColor(context),
-
+      decoration: BoxDecoration(color: Colors.white),
       // mq.size.height -
       //     MainScreen.showAppBar("name").preferredSize.height -
       //     mq.padding.top
