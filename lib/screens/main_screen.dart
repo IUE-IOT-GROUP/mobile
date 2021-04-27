@@ -57,44 +57,12 @@ class _MainScreenState extends State<MainScreen>
     });
   }
 
-  fetchAndAddNewDevice() async {
-    String name = await Global.secureStorage.readSecureData("new_device_name");
-    String type = await Global.secureStorage.readSecureData("new_device_type");
-    String ip = await Global.secureStorage.readSecureData("new_device_ip");
-    print("değerleri eşitledi");
-    Random random = new Random();
-    final id = random.nextInt(10000);
-    if (name != null && type != null && ip != null) {
-      print("if check i geçti");
-      new_device_name = name;
-      new_device_ip = ip;
-      new_device_type = type;
-      Device new_device = new Device(
-          id: id,
-          name: new_device_name,
-          protocol: "HTTP",
-          ipAddress: new_device_ip,
-          type: DeviceType("12", new_device_type));
-      print("device oluşturuldu");
-      setState(() {
-        Global.devices.add(new_device);
-        print("devices a ekledi");
-      });
-    }
-    Global.secureStorage.deleteSecureData("new_device_name");
-    Global.secureStorage.deleteSecureData("new_device_type");
-    Global.secureStorage.deleteSecureData("new_device_ip");
-  }
-
   @override
   void initState() {
     super.initState();
     futureUser = loadUser();
     print("şimdi bascak");
     print(futureUser.toString());
-    setState(() {
-      fetchAndAddNewDevice();
-    });
   }
 
   void startAddNewDevice(BuildContext ctx) {

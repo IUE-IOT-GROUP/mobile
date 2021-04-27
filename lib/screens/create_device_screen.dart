@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/global.dart';
+import 'package:prototype/models/device.dart';
 import 'package:prototype/models/device_type.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/widgets/create_device_textfield.dart';
@@ -91,11 +94,19 @@ class _CreateDeviceState extends State<CreateDevice> {
           String enteredIp = ipAddressController.text;
           String enteredMac = macAddressController.text;
 
-          Global.secureStorage.writeSecureData("new_device_name", enteredName);
-          Global.secureStorage.writeSecureData("new_device_ip", enteredIp);
-          Global.secureStorage
-              .writeSecureData("new_device_type", "temporarily disabled");
+          Random random = new Random();
+          final id = random.nextInt(10000);
+          Device newDevice = new Device(
+              id: id,
+              name: enteredName,
+              protocol: "HTTP",
+              ipAddress: enteredIp,
+              type: DeviceType("12", "temporarily disabled"),
+          );
+          Global.devices.add(newDevice);
+
           Global.initialState = 1;
+
           Navigator.of(context).popAndPushNamed(MainScreen.routeName);
         },
         backgroundColor: Colors.green,
