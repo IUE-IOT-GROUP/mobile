@@ -14,17 +14,26 @@ class CreatePlace extends StatefulWidget {
 class _CreatePlaceState extends State<CreatePlace> {
   var nameController = TextEditingController();
   List<Place> places = DUMMY_PLACES;
+  Place? selectedParentPlace;
 
   @override
   Widget build(BuildContext context) {
     Place? selectedPlace = places[0];
     final mq = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Global.pColor(context),
+      appBar: AppBar(
+        backgroundColor: Global.pColor(context),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Global.aColor(context),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Stack(
-        children: <Widget>[
-          //Global.showCircularProgress(),
-          buildScreen(mq, selectedPlace)
-        ],
+        children: <Widget>[buildScreen(mq, selectedPlace)],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -46,7 +55,7 @@ class _CreatePlaceState extends State<CreatePlace> {
             width: double.infinity,
             margin: EdgeInsets.only(right: 5, left: 5, top: 20),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 2),
+              border: Border.all(color: Global.aColor(context), width: 2),
             ),
             height: mq.height * 0.25,
             child: Column(
@@ -55,11 +64,12 @@ class _CreatePlaceState extends State<CreatePlace> {
                 Icon(
                   Icons.home,
                   size: 100,
-                  color: Colors.black,
+                  color: Global.aColor(context),
                 ),
                 Text(
                   "Add Place",
                   style: TextStyle(
+                    color: Global.aColor(context),
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
@@ -75,6 +85,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                   fit: FlexFit.tight,
                   child: Text("Name: ",
                       style: TextStyle(
+                        color: Global.aColor(context),
                         fontSize: 25,
                       ))),
               Flexible(
@@ -109,6 +120,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                 child: Text(
                   "Parent: ",
                   style: TextStyle(
+                    color: Global.aColor(context),
                     fontSize: 25,
                   ),
                 ),
@@ -135,7 +147,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                       items: places.map((Place place) {
                         return DropdownMenuItem<Place>(
                           value: place,
-                          child: Text(place.name),
+                          child: Text(place.name!),
                         );
                       }).toList(),
                     ),

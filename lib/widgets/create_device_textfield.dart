@@ -95,7 +95,7 @@ class _CreateDeviceTextFieldState extends State<CreateDeviceTextField> {
                               items: places.map((Place place) {
                                 return DropdownMenuItem<Place>(
                                   value: place,
-                                  child: Text(place.name),
+                                  child: Text(place.name!),
                                 );
                               }).toList(),
                             ),

@@ -44,12 +44,13 @@ const DUMMY_DEVICES = const [
   // ),
 ];
 
-const DUMMY_PLACES = const [
-  Place(1, "Home", [], []),
-  Place(2, "Work", [], []),
-  Place(3, "Summerplace", [], []),
-  Place(4, "Factory", [
-    Place(5, "test1", [], [
+var DUMMY_PLACES = [
+  Place(id: 1, parentId: -1, name: "Home", placeList: [], deviceList: []),
+  Place(id: 2, name: "Work", parentId: -1, placeList: [], deviceList: []),
+  Place(
+      id: 3, name: "Summerplace", parentId: -1, placeList: [], deviceList: []),
+  Place(id: 4, name: "Factory", placeList: [
+    Place(id: 5, name: "test1", parentId: 4, placeList: [], deviceList: [
       Device(
         id: 1,
         name: "Temperature",
@@ -63,10 +64,10 @@ const DUMMY_PLACES = const [
         type: DeviceType("dt3", "sensor type-3"),
       ),
     ]),
-    Place(6, "test2", [], []),
-    Place(7, "test3", [], []),
-    Place(8, "test4", [], []),
-  ], []),
+    Place(id: 6, name: "test2", parentId: 4, placeList: [], deviceList: []),
+    Place(id: 7, name: "test3", parentId: 4, placeList: [], deviceList: []),
+    Place(id: 8, name: "test4", parentId: 4, placeList: [], deviceList: []),
+  ], deviceList: []),
 ];
 
 const DUMMY_ROOMS = const [

@@ -51,7 +51,6 @@ class _TemperatureItemState extends State<TemperatureItem> {
             ),
           ],
           onChanged: (int? val) {
-            print(val);
             setState(() {
               index = val;
             });

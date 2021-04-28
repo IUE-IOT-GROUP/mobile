@@ -17,11 +17,11 @@ class PlaceItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white12,
-        border: Border.all(
-          color: Global.aColor(context),
-        ),
-      ),
+          color: Colors.white12,
+          border: Border.all(
+            color: Global.aColor(context),
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(15))),
       child: InkWell(
         onTap: () => selectPlace(context, place),
         splashColor: Colors.grey,
@@ -35,7 +35,7 @@ class PlaceItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                place.name,
+                place.name!,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

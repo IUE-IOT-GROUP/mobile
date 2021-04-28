@@ -41,13 +41,12 @@ class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
 
-  static List<Place> places = DUMMY_PLACES;
   String username = '';
   String new_device_name = "";
   String new_device_ip = "";
   String new_device_type = "";
   static List<Widget> widgetOptions = <Widget>[
-    PlaceList(places),
+    PlaceList(Global.places),
     DeviceList(Global.devices, deleteDevice),
   ];
 

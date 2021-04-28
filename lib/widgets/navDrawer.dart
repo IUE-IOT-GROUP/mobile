@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "../global.dart";
+import "../screens/main_screen.dart";
 
 class NavDrawer extends StatelessWidget {
   @override
@@ -16,14 +17,18 @@ class NavDrawer extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 25),
               ),
               decoration: BoxDecoration(
-                  color: Colors.green,
-                  image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage('assets/images/cover.jpg'))),
+                color: Colors.green,
+                image: DecorationImage(
+                  fit: BoxFit.fill,
+                  image: AssetImage('assets/images/cover.jpg'),
+                ),
+              ),
             ),
             ListTile(
-              leading: Icon(
-                Icons.home,
+              leading: IconButton(
+                icon: Icon(Icons.home),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(MainScreen.routeName),
                 color: Global.pColor(context),
               ),
               title: Text(

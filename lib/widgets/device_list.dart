@@ -28,10 +28,11 @@ class _DeviceListState extends State<DeviceList> {
     final mq = MediaQuery.of(context);
 
     return Container(
-      decoration: BoxDecoration(color: Colors.white),
-      // mq.size.height -
-      //     MainScreen.showAppBar("name").preferredSize.height -
-      //     mq.padding.top
+      decoration: BoxDecoration(
+        color: Global.pColor(context),
+      ),
+      //Global.initialState == 1 ? Global.pColor(context) : Colors.white),
+
       child: ListView.builder(
           itemCount: widget.devices.length,
           itemExtent: 100,

@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:prototype/dummy_data.dart';
 import 'SecureStorage.dart';
 import 'widgets/progress_bar.dart';
 import "./models/device.dart";
+import "./models/place.dart";
 
 class Global {
   static final String baseUrl = "https://api.iot-ms.xyz/api/v1";
@@ -17,6 +19,7 @@ class Global {
   }
 
   static List<Device> devices = [];
+  static List<Place> places = DUMMY_PLACES;
 
   static aColor(BuildContext context) {
     return Theme.of(context).accentColor;
