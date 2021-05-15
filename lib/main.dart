@@ -6,6 +6,7 @@ import 'screens/login_screen.dart';
 import "screens/create_place_screen.dart";
 import "screens/device_item_screen.dart";
 import "screens/place_item_screen.dart";
+import "screens/settings_screen.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "prototype",
       theme: ThemeData(
+        scaffoldBackgroundColor: Color.fromRGBO(31, 30, 44, 1),
         primaryColor: Color.fromRGBO(31, 30, 44, 1),
         accentColor: Colors.grey,
         unselectedWidgetColor: Colors.grey,
@@ -39,6 +41,7 @@ class MyApp extends StatelessWidget {
         CreatePlace.routeName: (ctx) => CreatePlace(),
         DeviceItemScreen.routeName: (ctx) => DeviceItemScreen(),
         PlaceItemScreen.routeName: (ctx) => PlaceItemScreen(),
+        SettingsScreen.routeName: (ctx) => SettingsScreen(),
       },
     );
   }

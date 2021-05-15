@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,6 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
       Global.warning(ctx,
           "Username or password is incorrect! Please check your credentials.");
     } else {
+      Global.email = enteredEmail;
+      Global.password = enteredPassword;
       Navigator.of(ctx).pushReplacementNamed(MainScreen.routeName);
     }
   }
@@ -140,17 +141,20 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Container(
+            width: MediaQuery.of(context).size.width * 0.75,
             margin: EdgeInsets.only(left: 10, right: 10),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(255, 255, 255, .02),
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
             child: TextField(
               autofocus: false,
-              style: TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
               controller: emailController,
               decoration: InputDecoration(
-                fillColor: Colors.grey,
-                focusColor: Color.fromRGBO(34, 33, 47, 0.7),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
                 hintText: "E-mail",
                 hintStyle: TextStyle(color: Colors.grey),
               ),
@@ -160,17 +164,21 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 20,
           ),
           Container(
+            width: MediaQuery.of(context).size.width * 0.75,
             margin: EdgeInsets.only(left: 10, right: 10),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(255, 255, 255, .02),
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
             child: TextField(
+              textAlign: TextAlign.center,
               autofocus: false,
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(color: Colors.white),
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color.fromRGBO(34, 33, 47, 1)),
-                  borderRadius: BorderRadius.circular(15),
-                ),
                 hintText: "Password",
                 hintStyle: TextStyle(color: Colors.grey),
               ),

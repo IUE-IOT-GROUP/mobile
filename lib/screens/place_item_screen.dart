@@ -114,6 +114,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
     return Scaffold(
       drawer: currentPlace!.parentId == -1 ? NavDrawer() : null,
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(255, 255, 255, .02),
         leading: currentPlace!.parentId != -1
             ? IconButton(
                 icon: Icon(Icons.arrow_back),

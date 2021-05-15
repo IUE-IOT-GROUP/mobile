@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import "../global.dart";
 import "../screens/main_screen.dart";
+import "../screens/settings_screen.dart";
 
 class NavDrawer extends StatelessWidget {
   @override
@@ -50,7 +51,8 @@ class NavDrawer extends StatelessWidget {
                   color: Global.pColor(context),
                 ),
               ),
-              onTap: () => {Navigator.of(context).pop()},
+              onTap: () =>
+                  Navigator.of(context).pushNamed(SettingsScreen.routeName),
             ),
             ListTile(
               leading: Icon(

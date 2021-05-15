@@ -8,8 +8,11 @@ import 'SecureStorage.dart';
 import 'widgets/progress_bar.dart';
 import "./models/device.dart";
 import "./models/place.dart";
+import "./models/user.dart";
 
 class Global {
+  static var email = "";
+  static var password = "";
   static final String baseUrl = "https://api.iot-ms.xyz/api/v1";
   static final SecureStorage secureStorage = SecureStorage();
   static var initialState = 0;
@@ -85,7 +88,7 @@ class Global {
           onPressed: () {
             Navigator.of(ctx).pop();
           },
-        )
+        ),
       ],
     );
     showDialog(

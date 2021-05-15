@@ -20,7 +20,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Global.pColor(context),
+      backgroundColor: Color.fromRGBO(255, 255, 255, .02),
       title: Text("Welcome"),
       actions: [
         IconButton(

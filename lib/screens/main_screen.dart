@@ -90,39 +90,42 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     var primaryColor = Theme.of(context).primaryColor;
     var accentColor = Theme.of(context).accentColor;
-    return Scaffold(
-      backgroundColor: Global.pColor(context),
-      drawer: NavDrawer(),
-      appBar: CustomAppBar(Global.initialState),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white12,
-        selectedItemColor: accentColor,
-        unselectedIconTheme: IconThemeData(opacity: 0.5),
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-        selectedIconTheme: IconThemeData(opacity: 1),
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Places",
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.monitor,
-              ),
-              label: "Devices"),
-        ],
-        currentIndex: Global.initialState,
-        onTap: onItemTapped,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Global.pColor(context),
+        drawer: NavDrawer(),
+        appBar: CustomAppBar(Global.initialState),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white12,
+          selectedItemColor: accentColor,
+          unselectedIconTheme: IconThemeData(opacity: 0.5),
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+          selectedIconTheme: IconThemeData(opacity: 1),
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Places",
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.monitor,
+                ),
+                label: "Devices"),
+          ],
+          currentIndex: Global.initialState,
+          onTap: onItemTapped,
+        ),
+        body: Container(
+          child: widgetOptions.elementAt(Global.initialState),
+        ),
+        // floatingActionButton: BottomButton(
+        //   createDevice: () => startAddNewDevice(context),
+        //   createPlace: () => startAddNewPlace(context),
+        //   tabController: _tabController,
+        // ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      body: Container(
-        child: widgetOptions.elementAt(Global.initialState),
-      ),
-      // floatingActionButton: BottomButton(
-      //   createDevice: () => startAddNewDevice(context),
-      //   createPlace: () => startAddNewPlace(context),
-      //   tabController: _tabController,
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
