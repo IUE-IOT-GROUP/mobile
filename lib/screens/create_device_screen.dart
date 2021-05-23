@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/global.dart';
@@ -8,7 +7,7 @@ import 'package:prototype/models/device_type.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/widgets/create_device_textfield.dart';
 import "../models/place.dart";
-import "../SecureStorage.dart";
+import "../widgets/navDrawer.dart";
 
 class CreateDevice extends StatefulWidget {
   static const routeName = "/create-device";
@@ -34,6 +33,9 @@ class _CreateDeviceState extends State<CreateDevice> {
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
     return Scaffold(
+      drawer: NavDrawer(),
+      appBar: AppBar(),
+      backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomInset: false,
       //appBar: appBar,
       body: SingleChildScrollView(
@@ -43,7 +45,8 @@ class _CreateDeviceState extends State<CreateDevice> {
                 width: double.infinity,
                 margin: EdgeInsets.only(right: 5, left: 5, top: 20),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 2),
+                  border: Border.all(
+                      color: Theme.of(context).accentColor, width: 2),
                 ),
                 height: mq.size.height * 0.25,
                 child: Column(
@@ -52,7 +55,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                     Icon(
                       Icons.monitor,
                       size: 100,
-                      color: Colors.black,
+                      color: Theme.of(context).accentColor,
                     ),
                     Text(
                       "Add Device",

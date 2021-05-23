@@ -10,6 +10,7 @@ import '../global.dart';
 import "../models/user.dart";
 import 'package:http/http.dart' as http;
 import '../global.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -19,12 +20,24 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final List<User> userList = DUMMY_USERS;
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
 
   var enteredEmail;
   var enteredPassword;
   var errors = [];
+
+  void initFieldsIfRemember() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? rememberedEmail = prefs.getString("email");
+    String? rememberedPassword = prefs.getString("password");
+    rememberMe = prefs.getBool("rememberMe") ?? rememberMe;
+
+    if (rememberedEmail != null && rememberedPassword != null) {
+      emailController.text = rememberedEmail;
+      passwordController.text = rememberedPassword;
+    }
+  }
 
   Future<bool> postRequest() async {
     bool success = false;
@@ -82,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       Global.isLoading = false;
     });
-    emailController.text = "erel@ozturk.com";
+    initFieldsIfRemember();
   }
 
   void initCredentials() {
@@ -91,6 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login(BuildContext ctx) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     initCredentials();
 
     bool isAuthenticated = await postRequest();
@@ -108,10 +123,24 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       Global.email = enteredEmail;
       Global.password = enteredPassword;
+
+      if (rememberMe) {
+        prefs.setString("email", enteredEmail);
+        prefs.setString("password", enteredPassword);
+        prefs.setBool("rememberMe", rememberMe);
+      } else {
+        if (prefs.getString("email") != null ||
+            prefs.getString("password") != null) {
+          prefs.remove("email");
+          prefs.remove("password");
+        }
+        prefs.setBool("rememberMe", false);
+      }
       Navigator.of(ctx).pushReplacementNamed(MainScreen.routeName);
     }
   }
 
+  bool rememberMe = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,9 +220,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: EdgeInsets.all(3),
                   child: Checkbox(
-                    value: false,
+                    activeColor: Colors.grey,
+                    value: rememberMe,
                     onChanged: (_) {
-                      //remember me
+                      setState(() {
+                        rememberMe = !rememberMe;
+                      });
                     },
                   ),
                 ),
@@ -226,7 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   side: BorderSide(),
                 ),
               ),
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
               minimumSize: MaterialStateProperty.all<Size>(
                   Size(MediaQuery.of(context).size.width * 0.4, 30)),
             ),
