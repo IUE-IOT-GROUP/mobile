@@ -34,7 +34,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
             style: TextStyle(color: Colors.green),
           ),
           onPressed: () {
-            Global.places.removeWhere((element) {
+            places!.removeWhere((element) {
               return element.id == currentPlace!.id;
             });
             Navigator.of(context).popAndPushNamed(MainScreen.routeName);
@@ -75,10 +75,11 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
           ),
           onPressed: () {
             Place? parent;
-            for (int i = 0; i < Global.places.length; i++) {
-              if (Global.places[i].id == currentPlace!.parentId) {
-                parent = Global.places[i];
-                Global.places[i].placeList!
+            for (int i = 0; i < places!.length; i++) {
+              if (places![i].id == currentPlace!.parentId) {
+                parent = places![i];
+                places![i]
+                    .placeList!
                     .removeWhere((element) => element.id == currentPlace!.id);
                 break;
               }
@@ -102,6 +103,13 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
         builder: (BuildContext context) {
           return alert;
         });
+  }
+
+  List<Place>? places;
+  @override
+  void initState() async {
+    super.initState();
+    places = await Global.getPlaces();
   }
 
   @override

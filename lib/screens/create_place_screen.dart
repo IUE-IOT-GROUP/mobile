@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/models/place.dart';
 import 'package:prototype/screens/main_screen.dart';
 import '../global.dart';
+import 'package:http/http.dart' as http;
 
 class CreatePlace extends StatefulWidget {
   static const routeName = "/create-place";
@@ -13,12 +16,21 @@ class CreatePlace extends StatefulWidget {
 
 class _CreatePlaceState extends State<CreatePlace> {
   var nameController = TextEditingController();
-  List<Place> places = DUMMY_PLACES;
+  List<Place>? places;
   Place? selectedParentPlace;
 
   @override
+  void initState() {
+    super.initState();
+    Global.getPlaces().then((value) {
+      places = value;
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Place? selectedPlace = places[0];
+    Place? selectedPlace = places![0];
     final mq = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -36,10 +48,7 @@ class _CreatePlaceState extends State<CreatePlace> {
         children: <Widget>[buildScreen(mq, selectedPlace)],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //secure storage
-          Navigator.of(context).pop(false);
-        },
+        onPressed: () {},
         child: Icon(Icons.add),
         backgroundColor: Colors.green,
       ),
@@ -145,7 +154,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                           selectedPlace = newVal!;
                         });
                       },
-                      items: places.map((Place place) {
+                      items: places!.map((Place place) {
                         return DropdownMenuItem<Place>(
                           value: place,
                           child: Text(place.name!),
@@ -156,6 +165,9 @@ class _CreatePlaceState extends State<CreatePlace> {
                 ),
               ),
             ],
+          ),
+          Row(
+            children: [],
           ),
         ],
       ),

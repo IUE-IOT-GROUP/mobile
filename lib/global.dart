@@ -15,14 +15,14 @@ class Global {
   static var prefs;
   static var email = "";
   static var password = "";
-  static final String baseUrl = "https://api.iot-ms.xyz/api/v1";
+  static final String baseUrl = "https://api.iot-ms.xyz/api";
   static final SecureStorage secureStorage = SecureStorage();
   static var initialState = 0;
   static bool isLoading = false;
   static bool isDarkTheme = true;
 
   static List<Device> devices = [];
-  static List<Place> places = DUMMY_PLACES;
+  //static List<Place> places = DUMMY_PLACES;
 
   static void setPrefs() async {
     prefs = await SharedPreferences.getInstance();
@@ -56,6 +56,22 @@ class Global {
       // hide circular
       return response;
     });
+  }
+
+  static Future<List<Place>> getPlaces() async {
+    print("we are in getPlaces now!");
+    List<Place> places = [];
+    h_get("$baseUrl/places").then((http.Response response) {
+      for (int i = 0; i < response.body.length; i++) {
+        Place currPlace = Place.fromJson(jsonDecode(response.body)["data"]);
+        places.add(currPlace);
+      }
+    });
+    print("Length: ${places.length}");
+    for (int i = 0; i < places.length; i++) {
+      print("id: ${places[i].id}\nname: ${places[i].name}");
+    }
+    return places;
   }
 
   static Future<Response> h_get(String url, {bool appendToken = false}) async {

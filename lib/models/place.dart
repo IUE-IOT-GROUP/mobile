@@ -14,4 +14,13 @@ class Place {
       this.name,
       this.placeList,
       this.deviceList});
+
+  factory Place.fromJson(Map<String, dynamic> json) {
+    return Place(
+        id: json["id"],
+        name: json["name"],
+        parentId: json["parentId"],
+        placeList: json["placeList"],
+        deviceList: null);
+  }
 }

@@ -40,13 +40,13 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
-
+  static List<Place>? places;
   String username = '';
   String new_device_name = "";
   String new_device_ip = "";
   String new_device_type = "";
   static List<Widget> widgetOptions = <Widget>[
-    PlaceList(Global.places),
+    PlaceList(places!),
     DeviceList(Global.devices, deleteDevice),
   ];
 
@@ -59,9 +59,13 @@ class _MainScreenState extends State<MainScreen>
   @override
   void initState() {
     super.initState();
+    Global.showCircularProgress();
+    Global.getPlaces().then((value) {
+      places = value;
+
+      setState(() {});
+    });
     futureUser = loadUser();
-    print("şimdi bascak");
-    print(futureUser.toString());
   }
 
   void startAddNewDevice(BuildContext ctx) {
