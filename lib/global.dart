@@ -53,25 +53,10 @@ class Global {
             },
             body: jsonEncode(body))
         .then((http.Response response) {
+      print('global post ${response.body}');
       // hide circular
       return response;
     });
-  }
-
-  static Future<List<Place>> getPlaces() async {
-    print("we are in getPlaces now!");
-    List<Place> places = [];
-    h_get("$baseUrl/places").then((http.Response response) {
-      for (int i = 0; i < response.body.length; i++) {
-        Place currPlace = Place.fromJson(jsonDecode(response.body)["data"]);
-        places.add(currPlace);
-      }
-    });
-    print("Length: ${places.length}");
-    for (int i = 0; i < places.length; i++) {
-      print("id: ${places[i].id}\nname: ${places[i].name}");
-    }
-    return places;
   }
 
   static Future<Response> h_get(String url, {bool appendToken = false}) async {
@@ -97,6 +82,27 @@ class Global {
 
     // fire loading finished event
 
+    return response;
+  }
+
+  static Future<Response> h_delete(String url, {bool appendToken = false}) async {
+    Uri uri = Uri.parse(url);
+    String token;
+    var headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+
+    if (appendToken) {
+      token = await secureStorage.readSecureData("token");
+      headers.putIfAbsent("Authorization", () => "Bearer " + token);
+    }
+
+    var response =
+        await http.delete(uri, headers: headers).then((http.Response response) {
+      print("h_get ${response.body}");
+      return response;
+    });
     return response;
   }
 

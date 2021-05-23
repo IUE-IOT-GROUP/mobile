@@ -40,15 +40,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
-  static List<Place>? places;
+
   String username = '';
   String new_device_name = "";
   String new_device_ip = "";
   String new_device_type = "";
-  static List<Widget> widgetOptions = <Widget>[
-    PlaceList(places!),
-    DeviceList(Global.devices, deleteDevice),
-  ];
+  List<Widget> widgetOptions = [];
 
   void onItemTapped(int index) {
     setState(() {
@@ -60,12 +57,14 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     super.initState();
     Global.showCircularProgress();
-    Global.getPlaces().then((value) {
-      places = value;
-
-      setState(() {});
-    });
+    // Global.getPlaces().then((value) {
+    //   setState(() {});
+    // });
     futureUser = loadUser();
+    widgetOptions= <Widget>[
+    PlaceList(),
+    DeviceList(Global.devices, deleteDevice),
+  ];
   }
 
   void startAddNewDevice(BuildContext ctx) {
@@ -93,41 +92,41 @@ class _MainScreenState extends State<MainScreen>
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        drawer: NavDrawer(),
-        appBar: CustomAppBar(Global.initialState),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white12,
-          selectedItemColor: Theme.of(context).accentColor,
-          unselectedIconTheme: IconThemeData(opacity: 0.5),
-          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-          selectedIconTheme: IconThemeData(opacity: 1),
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Places",
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.monitor,
+              onWillPop: () async => false,
+              child: Scaffold(
+                backgroundColor: Theme.of(context).primaryColor,
+                drawer: NavDrawer(),
+                appBar: CustomAppBar(Global.initialState),
+                bottomNavigationBar: BottomNavigationBar(
+                  backgroundColor: Colors.white12,
+                  selectedItemColor: Theme.of(context).accentColor,
+                  unselectedIconTheme: IconThemeData(opacity: 0.5),
+                  selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  selectedIconTheme: IconThemeData(opacity: 1),
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: "Places",
+                    ),
+                    BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.monitor,
+                        ),
+                        label: "Devices"),
+                  ],
+                  currentIndex: Global.initialState,
+                  onTap: onItemTapped,
                 ),
-                label: "Devices"),
-          ],
-          currentIndex: Global.initialState,
-          onTap: onItemTapped,
-        ),
-        body: Container(
-          child: widgetOptions.elementAt(Global.initialState),
-        ),
-        // floatingActionButton: BottomButton(
-        //   createDevice: () => startAddNewDevice(context),
-        //   createPlace: () => startAddNewPlace(context),
-        //   tabController: _tabController,
-        // ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      ),
-    );
+                body: Container(
+                  child: widgetOptions.elementAt(Global.initialState)
+                ),
+                // floatingActionButton: BottomButton(
+                //   createDevice: () => startAddNewDevice(context),
+                //   createPlace: () => startAddNewPlace(context),
+                //   tabController: _tabController,
+                // ),
+                // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              ),
+            );
   }
 }

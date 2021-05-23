@@ -45,11 +45,11 @@ const DUMMY_DEVICES = const [
 ];
 
 var DUMMY_PLACES = [
-  Place(id: 1, parentId: -1, name: "Home", placeList: [], deviceList: []),
-  Place(id: 2, name: "Work", parentId: -1, placeList: [], deviceList: []),
-  Place(id: 3, name: "Chalet", parentId: -1, placeList: [], deviceList: []),
-  Place(id: 4, name: "Factory", placeList: [
-    Place(id: 5, name: "test1", parentId: 4, placeList: [], deviceList: [
+  Place(id: 1, parentId: -1, name: "Home", places: [], deviceList: []),
+  Place(id: 2, name: "Work", parentId: -1, places: [], deviceList: []),
+  Place(id: 3, name: "Chalet", parentId: -1, places: [], deviceList: []),
+  Place(id: 4, name: "Factory", places: [
+    Place(id: 5, name: "test1", parentId: 4, places: [], deviceList: [
       Device(
         id: 1,
         name: "Temperature",
@@ -63,9 +63,9 @@ var DUMMY_PLACES = [
         type: DeviceType("dt3", "sensor type-3"),
       ),
     ]),
-    Place(id: 6, name: "test2", parentId: 4, placeList: [], deviceList: []),
-    Place(id: 7, name: "test3", parentId: 4, placeList: [], deviceList: []),
-    Place(id: 8, name: "test4", parentId: 4, placeList: [], deviceList: []),
+    Place(id: 6, name: "test2", parentId: 4, places: [], deviceList: []),
+    Place(id: 7, name: "test3", parentId: 4, places: [], deviceList: []),
+    Place(id: 8, name: "test4", parentId: 4, places: [], deviceList: []),
   ], deviceList: []),
 ];
 

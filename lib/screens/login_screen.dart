@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await Global.post(url, body).then((http.Response response) {
       if (response.statusCode == 200) {
         success = true;
-        Global.secureStorage.writeSecureData("token", response.body);
+        Global.secureStorage.writeSecureData("token", jsonDecode(response.body)['token']);
         setState(() {
           Global.isLoading = true;
         });

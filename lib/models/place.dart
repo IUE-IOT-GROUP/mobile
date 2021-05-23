@@ -5,22 +5,22 @@ class Place {
   final int? id;
   int? parentId;
   final String? name;
-  final List<Place>? placeList;
+  List<Place>? places;
   final List<Device>? deviceList;
 
   Place(
       {this.id,
       this.parentId = -1,
       this.name,
-      this.placeList,
+      this.places,
       this.deviceList});
 
   factory Place.fromJson(Map<String, dynamic> json) {
     return Place(
         id: json["id"],
         name: json["name"],
-        parentId: json["parentId"],
-        placeList: json["placeList"],
-        deviceList: null);
+        parentId: json["parent_id"],
+        places: [],
+        deviceList: []);
   }
 }

@@ -34,9 +34,9 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
             style: TextStyle(color: Colors.green),
           ),
           onPressed: () {
-            places!.removeWhere((element) {
-              return element.id == currentPlace!.id;
-            });
+            // places!.removeWhere((element) {
+            //   return element.id == currentPlace!.id;
+            // });
             Navigator.of(context).popAndPushNamed(MainScreen.routeName);
           },
         ),
@@ -75,18 +75,11 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
           ),
           onPressed: () {
             Place? parent;
-            for (int i = 0; i < places!.length; i++) {
-              if (places![i].id == currentPlace!.parentId) {
-                parent = places![i];
-                places![i]
-                    .placeList!
-                    .removeWhere((element) => element.id == currentPlace!.id);
-                break;
-              }
-            }
+
+
+
             Navigator.of(context).pop();
-            Navigator.of(context).popAndPushNamed(PlaceItemScreen.routeName,
-                arguments: {"place": parent!});
+            Navigator.of(context).popAndPushNamed(MainScreen.routeName);
           },
         ),
         TextButton(
@@ -105,18 +98,21 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
         });
   }
 
-  List<Place>? places;
-  @override
-  void initState() async {
-    super.initState();
-    places = await Global.getPlaces();
-  }
+  // List<Place>? places;
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //   places = await Global.getPlaces();
+  // }
 
   @override
   Widget build(BuildContext context) {
     final routeArgs =
         ModalRoute.of(context)?.settings.arguments as Map<String, Place>;
     currentPlace = routeArgs["place"] as Place;
+    List<Place>? childPlaces = currentPlace!.places;
+
+    print("121 ${currentPlace?.places}");
 
     final mq = MediaQuery.of(context).size;
     return Scaffold(
@@ -142,10 +138,12 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
               onPressed: currentPlace!.parentId == -1 //parent i var mı?
                   ? () {
                       //hayır
-                      currentPlace!.placeList!.isEmpty
-                          ? ensureParent()
-                          : Global.warning(context,
-                              "You can not remove a place with children. Try removing it's children first.");
+                      if (childPlaces != null) {
+                        childPlaces.isEmpty
+                            ? ensureParent()
+                            : Global.warning(context,
+                                "You can not remove a place with children. Try removing it's children first.");
+                      }
                     }
                   : () {
                       ensureChild();
@@ -189,7 +187,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
               ],
             ),
           ),
-          currentPlace!.placeList!.isNotEmpty
+          childPlaces != null ? childPlaces.isNotEmpty
               ? Expanded(
                   child: GridView(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -199,7 +197,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                       mainAxisSpacing: 20,
                     ),
                     padding: const EdgeInsets.all(25),
-                    children: currentPlace!.placeList!
+                    children: currentPlace!.places!
                         .map((data) => PlaceItem(data))
                         .toList(),
                   ),
@@ -207,7 +205,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
               : Container(
                   height: mq.height * 0.5,
                   child: DeviceList(currentPlace!.deviceList!, () => null),
-                )
+                ) : Container()
         ],
       ),
     );

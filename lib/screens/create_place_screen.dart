@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/models/place.dart';
 import 'package:prototype/screens/main_screen.dart';
+import 'package:prototype/services/place.service.dart';
 import '../global.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,7 +23,7 @@ class _CreatePlaceState extends State<CreatePlace> {
   @override
   void initState() {
     super.initState();
-    Global.getPlaces().then((value) {
+    PlaceService.getPlaces().then((value) {
       places = value;
       setState(() {});
     });
