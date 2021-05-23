@@ -118,14 +118,14 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
         leading: currentPlace!.parentId != -1
             ? IconButton(
                 icon: Icon(Icons.arrow_back),
-                color: Global.aColor(context),
+                color: Theme.of(context).accentColor,
                 onPressed: () => Navigator.of(context).pop(),
               )
             : null,
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
-            color: Global.aColor(context),
+            color: Theme.of(context).accentColor,
             onPressed: () => null,
           ),
           IconButton(
@@ -144,7 +144,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                     })
         ],
       ),
-      backgroundColor: Global.pColor(context),
+      backgroundColor: Theme.of(context).primaryColor,
       body: Column(
         children: [
           Container(
@@ -157,7 +157,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                 bottom: mq.height * 0.02),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Global.aColor(context),
+                color: Theme.of(context).accentColor,
               ),
               borderRadius: BorderRadius.all(
                 Radius.circular(15),
@@ -169,11 +169,15 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                 Text(
                   "${currentPlace!.name}",
                   style: TextStyle(
-                      color: Global.aColor(context),
+                      color: Theme.of(context).accentColor,
                       fontSize: 35,
                       fontWeight: FontWeight.bold),
                 ),
-                Icon(Icons.home, size: 100, color: Global.aColor(context)),
+                Icon(
+                  Icons.home,
+                  size: 100,
+                  color: Theme.of(context).accentColor,
+                ),
               ],
             ),
           ),

@@ -22,7 +22,10 @@ class _EditPopupState extends State<EditPopup> {
           children: [
             Row(
               children: [
-                Text("${widget.identifier}: "),
+                Text(
+                  "${widget.identifier}: ",
+                  style: TextStyle(color: Colors.black),
+                ),
                 Spacer(),
                 Container(
                   width: MediaQuery.of(context).size.width * 0.4,
@@ -34,7 +37,7 @@ class _EditPopupState extends State<EditPopup> {
                   child: TextField(
                     controller: widget.controller,
                     style: TextStyle(
-                      color: Global.pColor(context),
+                      color: Colors.black,
                     ),
                   ),
                 ),

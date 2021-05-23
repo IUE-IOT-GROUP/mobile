@@ -57,6 +57,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                     Text(
                       "Add Device",
                       style: TextStyle(
+                        color: Theme.of(context).accentColor,
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
@@ -97,11 +98,11 @@ class _CreateDeviceState extends State<CreateDevice> {
           Random random = new Random();
           final id = random.nextInt(10000);
           Device newDevice = new Device(
-              id: id,
-              name: enteredName,
-              protocol: "HTTP",
-              ipAddress: enteredIp,
-              type: DeviceType("12", "temporarily disabled"),
+            id: id,
+            name: enteredName,
+            protocol: "HTTP",
+            ipAddress: enteredIp,
+            type: DeviceType("12", "temporarily disabled"),
           );
           Global.devices.add(newDevice);
 

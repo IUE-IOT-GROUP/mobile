@@ -88,17 +88,15 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    var primaryColor = Theme.of(context).primaryColor;
-    var accentColor = Theme.of(context).accentColor;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        backgroundColor: Global.pColor(context),
+        backgroundColor: Theme.of(context).primaryColor,
         drawer: NavDrawer(),
         appBar: CustomAppBar(Global.initialState),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white12,
-          selectedItemColor: accentColor,
+          selectedItemColor: Theme.of(context).accentColor,
           unselectedIconTheme: IconThemeData(opacity: 0.5),
           selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
           selectedIconTheme: IconThemeData(opacity: 1),

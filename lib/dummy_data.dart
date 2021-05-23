@@ -47,8 +47,7 @@ const DUMMY_DEVICES = const [
 var DUMMY_PLACES = [
   Place(id: 1, parentId: -1, name: "Home", placeList: [], deviceList: []),
   Place(id: 2, name: "Work", parentId: -1, placeList: [], deviceList: []),
-  Place(
-      id: 3, name: "Summerplace", parentId: -1, placeList: [], deviceList: []),
+  Place(id: 3, name: "Chalet", parentId: -1, placeList: [], deviceList: []),
   Place(id: 4, name: "Factory", placeList: [
     Place(id: 5, name: "test1", parentId: 4, placeList: [], deviceList: [
       Device(

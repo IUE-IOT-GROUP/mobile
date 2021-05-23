@@ -16,36 +16,32 @@ class PlaceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: Colors.white12,
-          border: Border.all(
-            color: Global.aColor(context),
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      child: InkWell(
-        onTap: () => selectPlace(context, place),
-        splashColor: Colors.grey,
-        borderRadius: BorderRadius.circular(15),
-        child: Container(
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
+        decoration: BoxDecoration(
+            color: Colors.white12,
+            border: Border.all(
+              color: Theme.of(context).accentColor,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(15))),
+        child: InkWell(
+          onTap: () => selectPlace(context, place),
+          splashColor: Colors.grey,
+          borderRadius: BorderRadius.circular(15),
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Center(
+              child: Text(
                 place.name!,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Global.aColor(context),
+                  color: Theme.of(context).accentColor,
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

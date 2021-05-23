@@ -26,7 +26,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         IconButton(
             icon: Icon(
               Icons.add,
-              color: Global.aColor(context),
+              color: Theme.of(context).accentColor,
             ),
             onPressed: () => widget.selectedIndex == 0
                 ? Navigator.of(context).pushNamed(CreatePlace.routeName)

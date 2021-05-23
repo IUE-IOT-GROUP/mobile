@@ -3,6 +3,7 @@ import "../models/device.dart";
 import "../models/place.dart";
 import "../models/device_type.dart";
 import "../dummy_data.dart";
+import "../global.dart";
 
 class CreateDeviceTextField extends StatefulWidget {
   final String? textString;
@@ -40,11 +41,15 @@ class _CreateDeviceTextFieldState extends State<CreateDeviceTextField> {
             child: widget.textString!.length <= 10
                 ? Text(widget.textString!,
                     style: TextStyle(
+                      color: Theme.of(context).accentColor,
                       fontSize: 25,
                     ))
                 : Text(
                     widget.textString!,
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).accentColor,
+                    ),
                   ),
           ),
           Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
@@ -58,6 +63,7 @@ class _CreateDeviceTextFieldState extends State<CreateDeviceTextField> {
                 child: !widget.isDropDown!
                     ? TextField(
                         style: TextStyle(
+                          color: Theme.of(context).accentColor,
                           fontSize: 23,
                         ),
                         decoration: InputDecoration(),

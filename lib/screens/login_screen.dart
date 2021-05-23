@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Global.pColor(context),
+      backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
         children: <Widget>[bodyCard(), Global.showCircularProgress()],
       ),
@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget bodyCard() {
     return Card(
-      color: Global.pColor(context),
+      color: Theme.of(context).primaryColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Text(
               "IoT Management System",
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).accentColor,
                 fontFamily: "Raleway",
                 fontSize: 24,
                 //fontWeight: FontWeight.bold,
@@ -152,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: TextField(
               autofocus: false,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Theme.of(context).accentColor),
               controller: emailController,
               decoration: InputDecoration(
                 hintText: "E-mail",
@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: TextField(
               textAlign: TextAlign.center,
               autofocus: false,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Theme.of(context).accentColor),
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
@@ -199,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Text(
                   "Remember me",
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: Theme.of(context).accentColor),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.2,
@@ -208,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () => {},
                   child: Text(
                     "Forget Password?",
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Theme.of(context).accentColor),
                   ),
                 ),
               ],

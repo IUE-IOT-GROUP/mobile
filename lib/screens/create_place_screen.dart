@@ -21,13 +21,13 @@ class _CreatePlaceState extends State<CreatePlace> {
     Place? selectedPlace = places[0];
     final mq = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Global.pColor(context),
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        backgroundColor: Global.pColor(context),
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Global.aColor(context),
+            color: Theme.of(context).accentColor,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -55,7 +55,8 @@ class _CreatePlaceState extends State<CreatePlace> {
             width: double.infinity,
             margin: EdgeInsets.only(right: 5, left: 5, top: 20),
             decoration: BoxDecoration(
-              border: Border.all(color: Global.aColor(context), width: 2),
+              border:
+                  Border.all(color: Theme.of(context).accentColor, width: 2),
             ),
             height: mq.height * 0.25,
             child: Column(
@@ -64,12 +65,12 @@ class _CreatePlaceState extends State<CreatePlace> {
                 Icon(
                   Icons.home,
                   size: 100,
-                  color: Global.aColor(context),
+                  color: Theme.of(context).accentColor,
                 ),
                 Text(
                   "Add Place",
                   style: TextStyle(
-                    color: Global.aColor(context),
+                    color: Theme.of(context).accentColor,
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
@@ -85,7 +86,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                   fit: FlexFit.tight,
                   child: Text("Name: ",
                       style: TextStyle(
-                        color: Global.aColor(context),
+                        color: Theme.of(context).accentColor,
                         fontSize: 25,
                       ))),
               Flexible(
@@ -120,7 +121,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                 child: Text(
                   "Parent: ",
                   style: TextStyle(
-                    color: Global.aColor(context),
+                    color: Theme.of(context).accentColor,
                     fontSize: 25,
                   ),
                 ),

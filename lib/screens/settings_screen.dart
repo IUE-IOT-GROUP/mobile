@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import "../widgets/navDrawer.dart";
 import "../global.dart";
-import "../widgets/custom_dropdown.dart";
 import "../widgets/settings_edit_popup.dart";
+import "../widgets/themeChange.dart";
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   static final routeName = "/settings-screen";
@@ -12,7 +13,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool obscure = true;
+  bool obscure = false;
+
+  var newThemeColor;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +30,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Scaffold(
         drawer: NavDrawer(),
         appBar: AppBar(
-          backgroundColor: Global.pColor(context),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
-        backgroundColor: Global.pColor(context),
+        backgroundColor: Theme.of(context).primaryColor,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -41,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: Text(
                       "User Credentials",
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Theme.of(context).accentColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
@@ -49,7 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
               Divider(
-                color: Colors.white,
+                color: Theme.of(context).accentColor,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20),
@@ -60,7 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "email: ",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -68,7 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           Global.email,
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -76,7 +79,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         IconButton(
                           icon: Icon(
                             Icons.edit,
-                            color: Global.aColor(context),
+                            color: Theme.of(context).accentColor,
                           ),
                           onPressed: () {
                             showDialog(
@@ -94,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "password: ",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -104,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ? "${Global.password}"
                               : '${Global.password.replaceAll(RegExp(r"."), "*")}',
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -122,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         IconButton(
                           icon: Icon(
                             Icons.edit,
-                            color: Global.aColor(context),
+                            color: Theme.of(context).accentColor,
                           ),
                           onPressed: () {
                             showDialog(
@@ -142,19 +145,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               Divider(
-                color: Colors.white,
+                color: Theme.of(context).accentColor,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("User Information",
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Theme.of(context).accentColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold))
                 ],
               ),
-              Divider(color: Colors.white),
+              Divider(color: Theme.of(context).accentColor),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Column(
@@ -164,7 +167,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "name: ",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -172,7 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "erel",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -187,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       "name", Global.email, nameController);
                                 });
                           },
-                          color: Global.aColor(context),
+                          color: Theme.of(context).accentColor,
                         )
                       ],
                     ),
@@ -196,7 +199,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "surname: ",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -204,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "öztürk",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -219,7 +222,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       "email", Global.email, surnameController);
                                 });
                           },
-                          color: Global.aColor(context),
+                          color: Theme.of(context).accentColor,
                         )
                       ],
                     ),
@@ -228,7 +231,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "mobile: ",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -236,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           "+905396169835",
                           style: TextStyle(
-                              color: Global.aColor(context),
+                              color: Theme.of(context).accentColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -251,26 +254,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       "email", Global.email, mobileController);
                                 });
                           },
-                          color: Global.aColor(context),
+                          color: Theme.of(context).accentColor,
                         )
                       ],
                     ),
                   ],
                 ),
               ),
-              Divider(
-                color: Colors.white,
-              ),
-              Text(
-                "App Settings",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-              Divider(
-                color: Colors.white,
-              ),
+              // Divider(
+              //   color: Theme.of(context).accentColor,
+              // ),
+              // Text(
+              //   "App Settings",
+              //   style: TextStyle(
+              //       color: Theme.of(context).accentColor,
+              //       fontSize: 24,
+              //       fontWeight: FontWeight.bold),
+              // ),
+              // Divider(
+              //   color: Theme.of(context).accentColor,
+              // ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       "Dark Theme",
+              //       style: TextStyle(
+              //         color: Theme.of(context).accentColor,
+              //         fontSize: 24,
+              //       ),
+              //     ),
+              //     Switch(
+              //         value: Global.isDarkTheme,
+              //         onChanged: (data) {
+              //           setState(() {
+              //             Global.isDarkTheme = !Global.isDarkTheme;
+              //             ThemeChange.of(context).isDark = Global.isDarkTheme;
+              //           });
+              //         })
+              //   ],
+              // ),
             ],
           ),
         ),
