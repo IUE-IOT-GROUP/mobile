@@ -3,7 +3,7 @@ import "./models/device.dart";
 import "./models/place.dart";
 import "./models/user.dart";
 import "./models/device_type.dart";
-import "./models/room.dart";
+// import "./models/room.dart";
 
 const DUMMY_DEVICES = const [
   // Device(
@@ -69,12 +69,12 @@ var DUMMY_PLACES = [
   ], deviceList: []),
 ];
 
-const DUMMY_ROOMS = const [
-  Room("r1", "Bedroom", []),
-  Room("r2", "Living Room", []),
-  Room("r3", "Kitchen", []),
-  Room("r4", "Bathroom", []),
-];
+// const DUMMY_ROOMS = const [
+//   Room("r1", "Bedroom", []),
+//   Room("r2", "Living Room", []),
+//   Room("r3", "Kitchen", []),
+//   Room("r4", "Bathroom", []),
+// ];
 
 var DUMMY_USERS = [
   User(id: 1, email: "sample1@gmail.com", name: "user1"),

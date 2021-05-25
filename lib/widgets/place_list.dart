@@ -15,7 +15,6 @@ class _PlaceListState extends State<PlaceList> {
   @override
   void initState() {
     super.initState();
-    Global.showCircularProgress();
     places = PlaceService.getPlaces();
   }
 
@@ -40,7 +39,9 @@ class _PlaceListState extends State<PlaceList> {
           );
         }
 
-        return CircularProgressIndicator();
+        return Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }

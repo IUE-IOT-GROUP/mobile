@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:prototype/models/place.dart';
 import 'package:http/http.dart' as http;
 
@@ -35,5 +34,20 @@ class PlaceService {
 
   static void deletePlace(Place place) async {
     final response = await Global.h_delete("$placesUrl/${place.id}");
+  }
+
+  static Future<bool> postPlace(Object body) async {
+    //name, parent
+    bool responseCode = false;
+    final response = await Global.post(placesUrl, body, appendToken: true);
+    // .then((http.Response resp) {
+    if (200 <= response.statusCode && response.statusCode <= 300)
+      responseCode = true;
+    else
+      responseCode = false;
+    print("316responsecode: ${response.statusCode}");
+    // print(response);
+    print("316${response.body}");
+    return responseCode;
   }
 }

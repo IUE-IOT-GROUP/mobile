@@ -13,6 +13,9 @@ import '../global.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const routeName = "/login";
+
+  LoginScreen();
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -55,7 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
     await Global.post(url, body).then((http.Response response) {
       if (response.statusCode == 200) {
         success = true;
-        Global.secureStorage.writeSecureData("token", jsonDecode(response.body)['token']);
+        Global.secureStorage
+            .writeSecureData("token", jsonDecode(response.body)['token']);
         setState(() {
           Global.isLoading = true;
         });
@@ -214,33 +218,44 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Container(
+            width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.only(top: 8, left: 5, right: 5),
             child: Row(
               children: [
-                Container(
-                  padding: EdgeInsets.all(3),
-                  child: Checkbox(
-                    activeColor: Colors.grey,
-                    value: rememberMe,
-                    onChanged: (_) {
-                      setState(() {
-                        rememberMe = !rememberMe;
-                      });
-                    },
+                Flexible(
+                  flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.all(3),
+                    child: Checkbox(
+                      activeColor: Colors.grey,
+                      value: rememberMe,
+                      onChanged: (_) {
+                        setState(() {
+                          rememberMe = !rememberMe;
+                        });
+                      },
+                    ),
                   ),
                 ),
-                Text(
-                  "Remember me",
-                  style: TextStyle(color: Theme.of(context).accentColor),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                ),
-                TextButton(
-                  onPressed: () => {},
+                Flexible(
+                  flex: 3,
                   child: Text(
-                    "Forget Password?",
+                    "Remember me",
                     style: TextStyle(color: Theme.of(context).accentColor),
+                  ),
+                ),
+                Flexible(
+                  child: Container(),
+                  flex: 3,
+                ),
+                Flexible(
+                  flex: 4,
+                  child: TextButton(
+                    onPressed: () => {},
+                    child: Text(
+                      "Forget Password?",
+                      style: TextStyle(color: Theme.of(context).accentColor),
+                    ),
                   ),
                 ),
               ],

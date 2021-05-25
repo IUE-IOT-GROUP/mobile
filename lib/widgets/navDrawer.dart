@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prototype/screens/login_screen.dart';
 import "../global.dart";
 import "../screens/main_screen.dart";
 import "../screens/settings_screen.dart";
@@ -41,9 +42,6 @@ class _NavDrawerState extends State<NavDrawer> {
                     ),
                   ),
                 ),
-                // Container(
-                // height: MediaQuery.of(context).size.height * 0.15,
-                // child: ListTile(
                 ListTile(
                   leading: IconButton(
                     icon: Icon(Icons.home),
@@ -59,10 +57,6 @@ class _NavDrawerState extends State<NavDrawer> {
                   ),
                   onTap: () => {},
                 ),
-                // ),
-                // Container(
-                // height: MediaQuery.of(context).size.height * 0.15,
-                // child: ListTile(
                 ListTile(
                   leading: Icon(
                     Icons.settings,
@@ -77,10 +71,6 @@ class _NavDrawerState extends State<NavDrawer> {
                   onTap: () =>
                       Navigator.of(context).pushNamed(SettingsScreen.routeName),
                 ),
-                // ),
-                // Container(
-                // height: MediaQuery.of(context).size.height * 0.15,
-                // child: ListTile(
                 ListTile(
                   leading: Icon(
                     Icons.help,
@@ -94,10 +84,6 @@ class _NavDrawerState extends State<NavDrawer> {
                   ),
                   onTap: () => {Navigator.of(context).pop()},
                 ),
-                // ),
-                // Container(
-                // height: MediaQuery.of(context).size.height * 0.15,
-                // child: ListTile(
                 ListTile(
                   leading: Icon(
                     Icons.exit_to_app,
@@ -109,7 +95,15 @@ class _NavDrawerState extends State<NavDrawer> {
                       color: Theme.of(context).accentColor,
                     ),
                   ),
-                  onTap: () => {Navigator.of(context).pop()},
+                  onTap: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove("email");
+                    prefs.remove("password");
+                    prefs.remove("rememberMe");
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        LoginScreen.routeName, (Route<dynamic> route) => false);
+                  },
                 ),
               ]),
             ),

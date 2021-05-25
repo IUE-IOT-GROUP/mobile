@@ -40,18 +40,20 @@ class Global {
   //   prefs.setBool("isDark", yes);
   // }
 
-  static Future<Response> post(String url, Object body) async {
+  static Future<Response> post(String url, Object body,
+      {bool appendToken = false}) async {
     Uri uri = Uri.parse(url);
-
-    //show circular
-
+    String token;
+    var headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    if (appendToken) {
+      token = await secureStorage.readSecureData("token");
+      headers.putIfAbsent("Authorization", () => "Bearer " + token);
+    }
     return await http
-        .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: jsonEncode(body))
+        .post(uri, headers: headers, body: jsonEncode(body))
         .then((http.Response response) {
       print('global post ${response.body}');
       // hide circular
@@ -85,7 +87,8 @@ class Global {
     return response;
   }
 
-  static Future<Response> h_delete(String url, {bool appendToken = false}) async {
+  static Future<Response> h_delete(String url,
+      {bool appendToken = false}) async {
     Uri uri = Uri.parse(url);
     String token;
     var headers = {
