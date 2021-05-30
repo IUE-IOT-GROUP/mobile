@@ -32,8 +32,17 @@ class PlaceService {
     return places;
   }
 
-  static void deletePlace(Place place) async {
-    final response = await Global.h_delete("$placesUrl/${place.id}");
+  static Future<bool> deletePlace(
+    Place place,
+  ) async {
+    print("316${place.id}");
+    final response =
+        await Global.h_delete("$placesUrl/${place.id}", appendToken: true);
+    if (response.statusCode == 404) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   static Future<bool> postPlace(Object body) async {

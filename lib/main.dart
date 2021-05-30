@@ -12,6 +12,7 @@ import "screens/place_item_screen.dart";
 import "screens/settings_screen.dart";
 import "./global.dart";
 import "./widgets/themeChange.dart";
+import "./preferencesController.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,25 +26,55 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final themeChange = ThemeChange(prefs);
+  SharedPreferences.getInstance().then(
+      (instance) => PreferecesController.sharedPreferencesInstance = instance);
 
   runApp(MyApp(themeChange: themeChange));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final ThemeChange themeChange;
 
-  const MyApp({Key? key, required this.themeChange}) : super(key: key);
+  MyApp({Key? key, required this.themeChange}) : super(key: key);
 
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  void fetchIsRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    remember = prefs.getBool("rememberMe") ?? false;
+    print("45$remember");
+    if (remember) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => new MainScreen()));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchIsRememberMe();
+  }
+
+  bool? isRemember() {
+    return PreferecesController.sharedPreferencesInstance!
+            .getBool("rememberMe") ??
+        false;
+  }
+
+  late bool remember = false;
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: themeChange,
+        animation: widget.themeChange,
         builder: (context, child) {
           return ThemeChangeProvider(
-              controller: themeChange,
+              controller: widget.themeChange,
               child: MaterialApp(
                   theme: _buildCurrentTheme(),
-                  home: LoginScreen(),
+                  home: isRemember()! ? MainScreen() : LoginScreen(),
                   initialRoute: "/",
                   routes: {
                     LoginScreen.routeName: (ctx) => LoginScreen(),
@@ -59,7 +90,7 @@ class MyApp extends StatelessWidget {
 
   ThemeData _buildCurrentTheme() {
     return ThemeData(
-        primaryColor: themeChange.primaryColor,
-        accentColor: themeChange.accentColor);
+        primaryColor: widget.themeChange.primaryColor,
+        accentColor: widget.themeChange.accentColor);
   }
 }

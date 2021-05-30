@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeChange extends ChangeNotifier {
-  static const PRIMARY = Color.fromRGBO(31, 30, 44, 1);
+  static const PRIMARY = Color.fromRGBO(17, 24, 39, 1);
   static const ACCENT = Color.fromRGBO(235, 237, 243, 1);
 
   bool isDark = true;

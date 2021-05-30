@@ -189,9 +189,10 @@ class _CreatePlaceState extends State<CreatePlace> {
                     }
                   }
                 }
+                print("316$parent");
                 var body = {
                   "name": nameController.text,
-                  "parent": parent == -1 ? 0 : parent
+                  "parent": parent == 0 ? null : parent
                 };
                 bool response = await PlaceService.postPlace(body);
                 if (response)

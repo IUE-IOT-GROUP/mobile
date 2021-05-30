@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/create_device_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import "../models/device.dart";
 import "../models/place.dart";
 import "../models/device_type.dart";
@@ -53,18 +54,20 @@ class _MainScreenState extends State<MainScreen>
     });
   }
 
+  bool remember = false;
   @override
   void initState() {
     super.initState();
     Global.showCircularProgress();
+
     // Global.getPlaces().then((value) {
     //   setState(() {});
     // });
     futureUser = loadUser();
-    widgetOptions= <Widget>[
-    PlaceList(),
-    DeviceList(Global.devices, deleteDevice),
-  ];
+    widgetOptions = <Widget>[
+      PlaceList(),
+      DeviceList(Global.devices, deleteDevice),
+    ];
   }
 
   void startAddNewDevice(BuildContext ctx) {
@@ -92,41 +95,39 @@ class _MainScreenState extends State<MainScreen>
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-              onWillPop: () async => false,
-              child: Scaffold(
-                backgroundColor: Theme.of(context).primaryColor,
-                drawer: NavDrawer(),
-                appBar: CustomAppBar(Global.initialState),
-                bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Colors.white12,
-                  selectedItemColor: Theme.of(context).accentColor,
-                  unselectedIconTheme: IconThemeData(opacity: 0.5),
-                  selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  selectedIconTheme: IconThemeData(opacity: 1),
-                  items: <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: "Places",
-                    ),
-                    BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.monitor,
-                        ),
-                        label: "Devices"),
-                  ],
-                  currentIndex: Global.initialState,
-                  onTap: onItemTapped,
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        drawer: NavDrawer(),
+        appBar: CustomAppBar(Global.initialState),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white12,
+          selectedItemColor: Theme.of(context).accentColor,
+          unselectedIconTheme: IconThemeData(opacity: 0.5),
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+          selectedIconTheme: IconThemeData(opacity: 1),
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Places",
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.monitor,
                 ),
-                body: Container(
-                  child: widgetOptions.elementAt(Global.initialState)
-                ),
-                // floatingActionButton: BottomButton(
-                //   createDevice: () => startAddNewDevice(context),
-                //   createPlace: () => startAddNewPlace(context),
-                //   tabController: _tabController,
-                // ),
-                // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-              ),
-            );
+                label: "Devices"),
+          ],
+          currentIndex: Global.initialState,
+          onTap: onItemTapped,
+        ),
+        body: Container(child: widgetOptions.elementAt(Global.initialState)),
+        // floatingActionButton: BottomButton(
+        //   createDevice: () => startAddNewDevice(context),
+        //   createPlace: () => startAddNewPlace(context),
+        //   tabController: _tabController,
+        // ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      ),
+    );
   }
 }

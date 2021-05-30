@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import './graphs/temperature_graph.dart';
-import 'LineTitles.dart';
+import "./graphs/humidity_graph.dart";
 
-class TemperatureItem extends StatefulWidget {
-  double temperature;
-  TemperatureItem(this.temperature);
+class HumidityItem extends StatefulWidget {
+  double? humidity;
+  HumidityItem(this.humidity);
   @override
-  _TemperatureItemState createState() => _TemperatureItemState();
+  _HumidityItemState createState() => _HumidityItemState();
 }
 
-class _TemperatureItemState extends State<TemperatureItem> {
+class _HumidityItemState extends State<HumidityItem> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
@@ -17,7 +16,7 @@ class _TemperatureItemState extends State<TemperatureItem> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Temperature",
+          "Humidity",
           style: TextStyle(color: Theme.of(context).accentColor, fontSize: 24),
         ),
         Divider(color: Theme.of(context).accentColor),
@@ -29,7 +28,7 @@ class _TemperatureItemState extends State<TemperatureItem> {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(
-                "${widget.temperature}°C",
+                "${widget.humidity}%",
                 style: TextStyle(
                     fontSize: mq.height * 0.1,
                     fontFamily: "Temperature",
@@ -48,10 +47,9 @@ class _TemperatureItemState extends State<TemperatureItem> {
           height: mq.height * 0.6,
           child: Container(
             padding: EdgeInsets.all(10),
-            child: TemperatureGraph(),
+            child: HumidityGraph(),
           ),
         ),
-        Divider(color: Theme.of(context).accentColor),
       ],
     );
   }

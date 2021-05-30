@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prototype/services/place.service.dart';
 import 'package:prototype/widgets/navDrawer.dart';
 import "../widgets/place_item.dart";
 import "../widgets/device_list.dart";
@@ -16,14 +17,14 @@ class PlaceItemScreen extends StatefulWidget {
 
 class _PlaceItemScreenState extends State<PlaceItemScreen> {
   static Place? currentPlace;
-  void ensureParent() {
+  void ensureParentDelete() {
     AlertDialog alert = AlertDialog(
       title: Text("WARNING!"),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Text(
-                "You are about to remove ${currentPlace!.name}. Are you sure?"),
+                "You are about to remove ${currentPlace!.name} and there are one or more subplaces in this place. If you delete, all subplaces and devices corresponding to them will be deleted as well. Are you sure?"),
           ],
         ),
       ),
@@ -33,11 +34,13 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
             'YES',
             style: TextStyle(color: Colors.green),
           ),
-          onPressed: () {
-            // places!.removeWhere((element) {
-            //   return element.id == currentPlace!.id;
-            // });
-            Navigator.of(context).popAndPushNamed(MainScreen.routeName);
+          onPressed: () async {
+            bool deleteSucces = await PlaceService.deletePlace(currentPlace!);
+            if (deleteSucces) {
+              Global.warning(context, "Success!");
+              Navigator.of(context).popAndPushNamed(MainScreen.routeName);
+            } else
+              Global.warning(context, "Something went wrong!");
           },
         ),
         TextButton(
@@ -56,14 +59,14 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
         });
   }
 
-  void ensureChild() {
+  void ensureDelete() {
     AlertDialog alert = AlertDialog(
       title: Text("WARNING!"),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             Text(
-                "You are about to remove ${currentPlace!.name}. Are you sure?"),
+                "If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?"),
           ],
         ),
       ),
@@ -73,13 +76,13 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
             'YES',
             style: TextStyle(color: Colors.green),
           ),
-          onPressed: () {
-            Place? parent;
-
-
-
-            Navigator.of(context).pop();
-            Navigator.of(context).popAndPushNamed(MainScreen.routeName);
+          onPressed: () async {
+            bool deleteSuccess = await PlaceService.deletePlace(currentPlace!);
+            if (deleteSuccess) {
+              Navigator.of(context).pop();
+              Navigator.of(context).popAndPushNamed(MainScreen.routeName);
+            } else
+              Global.alert(context, "ERROR!", "An error has occured!");
           },
         ),
         TextButton(
@@ -135,19 +138,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
           IconButton(
               icon: Icon(Icons.delete),
               color: Colors.red,
-              onPressed: currentPlace!.parentId == -1 //parent i var mı?
-                  ? () {
-                      //hayır
-                      if (childPlaces != null) {
-                        childPlaces.isEmpty
-                            ? ensureParent()
-                            : Global.warning(context,
-                                "You can not remove a place with children. Try removing it's children first.");
-                      }
-                    }
-                  : () {
-                      ensureChild();
-                    })
+              onPressed: ensureDelete),
         ],
       ),
       backgroundColor: Theme.of(context).primaryColor,
@@ -187,25 +178,27 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
               ],
             ),
           ),
-          childPlaces != null ? childPlaces.isNotEmpty
-              ? Expanded(
-                  child: GridView(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      childAspectRatio: 3 / 2,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                    ),
-                    padding: const EdgeInsets.all(25),
-                    children: currentPlace!.places!
-                        .map((data) => PlaceItem(data))
-                        .toList(),
-                  ),
-                )
-              : Container(
-                  height: mq.height * 0.5,
-                  child: DeviceList(currentPlace!.deviceList!, () => null),
-                ) : Container()
+          childPlaces != null
+              ? childPlaces.isNotEmpty
+                  ? Expanded(
+                      child: GridView(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200,
+                          childAspectRatio: 3 / 2,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                        ),
+                        padding: const EdgeInsets.all(25),
+                        children: currentPlace!.places!
+                            .map((data) => PlaceItem(data))
+                            .toList(),
+                      ),
+                    )
+                  : Container(
+                      height: mq.height * 0.5,
+                      child: DeviceList(currentPlace!.deviceList!, () => null),
+                    )
+              : Container()
         ],
       ),
     );
