@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
-import 'package:prototype/screens/create_device_screen.dart';
+import "./create_device.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import "../models/device.dart";
 import "../models/place.dart";

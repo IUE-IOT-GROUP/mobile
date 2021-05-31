@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import "./device_type.dart";
+import './place.dart';
+import "./parameter.dart";
 
 class Device {
   final int? id;
   final String? name;
-  final String? protocol;
+  final String? macAddress;
   final String? ipAddress;
-  final DeviceType? type;
+  final Place? place;
+  final Map? parameters;
 
   const Device(
       {@required this.id,
       @required this.name,
-      @required this.protocol,
-      @required this.type,
-      this.ipAddress});
+      this.ipAddress,
+      this.macAddress,
+      this.place,
+      this.parameters});
 }

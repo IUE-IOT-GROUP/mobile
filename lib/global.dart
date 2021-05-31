@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:prototype/dummy_data.dart';
 import 'SecureStorage.dart';
 import 'widgets/progress_bar.dart';
 import "./models/device.dart";

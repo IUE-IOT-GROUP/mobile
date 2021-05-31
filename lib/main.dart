@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:prototype/screens/create_device_screen.dart';
+import './screens/create_device.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/widgets/themeChange.dart';
 import 'package:provider/provider.dart';

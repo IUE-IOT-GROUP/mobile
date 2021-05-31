@@ -53,14 +53,10 @@ var DUMMY_PLACES = [
       Device(
         id: 1,
         name: "Temperature",
-        protocol: "HTTP",
-        type: DeviceType("dt4", "sensor type-4"),
       ),
       Device(
         id: 2,
         name: "Humidity",
-        protocol: "MQTT",
-        type: DeviceType("dt3", "sensor type-3"),
       ),
     ]),
     Place(id: 6, name: "test2", parentId: 4, places: [], deviceList: []),

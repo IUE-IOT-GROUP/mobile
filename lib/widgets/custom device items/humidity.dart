@@ -39,12 +39,13 @@ class _HumidityItemState extends State<HumidityItem> {
           height: mq.height * 0.1,
         ),
         Container(
+          margin: EdgeInsets.only(right: 15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).primaryColor,
           ),
-          width: mq.width * 0.9,
-          height: mq.height * 0.6,
+          width: mq.width,
+          height: mq.height * 0.4,
           child: Container(
             padding: EdgeInsets.all(10),
             child: HumidityGraph(),

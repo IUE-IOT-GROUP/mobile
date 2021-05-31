@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import "../screens/create_device_screen.dart";
 import "../screens/create_place_screen.dart";
 import "../global.dart";
+import '../screens/create_device.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBar(this.selectedIndex, {Key? key})

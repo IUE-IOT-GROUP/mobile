@@ -3,6 +3,7 @@ import 'package:prototype/services/place.service.dart';
 import '../global.dart';
 import "../models/place.dart";
 import "./place_item.dart";
+import 'dart:async';
 
 class PlaceList extends StatefulWidget {
   @override
@@ -15,13 +16,28 @@ class _PlaceListState extends State<PlaceList> {
   @override
   void initState() {
     super.initState();
-    places = PlaceService.getPlaces();
+    timer();
   }
+
+  Future getTimerPlace() async {
+    return PlaceService.getPlaces();
+  }
+
+  timer() {
+    _future = getTimerPlace();
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      setState(() {
+        //_future = getTimerPlace();
+      });
+    });
+  }
+
+  Future? _future;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: places,
+      future: _future,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Place> _places = snapshot.data;

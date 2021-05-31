@@ -16,8 +16,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     SecureStorage storage = SecureStorage();
     int device_id = await storage.readSecureData("device id") as int;
     print(device_id);
-    Device device = new Device(
-        id: device_id, name: "Test_dev", protocol: " protocol", type: null);
+    Device device = new Device();
     return device;
   }
 

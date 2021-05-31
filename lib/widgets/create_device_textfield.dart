@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import "../models/device.dart";
 import "../models/place.dart";
 import "../models/device_type.dart";
-import "../dummy_data.dart";
 import "../global.dart";
 
 class CreateDeviceTextField extends StatefulWidget {
@@ -24,9 +23,7 @@ class CreateDeviceTextField extends StatefulWidget {
 class _CreateDeviceTextFieldState extends State<CreateDeviceTextField> {
   @override
   Widget build(BuildContext context) {
-    final device_types = DUMMY_DEVICE_TYPES;
-    final places = DUMMY_PLACES;
-    DeviceType? selectedDeviceType = device_types[0];
+    final places = [Place(name: "test")];
     Place? selectedPlace = places[0];
     final mq = MediaQuery.of(context);
 
@@ -72,20 +69,6 @@ class _CreateDeviceTextFieldState extends State<CreateDeviceTextField> {
                     : widget.isDeviceType!
                         ? Container(
                             margin: EdgeInsets.only(top: 15),
-                            child: DropdownButton<DeviceType>(
-                              value: selectedDeviceType,
-                              onChanged: (DeviceType? newVal) {
-                                setState(() {
-                                  selectedDeviceType = newVal;
-                                });
-                              },
-                              items: device_types.map((DeviceType dt) {
-                                return DropdownMenuItem<DeviceType>(
-                                  value: dt,
-                                  child: Text(dt.title),
-                                );
-                              }).toList(),
-                            ),
                           )
                         : Container(
                             margin: EdgeInsets.only(

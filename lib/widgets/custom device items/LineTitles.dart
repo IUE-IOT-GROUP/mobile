@@ -21,7 +21,7 @@ class LineTitles {
           getTextStyles: (value) => const TextStyle(
             color: Color(0xff68737d),
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 13,
           ),
           getTitles: (value) {
             switch (value.toInt()) {
@@ -42,10 +42,9 @@ class LineTitles {
           getTextStyles: (value) => const TextStyle(
             color: Color(0xff67727d),
             fontWeight: FontWeight.bold,
-            fontSize: 15,
+            fontSize: 13,
           ),
           getTitles: (value) {
-            print("49$_graphType");
             if (_graphType == 'temperature') {
               switch (value.toInt()) {
                 case 1:

@@ -40,7 +40,7 @@ class _DeviceListState extends State<DeviceList> {
                 itemBuilder: (ctx, index) {
                   return Card(
                     color: Theme.of(context).accentColor,
-                    elevation: 5,
+                    elevation: 40,
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                     child: ListTile(
                       onTap: () =>
@@ -48,34 +48,55 @@ class _DeviceListState extends State<DeviceList> {
                       leading: Icon(
                         Icons.monitor,
                         size: 50,
+                        color: Theme.of(context).primaryColor,
                       ),
-                      title: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Name: ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                      title: Row(children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Name: ",
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              Text(widget.devices[index].name!),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Place: ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                Text(
+                                  widget.devices[index].name!,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                 ),
-                              ),
-                              Text("Some Place")
-                            ],
-                          ),
-                        ],
-                      ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Place: ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  "Some Place",
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        Center(
+                            child: Text(
+                          "25",
+                          style: TextStyle(
+                              fontFamily: "Temperature", color: Colors.green),
+                        ))
+                      ]),
                       trailing: FittedBox(
                         child: Column(
                           children: [
