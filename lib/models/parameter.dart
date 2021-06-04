@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Parameter {
+  final String? optName;
   final String? name;
   final String? unit;
-  final double? value;
 
-  const Parameter({this.name, this.unit, this.value});
+  const Parameter({this.optName, this.name, this.unit});
 }

@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './screens/create_device.dart';
@@ -20,6 +21,9 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  Global.isLocal = connectivityResult == ConnectivityResult.wifi;
 
   // listen to loading event
   bool isLoading = false;

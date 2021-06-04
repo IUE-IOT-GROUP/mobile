@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import '../global.dart';
 import "../widgets/navDrawer.dart";
 import "../widgets/custom_appbar.dart";
+import "../services/device.service.dart";
 
 Future<User> loadUser() async {
   String url = "${Global.baseUrl}/me";
@@ -58,6 +59,7 @@ class _MainScreenState extends State<MainScreen>
   @override
   void initState() {
     super.initState();
+    print("662");
     Global.showCircularProgress();
 
     // Global.getPlaces().then((value) {

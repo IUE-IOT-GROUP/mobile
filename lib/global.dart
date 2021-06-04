@@ -14,11 +14,19 @@ class Global {
   static var prefs;
   static var email = "";
   static var password = "";
-  static final String baseUrl = "https://api.iot-ms.xyz/api";
+  static final String baseApiUrl = "https://api.iot-ms.xyz/api";
+  static final String baseFogUrl = "https://fog.local/api";
   static final SecureStorage secureStorage = SecureStorage();
   static var initialState = 0;
   static bool isLoading = false;
   static bool isDarkTheme = true;
+  static bool isLocal = true;
+
+  static String get baseUrl {
+    // print("isMobile: ${isLocal}");
+    // return isLocal ? baseFogUrl : baseApiUrl;
+    return baseApiUrl;
+  }
 
   static List<Device> devices = [];
   //static List<Place> places = DUMMY_PLACES;
@@ -32,6 +40,16 @@ class Global {
       }
     }
     print("aaa$isDarkTheme");
+  }
+
+  static Future<List<String>> getCredentials() async {
+    List<String> retval = [];
+    prefs = await SharedPreferences.getInstance();
+    String email = prefs.getString("email");
+    String pw = prefs.getString("password");
+    retval.add(email);
+    retval.add(pw);
+    return retval;
   }
 
   // static void setDarkTheme(yes) async {

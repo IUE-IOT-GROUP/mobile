@@ -30,6 +30,9 @@ dependencies:
   provider: ^5.0.0
   shared_preferences: ^2.0.5
   fl_chart: ^0.36.1
+  mask_text_input_formatter: ^2.0.0
+  connectivity_plus: ^1.0.1
+
 
 
 

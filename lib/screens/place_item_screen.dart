@@ -115,9 +115,11 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
     currentPlace = routeArgs["place"] as Place;
     List<Place>? childPlaces = currentPlace!.places;
 
-    print("121 ${currentPlace?.places}");
-
+    currentPlace!.deviceList!.forEach((element) {
+      print("119${element.name}");
+    });
     final mq = MediaQuery.of(context).size;
+    print("316 curr place Id:${currentPlace!.id}");
     return Scaffold(
       drawer: currentPlace!.parentId == -1 ? NavDrawer() : null,
       appBar: AppBar(
@@ -196,7 +198,11 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                     )
                   : Container(
                       height: mq.height * 0.5,
-                      child: DeviceList(currentPlace!.deviceList!, () => null),
+                      child: DeviceList(
+                        currentPlace!.deviceList!,
+                        () => null,
+                        placeId: currentPlace!.id,
+                      ),
                     )
               : Container()
         ],

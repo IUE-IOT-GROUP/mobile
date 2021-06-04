@@ -3,7 +3,6 @@ import 'package:prototype/widgets/custom%20device%20items/humidity.dart';
 import "../widgets/custom device items/temperature_item.dart";
 import "../models/device.dart";
 import "../SecureStorage.dart";
-import '../widgets/custom device items/graphs/humidity_graph.dart';
 
 class DeviceItemScreen extends StatefulWidget {
   static const routeName = "/device-item-screen";
@@ -16,7 +15,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     SecureStorage storage = SecureStorage();
     int device_id = await storage.readSecureData("device id") as int;
     print(device_id);
-    Device device = new Device();
+    Device device = new Device(name: "asd");
     return device;
   }
 

@@ -13,7 +13,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  Future<List<String>>? credentials;
   bool obscure = false;
+  @override
+  void initState() {
+    super.initState();
+    credentials = Global.getCredentials();
+  }
 
   var newThemeColor;
 
@@ -68,12 +74,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               fontWeight: FontWeight.bold),
                         ),
                         Spacer(),
-                        Text(
-                          Global.email,
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
+                        FutureBuilder(
+                          future: credentials,
+                          initialData: null,
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              List<String> localCredentials = snapshot.data;
+                              return Text(localCredentials[0],
+                                  style: TextStyle(
+                                      color: Theme.of(context).accentColor,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold));
+                            }
+                            return CircularProgressIndicator();
+                          },
                         ),
                         Spacer(),
                         IconButton(
@@ -102,14 +117,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               fontWeight: FontWeight.bold),
                         ),
                         Spacer(),
-                        Text(
-                          obscure
-                              ? "${Global.password}"
-                              : '${Global.password.replaceAll(RegExp(r"."), "*")}',
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
+                        FutureBuilder(
+                          future: credentials,
+                          initialData: null,
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              List<String> localCredentials = snapshot.data;
+                              return Text(
+                                obscure
+                                    ? "${localCredentials[1]}"
+                                    : '${localCredentials[1].replaceAll(RegExp(r"."), "*")}',
+                                style: TextStyle(
+                                    color: Theme.of(context).accentColor,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold),
+                              );
+                            }
+                            return CircularProgressIndicator();
+                          },
                         ),
                         Spacer(),
                         SizedBox(
