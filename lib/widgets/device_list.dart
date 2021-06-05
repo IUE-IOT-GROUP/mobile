@@ -36,13 +36,13 @@ class _DeviceListState extends State<DeviceList> {
   @override
   void initState() {
     super.initState();
-    Device dev = new Device(
-        id: 1,
-        name: "test device",
-        ipAddress: "192.168.1.1",
-        macAddress: "aa:aa:aa:aa:aa:aa",
-        place: "test");
-    if (widget.devices.isEmpty) widget.devices.add(dev);
+    // Device dev = new Device(
+    //     id: 1,
+    //     name: "test device",
+    //     ipAddress: "192.168.1.1",
+    //     macAddress: "aa:aa:aa:aa:aa:aa",
+    //     place: "test");
+    // if (_devices.isEmpty) _devices.add(dev);
     setState(() {
       future = getDevices();
     });
@@ -58,6 +58,11 @@ class _DeviceListState extends State<DeviceList> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Device> _devices = snapshot.data;
+
+          print("62 ${_devices}");
+
+          print("device_list-64 ${_devices.isEmpty}");
+
           return _devices.isNotEmpty
               ? Container(
                   height: mq.height,
@@ -65,7 +70,7 @@ class _DeviceListState extends State<DeviceList> {
                     color: Theme.of(context).primaryColor,
                   ),
                   child: ListView.builder(
-                      itemCount: widget.devices.length,
+                      itemCount: _devices.length,
                       itemExtent: 100,
                       itemBuilder: (ctx, index) {
                         return Card(
@@ -75,7 +80,7 @@ class _DeviceListState extends State<DeviceList> {
                               EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                           child: ListTile(
                             onTap: () =>
-                                DeviceTapped(widget.devices[index].id, context),
+                                DeviceTapped(_devices[index].id, context),
                             leading: Icon(
                               Icons.monitor,
                               size: 50,
@@ -95,7 +100,7 @@ class _DeviceListState extends State<DeviceList> {
                                         ),
                                       ),
                                       Text(
-                                        widget.devices[index].name!,
+                                        _devices[index].name!,
                                         style: TextStyle(
                                           color: Theme.of(context).primaryColor,
                                         ),
@@ -152,12 +157,12 @@ class _DeviceListState extends State<DeviceList> {
                                     onPressed: () {
                                       print("index coming from list:$index");
                                       print(
-                                          "id coming from list:${widget.devices[index].id}");
+                                          "id coming from list:${_devices[index].id}");
                                       WidgetsBinding.instance!
                                           .addPostFrameCallback((_) {
                                         setState(() {
-                                          widget.removeDevice(
-                                              widget.devices[index].id);
+                                          widget
+                                              .removeDevice(_devices[index].id);
                                         });
                                       });
                                     },

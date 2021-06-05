@@ -58,7 +58,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
         var params = {};
         parameters.forEach((element) {
           params[element.optName] = {
-            "name": element.name,
+            "name": element.expectedParameter,
             "unit": element.unit
           };
         });
@@ -300,7 +300,9 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         if (name.isNotEmpty && unit.isNotEmpty) {
                           if (optName.isEmpty) optName = name;
                           Parameter parameter = new Parameter(
-                              optName: optName, name: name, unit: unit);
+                              optName: optName,
+                              expectedParameter: name,
+                              unit: unit);
                           paramsOptNameController.text = "";
                           paramsNameController.text = "";
                           paramsUnitController.text = "";
@@ -338,7 +340,8 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                                       ),
                                     ),
                                     Flexible(
-                                      child: Text(parameters[index].name!),
+                                      child: Text(
+                                          parameters[index].expectedParameter!),
                                     ),
                                     Flexible(
                                         child: Text(parameters[index].unit!))

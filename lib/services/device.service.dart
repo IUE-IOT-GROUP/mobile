@@ -39,6 +39,7 @@ class DeviceService {
       List<dynamic> data = jsonResponse['data'];
       devices = List<Device>.from(data.map((model) {
         var device = Device.fromJson(model);
+        print("device_service-42 ${model}");
         return device;
       }));
     });

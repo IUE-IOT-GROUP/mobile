@@ -9,6 +9,9 @@ class PlaceItem extends StatelessWidget {
   PlaceItem(this.place);
 
   void selectPlace(BuildContext ctx, Place place) {
+    place!.deviceList!.forEach((element) {
+      print("place_item-13 #${element.id} ${element.name}");
+    });
     Navigator.of(ctx)
         .pushNamed(PlaceItemScreen.routeName, arguments: {"place": place});
   }

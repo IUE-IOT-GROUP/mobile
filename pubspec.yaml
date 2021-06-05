@@ -98,7 +98,7 @@ flutter:
     - family: Temperature
       fonts:
         - asset: assets/fonts/Digital7-1e1Z.ttf
-          
+
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

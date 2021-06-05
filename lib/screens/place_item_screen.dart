@@ -116,7 +116,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
     List<Place>? childPlaces = currentPlace!.places;
 
     currentPlace!.deviceList!.forEach((element) {
-      print("119${element.name}");
+      print("119#${element.id} ${element.name}");
     });
     final mq = MediaQuery.of(context).size;
     print("316 curr place Id:${currentPlace!.id}");

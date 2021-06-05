@@ -9,7 +9,7 @@ class Device {
   final String? macAddress;
   final String? ipAddress;
   final String? place;
-  final Map? parameters;
+  final List<Parameter>? parameters;
 
   const Device(
       {this.id,
@@ -20,12 +20,27 @@ class Device {
       this.parameters});
 
   factory Device.fromJson(Map<String, dynamic> json) {
-    return Device(
-        place: json["place_id"],
-        id: json["device_id"],
+    List<Parameter> parameters = [];
+
+    json['parameters'].forEach((element) {
+      String expected = element.keys.first;
+      String name = element.values.first["name"];
+      String unit = element.values.first["unit"];
+
+      Parameter parameter =
+          new Parameter(optName: name, expectedParameter: expected, unit: unit);
+
+      parameters.add(parameter);
+    });
+
+    Device device = new Device(
+        place: json["place"]["name"],
+        id: json["id"],
         name: json["name"],
         macAddress: json["mac_address"],
         ipAddress: json["ip_address"],
-        parameters: json["parameters"]);
+        parameters: parameters);
+
+    return device;
   }
 }

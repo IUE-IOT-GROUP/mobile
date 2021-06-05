@@ -59,8 +59,8 @@ class _CreateDeviceState extends State<CreateDevice> {
       } else {
         var params = {};
         parameters.forEach((element) {
-          params[element.optName] = {
-            "name": element.name,
+          params[element.expectedParameter] = {
+            "name": element.optName,
             "unit": element.unit
           };
         });
@@ -407,7 +407,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                                                 Parameter parameter =
                                                     new Parameter(
                                                         optName: optName,
-                                                        name: name,
+                                                        expectedParameter: name,
                                                         unit: unit);
                                                 paramsOptNameController.text =
                                                     "";
@@ -455,7 +455,8 @@ class _CreateDeviceState extends State<CreateDevice> {
                                       ),
                                     ),
                                     Flexible(
-                                      child: Text(parameters[index].name!),
+                                      child: Text(
+                                          parameters[index].expectedParameter!),
                                     ),
                                     Flexible(
                                         child: Text(parameters[index].unit!))

@@ -15,7 +15,7 @@ class Global {
   static var email = "";
   static var password = "";
   static final String baseApiUrl = "https://api.iot-ms.xyz/api";
-  static final String baseFogUrl = "https://fog.local/api";
+  static final String baseFogUrl = "https://api.iot-ms.xyz/api";
   static final SecureStorage secureStorage = SecureStorage();
   static var initialState = 0;
   static bool isLoading = false;
@@ -24,8 +24,8 @@ class Global {
 
   static String get baseUrl {
     // print("isMobile: ${isLocal}");
-    // return isLocal ? baseFogUrl : baseApiUrl;
-    return baseApiUrl;
+    return isLocal ? baseFogUrl : baseApiUrl;
+    // return baseApiUrl;
   }
 
   static List<Device> devices = [];
