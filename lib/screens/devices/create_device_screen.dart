@@ -38,18 +38,15 @@ class _CreateDeviceState extends State<CreateDevice> {
   }
 
   void addDevice() async {
-    print("316 button pressed");
     String name = deviceNameController.text;
     String ip = ipAddressController.text;
     String mac = macAddressController.text;
     late int? placeId;
     await PlaceService.getChildPlaces().then((value) {
-      print("316 $value");
       value.forEach((element) {
         if (element.name == selectedPlace) placeId = element.id;
       });
     });
-    print("316 3 $placeId");
 
     if (name.isEmpty || ip.isEmpty || mac.isEmpty) {
       Global.warning(context, "All fields must be filled!");
@@ -71,10 +68,7 @@ class _CreateDeviceState extends State<CreateDevice> {
           "name": name,
           "parameters": params
         };
-        print("316 Im here");
-        print("316$placeId");
         bool response = await DeviceService.postDevice(body);
-        print("316$response");
         if (response)
           Navigator.of(context).pushNamed(MainScreen.routeName);
         else {

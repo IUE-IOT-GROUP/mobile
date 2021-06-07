@@ -19,6 +19,11 @@ class Device {
       this.place,
       this.parameters});
 
+  @override
+  String toString() {
+    return this.id.toString();
+  }
+
   factory Device.fromJson(Map<String, dynamic> json) {
     List<Parameter> parameters = [];
 

@@ -24,10 +24,23 @@ class DeviceService {
   static Future<List<Device>> getDevices() async {
     List<Device> devices = [];
     final response = await Global.h_get(devicesUrl, appendToken: true)
-        .then((http.Response response) async {
-      print("28${response.body}");
-    });
+        .then((http.Response response) async {});
     return devices;
+  }
+
+  static Future<Device> getDeviceById(int? deviceId) async {
+    String url = "$devicesUrl/$deviceId";
+
+    Device device = new Device(name: "sd");
+
+    final response = await Global.h_get(url, appendToken: true)
+        .then((http.Response response) async {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
+      device = Device.fromJson(jsonResponse['data']);
+    });
+
+    return device;
   }
 
   static Future<List<Device>> getDevicesByPlace(int placeId) async {
@@ -35,12 +48,11 @@ class DeviceService {
     List<Device> devices = [];
     final response = await Global.h_get(url, appendToken: true)
         .then((http.Response response) async {
-      print("333${response.body}");
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
+
       devices = List<Device>.from(data.map((model) {
         var device = Device.fromJson(model);
-        print("device_service-42 ${model}");
         return device;
       }));
     });

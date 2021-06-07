@@ -23,7 +23,6 @@ class Global {
   static bool isLocal = true;
 
   static String get baseUrl {
-    // print("isMobile: ${isLocal}");
     return isLocal ? baseFogUrl : baseApiUrl;
     // return baseApiUrl;
   }
@@ -39,7 +38,6 @@ class Global {
         break;
       }
     }
-    print("aaa$isDarkTheme");
   }
 
   static Future<List<String>> getCredentials() async {
@@ -72,7 +70,6 @@ class Global {
     return await http
         .post(uri, headers: headers, body: jsonEncode(body))
         .then((http.Response response) {
-      print('global post ${response.body}');
       // hide circular
       return response;
     });
@@ -120,7 +117,6 @@ class Global {
 
     var response =
         await http.delete(uri, headers: headers).then((http.Response response) {
-      print("h_get ${response.body}");
       return response;
     });
     return response;

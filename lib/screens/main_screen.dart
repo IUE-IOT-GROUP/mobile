@@ -20,8 +20,6 @@ import "../services/device.service.dart";
 Future<User> loadUser() async {
   String url = "${Global.baseUrl}/me";
   final response = await Global.h_get(url, appendToken: true);
-  print(response.statusCode);
-  print(response.body);
   if (response.statusCode == 200) {
     return User.fromJson(jsonDecode(response.body)['data']);
   } else {
@@ -59,7 +57,6 @@ class _MainScreenState extends State<MainScreen>
   @override
   void initState() {
     super.initState();
-    print("662");
     Global.showCircularProgress();
 
     // Global.getPlaces().then((value) {

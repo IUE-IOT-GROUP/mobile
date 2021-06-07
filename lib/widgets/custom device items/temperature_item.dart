@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:prototype/models/device_data_type.dart';
 import './graphs/temperature_graph.dart';
 import 'LineTitles.dart';
 
 class TemperatureItem extends StatefulWidget {
-  double temperature;
-  TemperatureItem(this.temperature);
+  DeviceDataType dataType;
+  // double temperature;
+  TemperatureItem(this.dataType);
   @override
   _TemperatureItemState createState() => _TemperatureItemState();
 }
@@ -17,7 +19,7 @@ class _TemperatureItemState extends State<TemperatureItem> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Temperature",
+          widget.dataType.name!,
           style: TextStyle(color: Theme.of(context).accentColor, fontSize: 24),
         ),
         Divider(color: Theme.of(context).accentColor),
@@ -29,7 +31,7 @@ class _TemperatureItemState extends State<TemperatureItem> {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(
-                "${widget.temperature}°C",
+                "25${widget.dataType.unit!}",
                 style: TextStyle(
                     fontSize: mq.height * 0.1,
                     fontFamily: "Temperature",
@@ -49,7 +51,7 @@ class _TemperatureItemState extends State<TemperatureItem> {
           height: mq.height * 0.4,
           child: Container(
             padding: EdgeInsets.all(10),
-            child: TemperatureGraph(),
+            child: TemperatureGraph(widget.dataType.data!),
           ),
         ),
         Divider(color: Theme.of(context).accentColor),

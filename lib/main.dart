@@ -49,7 +49,6 @@ class _MyAppState extends State<MyApp> {
   void fetchIsRememberMe() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     remember = prefs.getBool("rememberMe") ?? false;
-    print("45$remember");
     if (remember) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => new MainScreen()));

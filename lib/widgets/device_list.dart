@@ -21,10 +21,8 @@ class DeviceList extends StatefulWidget {
 
 class _DeviceListState extends State<DeviceList> {
   void DeviceTapped(int? deviceId, BuildContext ctx) {
-    Global.secureStorage.writeSecureData("device id", deviceId.toString());
-    Navigator.of(ctx).pushNamed(
-      DeviceItemScreen.routeName,
-    );
+    Navigator.of(ctx).pushNamed(DeviceItemScreen.routeName,
+        arguments: {"deviceId": deviceId});
   }
 
   Future getDevices() async {
@@ -64,10 +62,6 @@ class _DeviceListState extends State<DeviceList> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Device> _devices = snapshot.data;
-
-          print("62 ${_devices}");
-
-          print("device_list-64 ${_devices.isEmpty}");
 
           return _devices.isNotEmpty
               ? Container(

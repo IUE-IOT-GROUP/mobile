@@ -1,8 +1,13 @@
+import 'package:intl/intl.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:prototype/models/device_data.dart';
 import "../LineTitles.dart";
 
 class TemperatureGraph extends StatefulWidget {
+  List<DeviceData> data;
+  TemperatureGraph(this.data);
   @override
   _TemperatureGraphState createState() => _TemperatureGraphState();
 }
@@ -13,13 +18,40 @@ class _TemperatureGraphState extends State<TemperatureGraph> {
     LineTitles titles = new LineTitles();
     titles.setGraphType('temperature');
 
+    Map<String, Map<String, String>> graphData = {};
+    widget.data.forEach((element) {
+      print("23- ${element.createdAtDate}");
+      graphData[element.id.toString()] = {element.createdAt!: element.value!};
+    });
+
+    List<FlSpot> spots = graphData.entries.map((e) {
+      var y =
+          DateTime.parse(e.value.keys.first).millisecondsSinceEpoch.toDouble();
+      var x = e.value.values.first;
+
+      print("32- ${double.parse(e.value.values.first)}");
+
+      return FlSpot(y, double.parse(x));
+    }).toList();
+
     return LineChart(
       LineChartData(
-        minX: 0,
-        maxX: 6,
-        minY: 0,
-        maxY: 10,
-        titlesData: titles.getTitleData(),
+        titlesData: FlTitlesData(
+          show: true,
+          bottomTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 35,
+            getTextStyles: (value) => const TextStyle(
+              color: Color(0xff68737d),
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+            getTitles: (value) {
+              var v = DateTime.fromMicrosecondsSinceEpoch(value.toInt());
+              return DateFormat.yMMMd().format(v);
+            },
+          ),
+        ),
         borderData: FlBorderData(
           show: true,
           border: Border(
@@ -46,20 +78,8 @@ class _TemperatureGraphState extends State<TemperatureGraph> {
             }),
         lineBarsData: [
           LineChartBarData(
-            spots: [
-              FlSpot(0, 3),
-              FlSpot(2.6, 2),
-              FlSpot(4.9, 5),
-            ],
+            spots: spots,
           ),
-          LineChartBarData(spots: [
-            FlSpot(0, 1),
-            FlSpot(1, 2),
-            FlSpot(2, 3),
-            FlSpot(3, 4),
-          ], colors: [
-            Colors.yellow
-          ])
         ],
       ),
     );
