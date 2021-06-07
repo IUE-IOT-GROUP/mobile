@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:prototype/dummy_data.dart';
-import "./create_device.dart";
+import 'devices/create_device_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "../models/device.dart";
 import "../models/place.dart";
@@ -10,7 +10,7 @@ import "../models/user.dart";
 import "../widgets/device_list.dart";
 import "../widgets/place_list.dart";
 import "dart:math";
-import "../screens/create_place_screen.dart";
+import 'places/create_place_screen.dart';
 import 'package:http/http.dart' as http;
 import '../global.dart';
 import "../widgets/navDrawer.dart";

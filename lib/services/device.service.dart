@@ -21,12 +21,13 @@ class DeviceService {
     return responseCode;
   }
 
-  static void getDevices() async {
+  static Future<List<Device>> getDevices() async {
     List<Device> devices = [];
     final response = await Global.h_get(devicesUrl, appendToken: true)
         .then((http.Response response) async {
-      print("27${response.body}");
+      print("28${response.body}");
     });
+    return devices;
   }
 
   static Future<List<Device>> getDevicesByPlace(int placeId) async {

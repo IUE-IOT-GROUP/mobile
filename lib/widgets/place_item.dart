@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import "../models/place.dart";
-import "../screens/place_item_screen.dart";
+import '../screens/places/place_item_screen.dart';
 import "../global.dart";
 
 class PlaceItem extends StatelessWidget {
@@ -9,7 +9,7 @@ class PlaceItem extends StatelessWidget {
   PlaceItem(this.place);
 
   void selectPlace(BuildContext ctx, Place place) {
-    place!.deviceList!.forEach((element) {
+    place.deviceList!.forEach((element) {
       print("place_item-13 #${element.id} ${element.name}");
     });
     Navigator.of(ctx)

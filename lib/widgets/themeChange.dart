@@ -29,8 +29,6 @@ class ThemeChange extends ChangeNotifier {
     this.isDark = _prefs.getBool('isDark') ?? true;
     this.primaryColor = this.isDark ? PRIMARY : ACCENT;
     this.accentColor = this.isDark ? ACCENT : PRIMARY;
-
-    print("contructor ${this.isDark}");
   }
 
   static ThemeChange of(BuildContext context) {

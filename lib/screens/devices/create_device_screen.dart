@@ -4,11 +4,11 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:prototype/SecureStorage.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/services/device.service.dart';
-import "../models/place.dart";
-import "../services/place.service.dart";
-import "../global.dart";
-import '../models/device.dart';
-import "../models/parameter.dart";
+import '../../models/place.dart';
+import '../../services/place.service.dart';
+import '../../global.dart';
+import '../../models/device.dart';
+import '../../models/parameter.dart';
 
 class CreateDevice extends StatefulWidget {
   static String routeName = "/create-device";
@@ -264,10 +264,11 @@ class _CreateDeviceState extends State<CreateDevice> {
                           ),
                           onPressed: () {
                             showModalBottomSheet(
+                                isScrollControlled: true,
                                 context: context,
                                 builder: (ctx) {
                                   return Container(
-                                    height: mq.height * 0.3,
+                                    height: mq.height * 0.30,
                                     child: Column(
                                       children: [
                                         Container(

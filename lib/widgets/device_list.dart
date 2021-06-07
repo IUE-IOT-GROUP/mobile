@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:prototype/SecureStorage.dart';
 import 'package:prototype/models/device.dart';
-import 'package:prototype/screens/device_item_screen.dart';
+import 'package:prototype/screens/devices/device_item_screen.dart';
 import 'package:prototype/services/device.service.dart';
 import "../screens/main_screen.dart";
 import "../SecureStorage.dart";
 import "../global.dart";
-import "../screens/edit_device_screen.dart";
+import '../screens/devices/edit_device_screen.dart';
 
 class DeviceList extends StatefulWidget {
   List<Device> devices;
@@ -33,16 +33,22 @@ class _DeviceListState extends State<DeviceList> {
         : DeviceService.getDevicesByPlace(widget.placeId!);
   }
 
+  String decodeParams(List<String> params) {
+    String retval = "";
+    for (int i = 0; i < params.length; i++) {
+      if (retval == "") {
+        retval = "${params[i]}";
+      } else {
+        retval = "$retval, ${params[i]}";
+      }
+    }
+    return retval;
+  }
+
   @override
   void initState() {
     super.initState();
-    // Device dev = new Device(
-    //     id: 1,
-    //     name: "test device",
-    //     ipAddress: "192.168.1.1",
-    //     macAddress: "aa:aa:aa:aa:aa:aa",
-    //     place: "test");
-    // if (_devices.isEmpty) _devices.add(dev);
+
     setState(() {
       future = getDevices();
     });
@@ -73,6 +79,10 @@ class _DeviceListState extends State<DeviceList> {
                       itemCount: _devices.length,
                       itemExtent: 100,
                       itemBuilder: (ctx, index) {
+                        List<String> paramNames = [];
+                        _devices[index].parameters!.forEach((element) {
+                          paramNames.add(element.optName!);
+                        });
                         return Card(
                           color: Theme.of(context).accentColor,
                           elevation: 40,
@@ -89,54 +99,68 @@ class _DeviceListState extends State<DeviceList> {
                             title: Row(children: [
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Name: ",
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        _devices[index].name!,
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    "Name:",
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Place: ",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Some Place",
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                      )
-                                    ],
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "Params:",
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
                               SizedBox(
-                                width: 40,
+                                width: 10,
                               ),
-                              Center(
-                                  child: Text(
-                                "25",
-                                style: TextStyle(
-                                    fontFamily: "Temperature",
-                                    color: Colors.green,
-                                    fontSize: 35),
-                              ))
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _devices[index].name!.length <= 15
+                                      ? Text(
+                                          _devices[index].name!,
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : Text(
+                                          _devices[index].name!,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "${decodeParams(paramNames)}",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            decodeParams(paramNames).length <=
+                                                    25
+                                                ? 14
+                                                : 12),
+                                  ),
+                                ],
+                              ),
                             ]),
                             trailing: FittedBox(
                               child: Column(

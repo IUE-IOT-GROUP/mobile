@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/services/place.service.dart';
 import 'package:prototype/widgets/navDrawer.dart';
-import "../widgets/place_item.dart";
-import "../widgets/device_list.dart";
-import "../models/place.dart";
-import "../global.dart";
-import "../dummy_data.dart";
-import "../screens/main_screen.dart";
+import '../../widgets/place_item.dart';
+import '../../widgets/device_list.dart';
+import '../../models/place.dart';
+import '../../global.dart';
+import '../../dummy_data.dart';
+import '../main_screen.dart';
 
 class PlaceItemScreen extends StatefulWidget {
   static const routeName = "/place-item-screen";
@@ -113,10 +113,11 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
     final routeArgs =
         ModalRoute.of(context)?.settings.arguments as Map<String, Place>;
     currentPlace = routeArgs["place"] as Place;
+
     List<Place>? childPlaces = currentPlace!.places;
 
     currentPlace!.deviceList!.forEach((element) {
-      print("119#${element.id} ${element.name}");
+      print("119${element.name}");
     });
     final mq = MediaQuery.of(context).size;
     print("316 curr place Id:${currentPlace!.id}");
