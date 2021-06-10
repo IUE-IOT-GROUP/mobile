@@ -3,42 +3,57 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:prototype/models/device_data.dart';
-import "../LineTitles.dart";
+import 'LineTitles.dart';
+import "dart:math";
 
-class TemperatureGraph extends StatefulWidget {
+class GraphDaily extends StatefulWidget {
   List<DeviceData> data;
-  TemperatureGraph(this.data);
+  GraphDaily(this.data, this.max, this.min);
+  final double min;
+  final double max;
   @override
-  _TemperatureGraphState createState() => _TemperatureGraphState();
+  _GraphDailyState createState() => _GraphDailyState();
 }
 
-class _TemperatureGraphState extends State<TemperatureGraph> {
+class _GraphDailyState extends State<GraphDaily> {
   @override
   Widget build(BuildContext context) {
-    LineTitles titles = new LineTitles();
-    titles.setGraphType('temperature');
+    // LineTitles titles = new LineTitles();
+    // titles.setGraphType('temperature');
 
     Map<String, Map<String, String>> graphData = {};
+    List<double> yValues = [];
+    List<double> xValues = [];
+
     widget.data.forEach((element) {
-      print("23- ${element.createdAtDate}");
       graphData[element.id.toString()] = {element.createdAt!: element.value!};
     });
-
     List<FlSpot> spots = graphData.entries.map((e) {
-      var y =
+      var x =
           DateTime.parse(e.value.keys.first).millisecondsSinceEpoch.toDouble();
-      var x = e.value.values.first;
+      var x_h = DateTime.fromMillisecondsSinceEpoch(x.toInt()).hour;
+      var x_m = DateTime.fromMillisecondsSinceEpoch(x.toInt()).minute;
+      var x_d = DateTime.fromMillisecondsSinceEpoch(x.toInt()).weekday;
+      var x_mn = DateTime.fromMillisecondsSinceEpoch(x.toInt()).month;
+      print("asda 36- $x_mn");
+      var real_x = x_h + (x_m / 60);
+      var y = e.value.values.first;
+      yValues.add(double.parse(y));
+      xValues.add(real_x);
 
-      print("32- ${double.parse(e.value.values.first)}");
-
-      return FlSpot(y, double.parse(x));
+      return FlSpot(real_x, double.parse(y));
     }).toList();
 
     return LineChart(
       LineChartData(
+        minY: widget.min,
+        maxY: widget.max,
+        minX: 0,
+        maxX: 24,
         titlesData: FlTitlesData(
           show: true,
           bottomTitles: SideTitles(
+            interval: 2,
             showTitles: true,
             reservedSize: 35,
             getTextStyles: (value) => const TextStyle(
@@ -46,10 +61,15 @@ class _TemperatureGraphState extends State<TemperatureGraph> {
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),
-            getTitles: (value) {
-              var v = DateTime.fromMicrosecondsSinceEpoch(value.toInt());
-              return DateFormat.yMMMd().format(v);
-            },
+          ),
+          leftTitles: SideTitles(
+            interval: 10,
+            showTitles: true,
+            getTextStyles: (value) => const TextStyle(
+              color: Color(0xff68737d),
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
           ),
         ),
         borderData: FlBorderData(
@@ -67,6 +87,9 @@ class _TemperatureGraphState extends State<TemperatureGraph> {
         gridData: FlGridData(
             show: true,
             drawVerticalLine: true,
+            checkToShowVerticalLine: (val) {
+              return val % 2 == 0;
+            },
             getDrawingHorizontalLine: (value) {
               return FlLine(
                 color: Colors.grey,
@@ -77,9 +100,7 @@ class _TemperatureGraphState extends State<TemperatureGraph> {
               return FlLine(color: Colors.grey, strokeWidth: 0.2);
             }),
         lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-          ),
+          LineChartBarData(spots: spots, isCurved: true),
         ],
       ),
     );

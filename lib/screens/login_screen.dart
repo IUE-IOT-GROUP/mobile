@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:prototype/dummy_data.dart';
 import 'package:prototype/screens/main_screen.dart';
 import "../SecureStorage.dart";
 import '../global.dart';
@@ -21,8 +20,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final List<User> userList = DUMMY_USERS;
-
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
 

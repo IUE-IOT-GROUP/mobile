@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:prototype/dummy_data.dart';
 import 'devices/create_device_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "../models/device.dart";
 import "../models/place.dart";
-import "../models/device_type.dart";
 import "../models/user.dart";
 import "../widgets/device_list.dart";
 import "../widgets/place_list.dart";
@@ -65,7 +63,10 @@ class _MainScreenState extends State<MainScreen>
     futureUser = loadUser();
     widgetOptions = <Widget>[
       PlaceList(),
-      DeviceList(Global.devices, deleteDevice),
+      DeviceList(
+        Global.devices,
+        isGetAllDevices: true,
+      ),
     ];
   }
 

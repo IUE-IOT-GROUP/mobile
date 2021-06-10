@@ -3,8 +3,7 @@ import 'package:prototype/models/device_data.dart';
 import 'package:prototype/models/device_data_type.dart';
 import 'package:prototype/services/device.service.dart';
 import 'package:prototype/services/device_data.service.dart';
-import 'package:prototype/widgets/custom%20device%20items/humidity.dart';
-import '../../widgets/custom device items/temperature_item.dart';
+import '../../widgets/custom device items/parameter_item.dart';
 import '../../models/device.dart';
 import '../../SecureStorage.dart';
 
@@ -18,7 +17,9 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
   Future? _device;
   Future? _deviceData;
   int? _deviceId;
-
+  var deviceNameController = TextEditingController();
+  var macAddressController = TextEditingController();
+  var ipAddressController = TextEditingController();
   Future<Device> fetchDevice() async {
     Device device = await DeviceService.getDeviceById(_deviceId);
 
@@ -79,20 +80,12 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                     dataTypes.forEach((element) {
                       dataList.add(element.data);
                     });
-                    print("82: $dataList");
-                    // Device currentDevice = new Device(name: "asd");
-                    // devices.forEach((element) {
-                    //   if (element.id == deviceId) currentDevice = element;
-                    // });
-                    print("74${currentDevice.name}");
-                    print("74${currentDevice.macAddress}");
-                    print("74${currentDevice.ipAddress}");
 
                     List<Padding> widgets = [];
                     dataTypes.forEach((element) {
                       Padding paddingWidget = Padding(
                         padding: EdgeInsets.only(top: 5, left: 5),
-                        child: TemperatureItem(element),
+                        child: ParameterItem(element, "daily"),
                       );
                       widgets.add(paddingWidget);
                     });
@@ -111,17 +104,161 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                           Divider(
                             color: Theme.of(context).accentColor,
                           ),
-                          // GridView(
-                          //     gridDelegate:
-                          //         SliverGridDelegateWithMaxCrossAxisExtent(
-                          //   maxCrossAxisExtent: 200,
-                          //   childAspectRatio: 3 / 2,
-                          //   crossAxisSpacing: 20,
-                          //   mainAxisSpacing: 20,
-                          // )),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [],
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Name: ",
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      "MAC:",
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      "IP: ",
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      "Place: ",
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      currentDevice.name!,
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      currentDevice.macAddress!,
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      currentDevice.ipAddress!,
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      currentDevice.place!,
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 17),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Container(
+                                                  height: mq.height * 0.2,
+                                                  child: Center(
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                          top: 20),
+                                                      height: mq.height * 0.04,
+                                                      width: mq.width * 0.6,
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .accentColor,
+                                                            width: 0.5),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                top: 5,
+                                                                bottom: 2,
+                                                                right: 2,
+                                                                left: 2),
+                                                        child: TextField(
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          controller:
+                                                              deviceNameController,
+                                                          style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .accentColor,
+                                                              fontSize: 17),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+                                        }),
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                        onPressed: () => null),
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                        onPressed: () => null),
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                        onPressed: () => null),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                           Column(
                             children: widgets,

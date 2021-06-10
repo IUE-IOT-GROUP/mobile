@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:prototype/services/device.service.dart';
 import 'package:prototype/services/place.service.dart';
 import 'package:prototype/widgets/navDrawer.dart';
 import '../../widgets/place_item.dart';
 import '../../widgets/device_list.dart';
 import '../../models/place.dart';
 import '../../global.dart';
-import '../../dummy_data.dart';
 import '../main_screen.dart';
 
 class PlaceItemScreen extends StatefulWidget {
@@ -201,8 +201,8 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                       height: mq.height * 0.5,
                       child: DeviceList(
                         currentPlace!.deviceList!,
-                        () => null,
                         placeId: currentPlace!.id,
+                        isGetAllDevices: false,
                       ),
                     )
               : Container()

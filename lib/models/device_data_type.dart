@@ -5,13 +5,22 @@ class DeviceDataType {
   final String? unit;
   final String? expectedParameter;
   final List<DeviceData>? data;
+  final double? min;
+  final double? max;
 
   const DeviceDataType(
-      {this.name, this.unit, this.expectedParameter, this.data});
+      {this.name,
+      this.unit,
+      this.expectedParameter,
+      this.data,
+      this.max,
+      this.min});
 
   factory DeviceDataType.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> details = json["details"];
     List<dynamic> deviceData = json["data"];
+    String min = json["min"];
+    String max = json["max"];
 
     String expected = details["expected_parameter"];
     String name = details["name"];
@@ -25,9 +34,16 @@ class DeviceDataType {
 
       data.add(devicedata);
     });
-
+    print("datatype-37: $min");
+    print("datatype-37: $max");
+    print("datatype-37: ");
     DeviceDataType deviceDataType = new DeviceDataType(
-        name: name, unit: unit, expectedParameter: expected, data: data);
+        name: name,
+        unit: unit,
+        expectedParameter: expected,
+        data: data,
+        max: double.parse(max),
+        min: double.parse(min));
 
     return deviceDataType;
   }

@@ -11,9 +11,10 @@ import '../screens/devices/edit_device_screen.dart';
 
 class DeviceList extends StatefulWidget {
   List<Device> devices;
-  final Function removeDevice;
+
   final int? placeId;
-  DeviceList(this.devices, this.removeDevice, {this.placeId = -1});
+  final bool? isGetAllDevices;
+  DeviceList(this.devices, {this.placeId = -1, this.isGetAllDevices = true});
 
   @override
   _DeviceListState createState() => _DeviceListState();
@@ -26,8 +27,8 @@ class _DeviceListState extends State<DeviceList> {
   }
 
   Future getDevices() async {
-    return widget.placeId == -1
-        ? null
+    return widget.isGetAllDevices!
+        ? DeviceService.getDevices()
         : DeviceService.getDevicesByPlace(widget.placeId!);
   }
 
@@ -47,6 +48,11 @@ class _DeviceListState extends State<DeviceList> {
   void initState() {
     super.initState();
 
+    future = getDevices();
+  }
+
+  void refreshScreen() async {
+    CircularProgressIndicator();
     setState(() {
       future = getDevices();
     });
@@ -173,16 +179,60 @@ class _DeviceListState extends State<DeviceList> {
                                     icon: Icon(Icons.delete,
                                         color: Colors.red, size: 45),
                                     onPressed: () {
-                                      print("index coming from list:$index");
-                                      print(
-                                          "id coming from list:${_devices[index].id}");
-                                      WidgetsBinding.instance!
-                                          .addPostFrameCallback((_) {
-                                        setState(() {
-                                          widget
-                                              .removeDevice(_devices[index].id);
-                                        });
-                                      });
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("WARNING!"),
+                                              content: SingleChildScrollView(
+                                                child: ListBody(
+                                                  children: <Widget>[
+                                                    Text("Are you sure?")
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text(
+                                                    'YES',
+                                                    style: TextStyle(
+                                                        color: Colors.green),
+                                                  ),
+                                                  onPressed: () async {
+                                                    bool deleteSuccess =
+                                                        await DeviceService
+                                                            .deleteDevice(
+                                                                _devices[index]
+                                                                    .id);
+                                                    if (deleteSuccess) {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Navigator.of(context)
+                                                          .popAndPushNamed(
+                                                              MainScreen
+                                                                  .routeName);
+                                                    } else
+                                                      Global.alert(
+                                                          context,
+                                                          "ERROR!",
+                                                          "An error has occured!");
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Text(
+                                                    'NO',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(),
+                                                ),
+                                              ],
+                                            );
+                                          });
+
+                                      refreshScreen();
                                     },
                                   )
                                 ],

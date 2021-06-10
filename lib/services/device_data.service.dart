@@ -17,6 +17,7 @@ class DeviceDataService {
 
     final response = await Global.h_get(url, appendToken: true)
         .then((http.Response response) async {
+      print("ggg: ${response.body}");
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
 
@@ -27,7 +28,7 @@ class DeviceDataService {
     });
 
     // print(deviceDataTypes);
-
+    print("habba: ${deviceDataTypes.length}");
     return deviceDataTypes;
   }
 }

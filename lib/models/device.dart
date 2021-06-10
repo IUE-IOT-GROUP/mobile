@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import "./device_type.dart";
 import './place.dart';
 import "./parameter.dart";
 

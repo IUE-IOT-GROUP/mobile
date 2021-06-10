@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:prototype/dummy_data.dart';
 import 'package:prototype/models/place.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/services/place.service.dart';
