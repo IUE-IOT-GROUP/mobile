@@ -9,15 +9,24 @@ class DeviceService {
   static Future<bool> postDevice(Object body) async {
     //name, parent
     bool responseCode = false;
-    final response = await Global.post(devicesUrl, body, appendToken: true);
+    final response = await Global.h_post(devicesUrl, body, appendToken: true);
     // .then((http.Response resp) {
     if (200 <= response.statusCode && response.statusCode <= 300)
       responseCode = true;
     else
       responseCode = false;
-    print("316responsecode: ${response.statusCode}");
-    // print(response);
-    print("316${response.body}");
+
+    return responseCode;
+  }
+
+  static Future<bool> updateDevice(Object body, int deviceId) async {
+    String url = "$devicesUrl/$deviceId";
+    bool responseCode = false;
+    final response = await Global.h_update(url, body, appendToken: true);
+    if (200 <= response.statusCode && response.statusCode <= 300)
+      responseCode = true;
+    else
+      responseCode = false;
     return responseCode;
   }
 

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/models/device_data.dart';
 import 'package:prototype/models/device_data_type.dart';
+import 'package:prototype/models/place.dart';
 import 'package:prototype/services/device.service.dart';
 import 'package:prototype/services/device_data.service.dart';
+import 'package:prototype/services/place.service.dart';
+import '../../global.dart';
 import '../../widgets/custom device items/parameter_item.dart';
 import '../../models/device.dart';
 import '../../SecureStorage.dart';
@@ -14,6 +17,10 @@ class DeviceItemScreen extends StatefulWidget {
 }
 
 class _DeviceItemScreenState extends State<DeviceItemScreen> {
+  late Future<List<Place>>? places;
+  static List<String>? beforePlaceNames = [];
+  static late List<Place>? afterPlaceNames;
+  static String selectedPlace = beforePlaceNames![0];
   Future? _device;
   Future? _deviceData;
   int? _deviceId;
@@ -36,7 +43,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
   @override
   void initState() {
     super.initState();
-
+    places = PlaceService.getPlaces();
     Future.delayed(Duration.zero, () {
       setState(() {
         final routeArgs =
@@ -48,21 +55,27 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     });
   }
 
+  bool nameEnabled = false;
+  bool macEnabled = false;
+  bool ipEnabled = false;
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: Text(
-          "Device name",
-          style: TextStyle(color: Theme.of(context).accentColor),
-        ),
         backgroundColor: Color.fromRGBO(255, 255, 255, .02),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () => Navigator.of(context)
+                  .popAndPushNamed(DeviceItemScreen.routeName))
+        ],
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
@@ -70,6 +83,13 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               Device currentDevice = snapshot.data;
+              if (counter == 0) {
+                deviceNameController.text = currentDevice.name!;
+                macAddressController.text = currentDevice.macAddress!;
+                ipAddressController.text = currentDevice.ipAddress!;
+              }
+              counter++;
+              beforePlaceNames!.add(currentDevice.place!);
 
               return FutureBuilder(
                 future: _deviceData,
@@ -110,149 +130,163 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Name: ",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
+                                    Container(
+                                      height: mq.height * 0.05,
+                                      width: mq.width * 0.5,
+                                      child: TextFormField(
+                                        controller: deviceNameController,
+                                        enabled: nameEnabled,
+                                        decoration: InputDecoration(
+                                            disabledBorder: InputBorder.none,
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15))),
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 30,
                                     ),
-                                    Text(
-                                      "MAC:",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
+                                    Container(
+                                      height: mq.height * 0.05,
+                                      width: mq.width * 0.5,
+                                      child: TextFormField(
+                                        controller: macAddressController,
+                                        enabled: macEnabled,
+                                        decoration: InputDecoration(
+                                            disabledBorder: InputBorder.none,
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15))),
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 30,
                                     ),
-                                    Text(
-                                      "IP: ",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
+                                    Container(
+                                      height: mq.height * 0.05,
+                                      width: mq.width * 0.5,
+                                      child: TextFormField(
+                                        controller: ipAddressController,
+                                        enabled: ipEnabled,
+                                        decoration: InputDecoration(
+                                            disabledBorder: InputBorder.none,
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15))),
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 30,
                                     ),
-                                    Text(
-                                      "Place: ",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      currentDevice.name!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
-                                    ),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    Text(
-                                      currentDevice.macAddress!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
-                                    ),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    Text(
-                                      currentDevice.ipAddress!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
-                                    ),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    Text(
-                                      currentDevice.place!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    IconButton(
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: Theme.of(context).accentColor,
-                                        ),
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                  height: mq.height * 0.2,
-                                                  child: Center(
-                                                    child: Container(
-                                                      margin: EdgeInsets.only(
-                                                          top: 20),
-                                                      height: mq.height * 0.04,
-                                                      width: mq.width * 0.6,
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .accentColor,
-                                                            width: 0.5),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 5,
-                                                                bottom: 2,
-                                                                right: 2,
-                                                                left: 2),
-                                                        child: TextField(
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          controller:
-                                                              deviceNameController,
-                                                          style: TextStyle(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .accentColor,
-                                                              fontSize: 17),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
+                                    FutureBuilder(
+                                      future: places,
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          final List<Place> localPlaces =
+                                              snapshot.data;
+                                          afterPlaceNames = localPlaces;
+                                          List<Place> childPlaces = [];
+                                          afterPlaceNames!.forEach((element) {
+                                            if (element.places!.isNotEmpty) {
+                                              for (int i = 0;
+                                                  i < element.places!.length;
+                                                  i++) {
+                                                print(
+                                                    "366${element.places![i].name}");
+                                                childPlaces
+                                                    .add(element.places![i]);
+                                              }
+                                            }
+                                          });
+                                          childPlaces.forEach((element) {
+                                            beforePlaceNames!
+                                                .add(element.name!);
+                                          });
+                                          beforePlaceNames = beforePlaceNames!
+                                              .toSet()
+                                              .toList();
+                                          return DropdownButton<String>(
+                                            value: selectedPlace,
+                                            items: beforePlaceNames!
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(
+                                                  value,
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .accentColor),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                selectedPlace = newValue!;
                                               });
-                                        }),
+                                            },
+                                          );
+                                        }
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 18),
+                                      child: IconButton(
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              nameEnabled = true;
+                                            });
+                                          }),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 18),
+                                      child: IconButton(
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              macEnabled = true;
+                                            });
+                                          }),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 18),
+                                      child: IconButton(
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              ipEnabled = true;
+                                            });
+                                          }),
+                                    ),
                                     IconButton(
                                         icon: Icon(
                                           Icons.edit,
-                                          color: Theme.of(context).accentColor,
-                                        ),
-                                        onPressed: () => null),
-                                    IconButton(
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: Theme.of(context).accentColor,
-                                        ),
-                                        onPressed: () => null),
-                                    IconButton(
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: Theme.of(context).accentColor,
+                                          color: Theme.of(context).primaryColor,
                                         ),
                                         onPressed: () => null),
                                   ],
@@ -260,6 +294,46 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                               ],
                             ),
                           ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                String new_name = deviceNameController.text;
+                                String new_mac = macAddressController.text;
+                                String new_ip = ipAddressController.text;
+                                late int? placeId;
+                                await PlaceService.getChildPlaces()
+                                    .then((value) {
+                                  value.forEach((element) {
+                                    if (element.name == selectedPlace)
+                                      placeId = element.id;
+                                  });
+                                });
+                                var params = {};
+                                var parameters = currentDevice.parameters!;
+                                parameters.forEach((element) {
+                                  params[element.expectedParameter] = {
+                                    "name": element.optName,
+                                    "unit": element.unit
+                                  };
+                                });
+                                var body = {
+                                  "place_id": placeId,
+                                  "mac_address": new_mac,
+                                  "ip_address": new_ip,
+                                  "name": new_name,
+                                  "parameters": params
+                                };
+                                Center(child: CircularProgressIndicator());
+                                bool response =
+                                    await DeviceService.updateDevice(
+                                        body, currentDevice.id!);
+                                if (response) {
+                                  Global.warning(context, "Success!");
+                                } else {
+                                  Global.warning(context,
+                                      "Something went wrong. Failed to add device.");
+                                }
+                              },
+                              child: Text("Update")),
                           Column(
                             children: widgets,
                           )
@@ -267,11 +341,11 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                       ),
                     );
                   }
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 },
               );
             }
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           },
         ),
       ),

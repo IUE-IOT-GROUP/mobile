@@ -55,7 +55,7 @@ class Global {
   //   prefs.setBool("isDark", yes);
   // }
 
-  static Future<Response> post(String url, Object body,
+  static Future<Response> h_post(String url, Object body,
       {bool appendToken = false}) async {
     Uri uri = Uri.parse(url);
     String token;
@@ -70,7 +70,29 @@ class Global {
     return await http
         .post(uri, headers: headers, body: jsonEncode(body))
         .then((http.Response response) {
-      // hide circular
+      return response;
+    });
+  }
+
+  static Widget showCircular(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
+
+  static Future<Response> h_update(String url, Object body,
+      {bool appendToken = false}) async {
+    Uri uri = Uri.parse(url);
+    String token;
+    var headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    if (appendToken) {
+      token = await secureStorage.readSecureData("token");
+      headers.putIfAbsent("Authorization", () => "Bearer " + token);
+    }
+    return await http
+        .put(uri, headers: headers, body: jsonEncode(body))
+        .then((http.Response response) {
       return response;
     });
   }

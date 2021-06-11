@@ -35,7 +35,7 @@ class _GraphDailyState extends State<GraphDaily> {
       var x_m = DateTime.fromMillisecondsSinceEpoch(x.toInt()).minute;
       var x_d = DateTime.fromMillisecondsSinceEpoch(x.toInt()).weekday;
       var x_mn = DateTime.fromMillisecondsSinceEpoch(x.toInt()).month;
-      print("asda 36- $x_mn");
+
       var real_x = x_h + (x_m / 60);
       var y = e.value.values.first;
       yValues.add(double.parse(y));

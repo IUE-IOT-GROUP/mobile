@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "device_name": await getDeviceId()
     };
 
-    await Global.post(url, body).then((http.Response response) {
+    await Global.h_post(url, body).then((http.Response response) {
       if (response.statusCode == 200) {
         success = true;
         Global.secureStorage

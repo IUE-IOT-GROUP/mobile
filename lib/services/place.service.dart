@@ -76,7 +76,7 @@ class PlaceService {
   static Future<bool> postPlace(Object body) async {
     //name, parent
     bool responseCode = false;
-    final response = await Global.post(placesUrl, body, appendToken: true);
+    final response = await Global.h_post(placesUrl, body, appendToken: true);
     // .then((http.Response resp) {
     if (200 <= response.statusCode && response.statusCode <= 300)
       responseCode = true;

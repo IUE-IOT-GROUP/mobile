@@ -25,9 +25,8 @@ class _CreateDeviceState extends State<CreateDevice> {
   var paramsNameController = TextEditingController();
   var paramsUnitController = TextEditingController();
 
-  late Future<List<Place>>? places;
   List<Parameter> parameters = [];
-
+  late Future<List<Place>>? places;
   static List<String>? beforePlaceNames = ["-Select a place-"];
   static late List<Place>? afterPlaceNames;
   static String selectedPlace = beforePlaceNames![0];

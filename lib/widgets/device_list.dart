@@ -163,81 +163,60 @@ class _DeviceListState extends State<DeviceList> {
                               ),
                             ]),
                             trailing: FittedBox(
-                              child: Column(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.edit,
-                                        color: Colors.blue, size: 45),
-                                    onPressed: () {
-                                      EditDeviceScreen();
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete,
-                                        color: Colors.red, size: 45),
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text("WARNING!"),
-                                              content: SingleChildScrollView(
-                                                child: ListBody(
-                                                  children: <Widget>[
-                                                    Text("Are you sure?")
-                                                  ],
-                                                ),
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text(
-                                                    'YES',
-                                                    style: TextStyle(
-                                                        color: Colors.green),
-                                                  ),
-                                                  onPressed: () async {
-                                                    bool deleteSuccess =
-                                                        await DeviceService
-                                                            .deleteDevice(
-                                                                _devices[index]
-                                                                    .id);
-                                                    if (deleteSuccess) {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      Navigator.of(context)
-                                                          .popAndPushNamed(
-                                                              MainScreen
-                                                                  .routeName);
-                                                    } else
-                                                      Global.alert(
-                                                          context,
-                                                          "ERROR!",
-                                                          "An error has occured!");
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: Text(
-                                                    'NO',
-                                                    style: TextStyle(
-                                                        color: Colors.red),
-                                                  ),
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(),
-                                                ),
-                                              ],
-                                            );
-                                          });
+                                child: IconButton(
+                              icon: Icon(Icons.delete,
+                                  color: Colors.red, size: 30),
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("WARNING!"),
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text("Are you sure?")
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text(
+                                              'YES',
+                                              style: TextStyle(
+                                                  color: Colors.green),
+                                            ),
+                                            onPressed: () async {
+                                              bool deleteSuccess =
+                                                  await DeviceService
+                                                      .deleteDevice(
+                                                          _devices[index].id);
+                                              if (deleteSuccess) {
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context)
+                                                    .popAndPushNamed(
+                                                        MainScreen.routeName);
+                                              } else
+                                                Global.alert(context, "ERROR!",
+                                                    "An error has occured!");
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text(
+                                              'NO',
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                          ),
+                                        ],
+                                      );
+                                    });
 
-                                      refreshScreen();
-                                    },
-                                  )
-                                ],
-                              ),
-                            ),
+                                refreshScreen();
+                              },
+                            )),
                           ),
                         );
                       }),
