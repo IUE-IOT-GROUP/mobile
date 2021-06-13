@@ -16,8 +16,6 @@ class ThemeChange extends ChangeNotifier {
   void changeColor() {
     this.isDark = !this.isDark;
 
-    print("themeChange ${this.isDark}");
-
     this.primaryColor = this.isDark ? PRIMARY : ACCENT;
     this.accentColor = this.isDark ? ACCENT : PRIMARY;
     notifyListeners();
@@ -32,20 +30,16 @@ class ThemeChange extends ChangeNotifier {
   }
 
   static ThemeChange of(BuildContext context) {
-    final provider =
-        context.dependOnInheritedWidgetOfExactType<ThemeChangeProvider>();
+    final provider = context.dependOnInheritedWidgetOfExactType<ThemeChangeProvider>();
     return provider!.controller;
   }
 }
 
 class ThemeChangeProvider extends InheritedWidget {
-  const ThemeChangeProvider(
-      {Key? key, required this.controller, required Widget child})
-      : super(key: key, child: child);
+  const ThemeChangeProvider({Key? key, required this.controller, required Widget child}) : super(key: key, child: child);
 
   final ThemeChange controller;
 
   @override
-  bool updateShouldNotify(ThemeChangeProvider old) =>
-      controller != old.controller;
+  bool updateShouldNotify(ThemeChangeProvider old) => controller != old.controller;
 }

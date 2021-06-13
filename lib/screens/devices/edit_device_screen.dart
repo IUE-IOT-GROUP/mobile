@@ -36,18 +36,15 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
   }
 
   void addDevice() async {
-    print("316 button pressed");
     String name = deviceNameController.text;
     String ip = ipAddressController.text;
     String mac = macAddressController.text;
     late int? placeId;
     await PlaceService.getChildPlaces().then((value) {
-      print("316 $value");
       value.forEach((element) {
         if (element.name == selectedPlace) placeId = element.id;
       });
     });
-    print("316 3 $placeId");
 
     if (name.isEmpty || ip.isEmpty || mac.isEmpty) {
       Global.warning(context, "All fields must be filled!");
@@ -57,47 +54,26 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
       } else {
         var params = {};
         parameters.forEach((element) {
-          params[element.optName] = {
-            "name": element.expectedParameter,
-            "unit": element.unit
-          };
+          params[element.optName] = {"name": element.expectedParameter, "unit": element.unit};
         });
-        var body = {
-          "place_id": placeId,
-          "mac_address": mac,
-          "ip_address": ip,
-          "name": name,
-          "parameters": params
-        };
-        print("316 Im here");
-        print("316$placeId");
+        var body = {"place_id": placeId, "mac_address": mac, "ip_address": ip, "name": name, "parameters": params};
         bool response = await DeviceService.postDevice(body);
-        print("316$response");
         if (response)
           Navigator.of(context).pushNamed(MainScreen.routeName);
         else {
-          Global.warning(
-              context, "Something went wrong. Failed to add device.");
+          Global.warning(context, "Something went wrong. Failed to add device.");
         }
       }
     }
   }
 
-  var ipFormatter = new MaskTextInputFormatter(
-      mask: "###.###.#.##", filter: {"#": RegExp(r'^[0-9]')});
-  var macFormatter = new MaskTextInputFormatter(
-      mask: "##:##:##:##:##:##", filter: {"#": RegExp(r'^[a-fA-F0-9]')});
+  var ipFormatter = new MaskTextInputFormatter(mask: "###.###.#.##", filter: {"#": RegExp(r'^[0-9]')});
+  var macFormatter = new MaskTextInputFormatter(mask: "##:##:##:##:##:##", filter: {"#": RegExp(r'^[a-fA-F0-9]')});
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
-    Color textFieldColor =
-        Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1)
-            ? Color.fromRGBO(255, 255, 255, .02)
-            : Color.fromRGBO(220, 220, 220, .02);
-    Color hintColor =
-        Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1)
-            ? Colors.white12
-            : Colors.black12;
+    Color textFieldColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Color.fromRGBO(255, 255, 255, .02) : Color.fromRGBO(220, 220, 220, .02);
+    Color hintColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Colors.white12 : Colors.black12;
     return FutureBuilder(
       future: places,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -117,8 +93,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                 children: [
                   Text(
                     "Device Information",
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor, fontSize: 20),
+                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                   ),
                   Container(
                     margin: EdgeInsets.only(
@@ -127,22 +102,17 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     height: mq.height * 0.04,
                     width: mq.width * 0.7,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                       color: textFieldColor,
                     ),
                     child: Container(
-                      padding:
-                          EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Name",
-                            hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: "Name", hintStyle: TextStyle(color: hintColor)),
                         controller: deviceNameController,
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                     ),
                   ),
@@ -153,24 +123,19 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     height: mq.height * 0.04,
                     width: mq.width * 0.7,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                       color: textFieldColor,
                     ),
                     child: Container(
-                      padding:
-                          EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         inputFormatters: [ipFormatter],
-                        decoration: InputDecoration.collapsed(
-                            hintText: "IP Address(ex: 192.168.0.1)",
-                            hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: "IP Address(ex: 192.168.0.1)", hintStyle: TextStyle(color: hintColor)),
                         controller: ipAddressController,
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                     ),
                   ),
@@ -179,23 +144,18 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     height: mq.height * 0.04,
                     width: mq.width * 0.7,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                       color: textFieldColor,
                     ),
                     child: Container(
-                      padding:
-                          EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
                         inputFormatters: [macFormatter],
-                        decoration: InputDecoration.collapsed(
-                            hintText: "MAC(ex: xx:xx:xx:xx:xx:xx)",
-                            hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: "MAC(ex: xx:xx:xx:xx:xx:xx)", hintStyle: TextStyle(color: hintColor)),
                         controller: macAddressController,
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                     ),
                   ),
@@ -204,8 +164,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                   ),
                   Text(
                     "Parameters",
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor, fontSize: 20),
+                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 10),
@@ -213,21 +172,16 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     width: mq.width * 0.6,
                     decoration: BoxDecoration(
                       color: textFieldColor,
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 5, bottom: 2, right: 2, left: 2),
+                      padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Name to be displayed(opt.)",
-                            hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: "Name to be displayed(opt.)", hintStyle: TextStyle(color: hintColor)),
                         controller: paramsOptNameController,
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor, fontSize: 17),
+                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
                       ),
                     ),
                   ),
@@ -237,21 +191,16 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     width: mq.width * 0.6,
                     decoration: BoxDecoration(
                       color: textFieldColor,
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 5, bottom: 2, right: 2, left: 2),
+                      padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Parameter name",
-                            hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: "Parameter name", hintStyle: TextStyle(color: hintColor)),
                         controller: paramsNameController,
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor, fontSize: 17),
+                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
                       ),
                     ),
                   ),
@@ -261,8 +210,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     width: mq.width * 0.6,
                     decoration: BoxDecoration(
                       color: textFieldColor,
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -270,17 +218,12 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         Flexible(
                           flex: 500,
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, bottom: 2, right: 2, left: 2),
+                            padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                             child: TextField(
                               textAlign: TextAlign.center,
-                              decoration: InputDecoration.collapsed(
-                                  hintText: "Parameter unit(max 3 chars)",
-                                  hintStyle: TextStyle(color: hintColor)),
+                              decoration: InputDecoration.collapsed(hintText: "Parameter unit(max 3 chars)", hintStyle: TextStyle(color: hintColor)),
                               controller: paramsUnitController,
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor,
-                                  fontSize: 17),
+                              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
                             ),
                           ),
                         ),
@@ -293,16 +236,12 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         color: Theme.of(context).accentColor,
                       ),
                       onPressed: () {
-                        print("267");
                         String optName = paramsOptNameController.text;
                         String name = paramsNameController.text;
                         String unit = paramsUnitController.text;
                         if (name.isNotEmpty && unit.isNotEmpty) {
                           if (optName.isEmpty) optName = name;
-                          Parameter parameter = new Parameter(
-                              optName: optName,
-                              expectedParameter: name,
-                              unit: unit);
+                          Parameter parameter = new Parameter(optName: optName, expectedParameter: name, unit: unit);
                           paramsOptNameController.text = "";
                           paramsNameController.text = "";
                           paramsUnitController.text = "";
@@ -310,8 +249,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                             parameters.add(parameter);
                           });
                         } else {
-                          Global.warning(
-                              context, "You must fill the required fields!");
+                          Global.warning(context, "You must fill the required fields!");
                         }
                       }),
                   Container(
@@ -329,22 +267,18 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                             return Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Flexible(
                                       child: Text(
                                         parameters[index].optName!,
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 15),
+                                        style: TextStyle(color: Colors.black, fontSize: 15),
                                       ),
                                     ),
                                     Flexible(
-                                      child: Text(
-                                          parameters[index].expectedParameter!),
+                                      child: Text(parameters[index].expectedParameter!),
                                     ),
-                                    Flexible(
-                                        child: Text(parameters[index].unit!))
+                                    Flexible(child: Text(parameters[index].unit!))
                                   ],
                                 ),
                                 Divider(
@@ -365,7 +299,6 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         afterPlaceNames!.forEach((element) {
                           if (element.places!.isNotEmpty) {
                             for (int i = 0; i < element.places!.length; i++) {
-                              print("366${element.places![i].name}");
                               childPlaces.add(element.places![i]);
                             }
                           }
@@ -376,14 +309,12 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         beforePlaceNames = beforePlaceNames!.toSet().toList();
                         return DropdownButton<String>(
                           value: selectedPlace,
-                          items: beforePlaceNames!
-                              .map<DropdownMenuItem<String>>((String value) {
+                          items: beforePlaceNames!.map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
                                 value,
-                                style: TextStyle(
-                                    color: Theme.of(context).accentColor),
+                                style: TextStyle(color: Theme.of(context).accentColor),
                               ),
                             );
                           }).toList(),

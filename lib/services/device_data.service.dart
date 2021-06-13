@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:prototype/models/device.dart';
 import 'package:prototype/models/device_data.dart';
 import 'package:prototype/models/device_data_type.dart';
 
@@ -10,25 +11,36 @@ import 'dart:convert';
 class DeviceDataService {
   static String deviceDataUrl = "${Global.baseUrl}/devices/data";
 
-  static Future<List<DeviceDataType>> getDeviceData(int? deviceId) async {
-    String url = "$deviceDataUrl/$deviceId";
+  static Future<List<DeviceDataType>> getDeviceData(Device? device) async {
+    String url = "$deviceDataUrl/${device!.id}";
 
     List<DeviceDataType> deviceDataTypes = [];
 
-    final response = await Global.h_get(url, appendToken: true)
-        .then((http.Response response) async {
-      print("ggg: ${response.body}");
+    final response = await Global.h_get(url, appendToken: true).then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
 
       deviceDataTypes = List<DeviceDataType>.from(data.map((model) {
-        var deviceDataType = DeviceDataType.fromJson(model);
+        var deviceDataType = DeviceDataType.fromJson(device, model);
         return deviceDataType;
       }));
     });
 
-    // print(deviceDataTypes);
-    print("habba: ${deviceDataTypes.length}");
     return deviceDataTypes;
+  }
+
+  static Future<DeviceDataType> getDeviceDataByPeriod(DeviceDataType deviceDataType, String period) async {
+    String url = "$deviceDataUrl/${deviceDataType.device!.id}/${deviceDataType.id}?period=$period";
+
+    DeviceDataType? deviceDataTypes = null;
+
+    final response = await Global.h_get(url, appendToken: true).then((http.Response response) async {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      Map<String, dynamic> data = jsonResponse['data'];
+
+      deviceDataType = DeviceDataType.fromJson(deviceDataType.device!, data);
+    });
+
+    return deviceDataType;
   }
 }

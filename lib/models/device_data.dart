@@ -4,7 +4,7 @@ class DeviceData {
   String? createdAt;
   DateTime? createdAtDate;
 
-  DeviceData(int id, String value, String createdAt) {
+  DeviceData(int? id, String value, String createdAt) {
     this.id = id;
     this.value = value;
     this.createdAt = createdAt;
@@ -12,10 +12,8 @@ class DeviceData {
   }
 
   factory DeviceData.fromJson(Map<String, dynamic> json) {
-    print("deviceData ${json["created_at"]}");
-
-    DeviceData deviceData =
-        new DeviceData(json["id"], json["value"], json["created_at"]);
+    print("device_datajson $json");
+    DeviceData deviceData = new DeviceData(json["id"], json["value"], json["created_at"]);
 
     return deviceData;
   }

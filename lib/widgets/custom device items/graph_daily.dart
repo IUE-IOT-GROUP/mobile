@@ -2,15 +2,17 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:prototype/models/device_data.dart';
+import 'package:prototype/models/device_graph_data.dart';
 import 'LineTitles.dart';
 import "dart:math";
 
 class GraphDaily extends StatefulWidget {
-  List<DeviceData> data;
-  GraphDaily(this.data, this.max, this.min);
-  final double min;
-  final double max;
+  List<DeviceGraphData> data;
+  GraphDaily(this.data, this.max_y, this.min_y, this.max_x, this.min_x);
+  final double? max_y;
+  final double? min_y;
+  final DateTime min_x;
+  final DateTime max_x;
   @override
   _GraphDailyState createState() => _GraphDailyState();
 }
@@ -18,58 +20,54 @@ class GraphDaily extends StatefulWidget {
 class _GraphDailyState extends State<GraphDaily> {
   @override
   Widget build(BuildContext context) {
-    // LineTitles titles = new LineTitles();
-    // titles.setGraphType('temperature');
-
     Map<String, Map<String, String>> graphData = {};
-    List<double> yValues = [];
-    List<double> xValues = [];
 
     widget.data.forEach((element) {
-      graphData[element.id.toString()] = {element.createdAt!: element.value!};
+      graphData[element.createdAt.toString()] = {element.createdAt!: element.value!};
     });
+
     List<FlSpot> spots = graphData.entries.map((e) {
-      var x =
-          DateTime.parse(e.value.keys.first).millisecondsSinceEpoch.toDouble();
-      var x_h = DateTime.fromMillisecondsSinceEpoch(x.toInt()).hour;
-      var x_m = DateTime.fromMillisecondsSinceEpoch(x.toInt()).minute;
-      var x_d = DateTime.fromMillisecondsSinceEpoch(x.toInt()).weekday;
-      var x_mn = DateTime.fromMillisecondsSinceEpoch(x.toInt()).month;
+      var x = DateTime.parse(e.value.keys.first).millisecondsSinceEpoch.toDouble();
 
-      var real_x = x_h + (x_m / 60);
       var y = e.value.values.first;
-      yValues.add(double.parse(y));
-      xValues.add(real_x);
 
-      return FlSpot(real_x, double.parse(y));
+      return FlSpot(x, double.parse(y));
     }).toList();
 
     return LineChart(
       LineChartData(
-        minY: widget.min,
-        maxY: widget.max,
-        minX: 0,
-        maxX: 24,
+        minY: (widget.min_y! - 5),
+        maxY: (widget.max_y! + 5),
+        minX: widget.min_x.millisecondsSinceEpoch.toDouble(),
+        maxX: widget.max_x.millisecondsSinceEpoch.toDouble(),
         titlesData: FlTitlesData(
           show: true,
           bottomTitles: SideTitles(
-            interval: 2,
+            interval: 20000000,
             showTitles: true,
-            reservedSize: 35,
+            reservedSize: 20,
             getTextStyles: (value) => const TextStyle(
               color: Color(0xff68737d),
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),
+            getTitles: (value) {
+              return DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(value.toInt()));
+            },
           ),
           leftTitles: SideTitles(
-            interval: 10,
+            interval: 5,
             showTitles: true,
             getTextStyles: (value) => const TextStyle(
               color: Color(0xff68737d),
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),
+            getTitles: (value) {
+              if (value < widget.min_y!) return '';
+
+              return value.toInt().toString();
+            },
           ),
         ),
         borderData: FlBorderData(
@@ -88,7 +86,10 @@ class _GraphDailyState extends State<GraphDaily> {
             show: true,
             drawVerticalLine: true,
             checkToShowVerticalLine: (val) {
-              return val % 2 == 0;
+              return val % 15 == 0;
+            },
+            checkToShowHorizontalLine: (val) {
+              return val % 5 == 0;
             },
             getDrawingHorizontalLine: (value) {
               return FlLine(
@@ -100,7 +101,7 @@ class _GraphDailyState extends State<GraphDaily> {
               return FlLine(color: Colors.grey, strokeWidth: 0.2);
             }),
         lineBarsData: [
-          LineChartBarData(spots: spots, isCurved: true),
+          LineChartBarData(spots: spots, isCurved: true, dotData: FlDotData(show: false)),
         ],
       ),
     );

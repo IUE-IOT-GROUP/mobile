@@ -35,8 +35,7 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
 
   String username = '';
@@ -80,16 +79,6 @@ class _MainScreenState extends State<MainScreen>
     Navigator.of(ctx).popAndPushNamed(
       CreatePlace.routeName,
     );
-  }
-
-  static void deleteDevice(int id) {
-    for (int i = 0; i < Global.devices.length; i++) {
-      if (Global.devices[i].id == id) {
-        print("Coming from main screen:");
-        print("${Global.devices[i].id}\n${Global.devices[i].name}");
-      }
-    }
-    Global.devices.removeWhere((dev) => dev.id == id);
   }
 
   @override

@@ -65,8 +65,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text(
-                "If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?"),
+            Text("If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?"),
           ],
         ),
       ),
@@ -110,17 +109,13 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs =
-        ModalRoute.of(context)?.settings.arguments as Map<String, Place>;
+    final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, Place>;
     currentPlace = routeArgs["place"] as Place;
 
     List<Place>? childPlaces = currentPlace!.places;
 
-    currentPlace!.deviceList!.forEach((element) {
-      print("119${element.name}");
-    });
     final mq = MediaQuery.of(context).size;
-    print("316 curr place Id:${currentPlace!.id}");
+
     return Scaffold(
       drawer: currentPlace!.parentId == -1 ? NavDrawer() : null,
       appBar: AppBar(
@@ -138,10 +133,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
             color: Theme.of(context).accentColor,
             onPressed: () => null,
           ),
-          IconButton(
-              icon: Icon(Icons.delete),
-              color: Colors.red,
-              onPressed: ensureDelete),
+          IconButton(icon: Icon(Icons.delete), color: Colors.red, onPressed: ensureDelete),
         ],
       ),
       backgroundColor: Theme.of(context).primaryColor,
@@ -150,11 +142,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
           Container(
             width: mq.width * 0.8,
             height: mq.height * 0.3,
-            margin: EdgeInsets.only(
-                left: mq.width * 0.1,
-                right: mq.width * 0.1,
-                top: mq.height * 0.04,
-                bottom: mq.height * 0.02),
+            margin: EdgeInsets.only(left: mq.width * 0.1, right: mq.width * 0.1, top: mq.height * 0.04, bottom: mq.height * 0.02),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Theme.of(context).accentColor,
@@ -168,10 +156,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
               children: [
                 Text(
                   "${currentPlace!.name}",
-                  style: TextStyle(
-                      color: Theme.of(context).accentColor,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Theme.of(context).accentColor, fontSize: 35, fontWeight: FontWeight.bold),
                 ),
                 Icon(
                   Icons.home,
@@ -192,9 +177,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> {
                           mainAxisSpacing: 20,
                         ),
                         padding: const EdgeInsets.all(25),
-                        children: currentPlace!.places!
-                            .map((data) => PlaceItem(data))
-                            .toList(),
+                        children: currentPlace!.places!.map((data) => PlaceItem(data)).toList(),
                       ),
                     )
                   : Container(

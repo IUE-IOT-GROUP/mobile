@@ -39,11 +39,7 @@ class _CreatePlaceState extends State<CreatePlace> {
           }
         }
       }
-      print("316$parent");
-      var body = {
-        "name": nameController.text,
-        "parent": parent == 0 ? null : parent
-      };
+      var body = {"name": nameController.text, "parent": parent == 0 ? null : parent};
       bool response = await PlaceService.postPlace(body);
       if (response)
         Navigator.of(context).pushNamed(MainScreen.routeName);
@@ -59,14 +55,8 @@ class _CreatePlaceState extends State<CreatePlace> {
   @override
   Widget build(BuildContext context) {
     //String? selectedPlace = places![0].name;
-    Color textFieldColor =
-        Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1)
-            ? Color.fromRGBO(255, 255, 255, .02)
-            : Color.fromRGBO(220, 220, 220, .02);
-    Color hintColor =
-        Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1)
-            ? Colors.white12
-            : Colors.black12;
+    Color textFieldColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Color.fromRGBO(255, 255, 255, .02) : Color.fromRGBO(220, 220, 220, .02);
+    Color hintColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Colors.white12 : Colors.black12;
     final mq = MediaQuery.of(context).size;
     return FutureBuilder(
       future: places,
@@ -98,8 +88,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                     width: double.infinity,
                     margin: EdgeInsets.only(right: 5, left: 5, top: 20),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 2),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 2),
                     ),
                     height: mq.height * 0.25,
                     child: Column(
@@ -126,35 +115,28 @@ class _CreatePlaceState extends State<CreatePlace> {
                     height: mq.height * 0.04,
                     width: mq.width * 0.7,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                       color: textFieldColor,
                     ),
                     child: Container(
-                      padding:
-                          EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Name",
-                            hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: "Name", hintStyle: TextStyle(color: hintColor)),
                         controller: nameController,
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                     ),
                   ),
                   DropdownButton<String>(
                     value: selectedPlace,
-                    items: placeNames
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: placeNames.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(
                           value,
-                          style:
-                              TextStyle(color: Theme.of(context).accentColor),
+                          style: TextStyle(color: Theme.of(context).accentColor),
                         ),
                       );
                     }).toList(),
@@ -166,8 +148,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(30),
-                    child: ElevatedButton(
-                        onPressed: createPlace, child: Icon(Icons.check)),
+                    child: ElevatedButton(onPressed: createPlace, child: Icon(Icons.check)),
                   )
                 ],
               ),

@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:prototype/models/device_data.dart';
 import 'package:prototype/models/device_data_type.dart';
+import 'package:prototype/services/device_data.service.dart';
 import 'package:prototype/widgets/custom%20device%20items/graph_monthly.dart';
 import 'package:prototype/widgets/custom%20device%20items/graph_weekly.dart';
 import 'graph_daily.dart';
 import 'LineTitles.dart';
 
-enum timeInterval {
-  daily,
-  weekly,
-  monthly,
-}
-
 class ParameterItem extends StatefulWidget {
   DeviceDataType dataType;
   String? time;
+  Widget? graphWidget;
+  int instate = 1;
 
   // double temperature;
   ParameterItem(this.dataType, this.time);
@@ -36,27 +34,22 @@ class _ParameterItemState extends State<ParameterItem> {
     }
   }
 
-  void rebuildAllChildren(BuildContext context) {
-    void rebuild(Element el) {
-      el.markNeedsBuild();
-      el.visitChildren(rebuild);
-    }
-
-    (context as Element).visitChildren(rebuild);
+  void fetchNewData() async {
+    widget.dataType = await DeviceDataService.getDeviceDataByPeriod(widget.dataType, widget.time!);
+    setState(() {});
   }
 
+  bool isDaily = true;
+  bool isWeekly = false;
+  bool isMonthly = false;
   @override
   Widget build(BuildContext context) {
-    Widget? graphWidget;
     if (widget.time == "daily" || widget.time == null) {
-      graphWidget = GraphDaily(
-          widget.dataType.data!, widget.dataType.max!, widget.dataType.min!);
+      widget.graphWidget = GraphDaily(widget.dataType.graphData!, widget.dataType.max_y!, widget.dataType.min_y!, widget.dataType.max_x_date!, widget.dataType.min_x_date!);
     } else if (widget.time == "weekly") {
-      graphWidget = GraphWeekly(
-          widget.dataType.data!, widget.dataType.max!, widget.dataType.min!);
+      widget.graphWidget = GraphWeekly(widget.dataType.graphData!, widget.dataType.max_y!, widget.dataType.min_y!, widget.dataType.max_x_date!, widget.dataType.min_x_date!);
     } else if (widget.time == "monthly") {
-      graphWidget = GraphMonthly(
-          widget.dataType.data!, widget.dataType.max!, widget.dataType.min!);
+      widget.graphWidget = GraphMonthly(widget.dataType.data!, widget.dataType.max_y!, widget.dataType.min_y!);
     }
 
     final mq = MediaQuery.of(context).size;
@@ -71,16 +64,11 @@ class _ParameterItemState extends State<ParameterItem> {
         Container(
           margin: EdgeInsets.only(top: 20),
           height: mq.height * 0.1,
-          decoration: BoxDecoration(
-              color: Theme.of(context).accentColor,
-              borderRadius: BorderRadius.circular(15)),
+          decoration: BoxDecoration(color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(15)),
           child: Center(
             child: Text(
               "${widget.dataType.data!.first.value}${parseUnit(widget.dataType.unit!)}",
-              style: TextStyle(
-                  fontSize: mq.height * 0.1,
-                  fontFamily: "Temperature",
-                  color: Theme.of(context).primaryColor),
+              style: TextStyle(fontSize: mq.height * 0.1, fontFamily: "Temperature", color: Theme.of(context).primaryColor),
             ),
           ),
         ),
@@ -91,24 +79,45 @@ class _ParameterItemState extends State<ParameterItem> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(isDaily ? Colors.grey : Colors.blue),
+                ),
                 onPressed: () {
                   setState(() {
+                    isDaily = true;
+                    isWeekly = false;
+                    isMonthly = false;
+
                     widget.time = "daily";
-                    rebuildAllChildren(context);
+                    fetchNewData();
                   });
                 },
                 child: Text("Daily")),
             ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(isWeekly ? Colors.grey : Colors.blue),
+                ),
                 onPressed: () {
                   setState(() {
+                    isDaily = false;
+                    isWeekly = true;
+                    isMonthly = false;
                     widget.time = "weekly";
+                    fetchNewData();
                   });
                 },
                 child: Text("Weekly")),
             ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(isMonthly ? Colors.grey : Colors.blue),
+                ),
                 onPressed: () {
                   setState(() {
+                    isDaily = false;
+                    isWeekly = false;
+                    isMonthly = true;
                     widget.time = "monthly";
+                    fetchNewData();
                   });
                 },
                 child: Text("Monthly")),
@@ -127,7 +136,7 @@ class _ParameterItemState extends State<ParameterItem> {
           height: mq.height * 0.4,
           child: Container(
             padding: EdgeInsets.all(10),
-            child: graphWidget,
+            child: widget.graphWidget,
           ),
         ),
         Divider(color: Theme.of(context).accentColor),

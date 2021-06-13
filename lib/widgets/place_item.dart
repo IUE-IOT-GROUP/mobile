@@ -9,19 +9,13 @@ class PlaceItem extends StatelessWidget {
   PlaceItem(this.place);
 
   void selectPlace(BuildContext ctx, Place place) {
-    place.deviceList!.forEach((element) {
-      print("place_item-13 #${element.id} ${element.name}");
-    });
-    Navigator.of(ctx)
-        .pushNamed(PlaceItemScreen.routeName, arguments: {"place": place});
+    Navigator.of(ctx).pushNamed(PlaceItemScreen.routeName, arguments: {"place": place});
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+        decoration: BoxDecoration(color: Theme.of(context).accentColor, borderRadius: BorderRadius.all(Radius.circular(15))),
         child: InkWell(
           onTap: () => selectPlace(context, place),
           splashColor: Colors.grey,

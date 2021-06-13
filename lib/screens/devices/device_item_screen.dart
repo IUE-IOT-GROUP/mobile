@@ -21,21 +21,22 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
   static List<String>? beforePlaceNames = [];
   static late List<Place>? afterPlaceNames;
   static String selectedPlace = beforePlaceNames![0];
-  Future? _device;
+  Future<Device>? _device;
   Future? _deviceData;
   int? _deviceId;
+  String? _period;
   var deviceNameController = TextEditingController();
   var macAddressController = TextEditingController();
   var ipAddressController = TextEditingController();
+
   Future<Device> fetchDevice() async {
     Device device = await DeviceService.getDeviceById(_deviceId);
 
     return device;
   }
 
-  Future<List<DeviceDataType>> fetchData() async {
-    List<DeviceDataType> deviceDataType =
-        await DeviceDataService.getDeviceData(_deviceId);
+  Future<List<DeviceDataType>> fetchData(Device device, [String filter = 'daily']) async {
+    List<DeviceDataType> deviceDataType = await DeviceDataService.getDeviceData(device);
 
     return deviceDataType;
   }
@@ -46,11 +47,9 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     places = PlaceService.getPlaces();
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs =
-            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
+        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
         this._deviceId = routeArgs["deviceId"] as int;
         _device = fetchDevice();
-        _deviceData = fetchData();
       });
     });
   }
@@ -59,6 +58,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
   bool macEnabled = false;
   bool ipEnabled = false;
   int counter = 0;
+
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
@@ -70,12 +70,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () => Navigator.of(context)
-                  .popAndPushNamed(DeviceItemScreen.routeName))
-        ],
+        actions: [IconButton(icon: Icon(Icons.refresh), onPressed: () => Navigator.of(context).popAndPushNamed(DeviceItemScreen.routeName))],
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
@@ -90,6 +85,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
               }
               counter++;
               beforePlaceNames!.add(currentDevice.place!);
+              _deviceData = fetchData(currentDevice);
 
               return FutureBuilder(
                 future: _deviceData,
@@ -117,9 +113,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                         children: [
                           Text(
                             "Device Information",
-                            style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 24),
+                            style: TextStyle(color: Theme.of(context).accentColor, fontSize: 24),
                           ),
                           Divider(
                             color: Theme.of(context).accentColor,
@@ -136,13 +130,10 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                       height: mq.height * 0.05,
                                       width: mq.width * 0.5,
                                       child: TextFormField(
+                                        style: TextStyle(color: Theme.of(context).accentColor),
                                         controller: deviceNameController,
                                         enabled: nameEnabled,
-                                        decoration: InputDecoration(
-                                            disabledBorder: InputBorder.none,
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15))),
+                                        decoration: InputDecoration(disabledBorder: InputBorder.none, enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
                                       ),
                                     ),
                                     SizedBox(
@@ -152,13 +143,10 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                       height: mq.height * 0.05,
                                       width: mq.width * 0.5,
                                       child: TextFormField(
+                                        style: TextStyle(color: Theme.of(context).accentColor),
                                         controller: macAddressController,
                                         enabled: macEnabled,
-                                        decoration: InputDecoration(
-                                            disabledBorder: InputBorder.none,
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15))),
+                                        decoration: InputDecoration(disabledBorder: InputBorder.none, enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
                                       ),
                                     ),
                                     SizedBox(
@@ -168,13 +156,10 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                       height: mq.height * 0.05,
                                       width: mq.width * 0.5,
                                       child: TextFormField(
+                                        style: TextStyle(color: Theme.of(context).accentColor),
                                         controller: ipAddressController,
                                         enabled: ipEnabled,
-                                        decoration: InputDecoration(
-                                            disabledBorder: InputBorder.none,
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15))),
+                                        decoration: InputDecoration(disabledBorder: InputBorder.none, enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
                                       ),
                                     ),
                                     SizedBox(
@@ -182,44 +167,30 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                     ),
                                     FutureBuilder(
                                       future: places,
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot snapshot) {
+                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
                                         if (snapshot.hasData) {
-                                          final List<Place> localPlaces =
-                                              snapshot.data;
+                                          final List<Place> localPlaces = snapshot.data;
                                           afterPlaceNames = localPlaces;
                                           List<Place> childPlaces = [];
                                           afterPlaceNames!.forEach((element) {
                                             if (element.places!.isNotEmpty) {
-                                              for (int i = 0;
-                                                  i < element.places!.length;
-                                                  i++) {
-                                                print(
-                                                    "366${element.places![i].name}");
-                                                childPlaces
-                                                    .add(element.places![i]);
+                                              for (int i = 0; i < element.places!.length; i++) {
+                                                childPlaces.add(element.places![i]);
                                               }
                                             }
                                           });
                                           childPlaces.forEach((element) {
-                                            beforePlaceNames!
-                                                .add(element.name!);
+                                            beforePlaceNames!.add(element.name!);
                                           });
-                                          beforePlaceNames = beforePlaceNames!
-                                              .toSet()
-                                              .toList();
+                                          beforePlaceNames = beforePlaceNames!.toSet().toList();
                                           return DropdownButton<String>(
                                             value: selectedPlace,
-                                            items: beforePlaceNames!
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
+                                            items: beforePlaceNames!.map<DropdownMenuItem<String>>((String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value,
                                                 child: Text(
                                                   value,
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .accentColor),
+                                                  style: TextStyle(color: Theme.of(context).accentColor),
                                                 ),
                                               );
                                             }).toList(),
@@ -230,8 +201,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                             },
                                           );
                                         }
-                                        return Center(
-                                            child: CircularProgressIndicator());
+                                        return Center(child: CircularProgressIndicator());
                                       },
                                     ),
                                   ],
@@ -244,8 +214,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                       child: IconButton(
                                           icon: Icon(
                                             Icons.edit,
-                                            color:
-                                                Theme.of(context).accentColor,
+                                            color: Theme.of(context).accentColor,
                                           ),
                                           onPressed: () {
                                             setState(() {
@@ -254,13 +223,11 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                           }),
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 18),
+                                      padding: const EdgeInsets.only(bottom: 18),
                                       child: IconButton(
                                           icon: Icon(
                                             Icons.edit,
-                                            color:
-                                                Theme.of(context).accentColor,
+                                            color: Theme.of(context).accentColor,
                                           ),
                                           onPressed: () {
                                             setState(() {
@@ -269,13 +236,11 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                           }),
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 18),
+                                      padding: const EdgeInsets.only(bottom: 18),
                                       child: IconButton(
                                           icon: Icon(
                                             Icons.edit,
-                                            color:
-                                                Theme.of(context).accentColor,
+                                            color: Theme.of(context).accentColor,
                                           ),
                                           onPressed: () {
                                             setState(() {
@@ -300,37 +265,23 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                 String new_mac = macAddressController.text;
                                 String new_ip = ipAddressController.text;
                                 late int? placeId;
-                                await PlaceService.getChildPlaces()
-                                    .then((value) {
+                                await PlaceService.getChildPlaces().then((value) {
                                   value.forEach((element) {
-                                    if (element.name == selectedPlace)
-                                      placeId = element.id;
+                                    if (element.name == selectedPlace) placeId = element.id;
                                   });
                                 });
                                 var params = {};
                                 var parameters = currentDevice.parameters!;
                                 parameters.forEach((element) {
-                                  params[element.expectedParameter] = {
-                                    "name": element.optName,
-                                    "unit": element.unit
-                                  };
+                                  params[element.expectedParameter] = {"name": element.optName, "unit": element.unit};
                                 });
-                                var body = {
-                                  "place_id": placeId,
-                                  "mac_address": new_mac,
-                                  "ip_address": new_ip,
-                                  "name": new_name,
-                                  "parameters": params
-                                };
+                                var body = {"place_id": placeId, "mac_address": new_mac, "ip_address": new_ip, "name": new_name, "parameters": params};
                                 Center(child: CircularProgressIndicator());
-                                bool response =
-                                    await DeviceService.updateDevice(
-                                        body, currentDevice.id!);
+                                bool response = await DeviceService.updateDevice(body, currentDevice.id!);
                                 if (response) {
                                   Global.warning(context, "Success!");
                                 } else {
-                                  Global.warning(context,
-                                      "Something went wrong. Failed to add device.");
+                                  Global.warning(context, "Something went wrong. Failed to add device.");
                                 }
                               },
                               child: Text("Update")),

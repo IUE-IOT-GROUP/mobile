@@ -32,14 +32,12 @@ class DeviceService {
 
   static Future<List<Device>> getDevices() async {
     List<Device> devices = [];
-    final response = await Global.h_get(devicesUrl, appendToken: true)
-        .then((http.Response response) async {
-      print("device service-28:${response.body}");
+    final response = await Global.h_get(devicesUrl, appendToken: true).then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse["data"];
       devices = List<Device>.from(data.map((model) {
         var device = Device.fromJson(model);
-        print("${device.name} ${device.macAddress} ${device.ipAddress}");
+
         return device;
       }));
     });
@@ -49,8 +47,7 @@ class DeviceService {
   static Future<List<Device>> getDevicesByPlace(int placeId) async {
     String url = "${Global.baseUrl}/places/$placeId/userDevices";
     List<Device> devices = [];
-    final response = await Global.h_get(url, appendToken: true)
-        .then((http.Response response) async {
+    final response = await Global.h_get(url, appendToken: true).then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
 
@@ -67,8 +64,7 @@ class DeviceService {
 
     Device device = new Device(name: "sd");
 
-    final response = await Global.h_get(url, appendToken: true)
-        .then((http.Response response) async {
+    final response = await Global.h_get(url, appendToken: true).then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
       device = Device.fromJson(jsonResponse['data']);
@@ -81,7 +77,7 @@ class DeviceService {
     String url = "$devicesUrl/$deviceId";
     bool responseCode = false;
     final response = await Global.h_delete(url, appendToken: true);
-    print("device service-74 ${response.statusCode}");
+
     if (200 <= response.statusCode && response.statusCode <= 300)
       responseCode = true;
     else

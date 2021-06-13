@@ -46,23 +46,17 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     var url = "${Global.baseUrl}/login";
-    var body = {
-      "email": enteredEmail,
-      "password": enteredPassword,
-      "device_name": await getDeviceId()
-    };
+    var body = {"email": enteredEmail, "password": enteredPassword, "device_name": await getDeviceId()};
 
     await Global.h_post(url, body).then((http.Response response) {
       if (response.statusCode == 200) {
         success = true;
-        Global.secureStorage
-            .writeSecureData("token", jsonDecode(response.body)['token']);
+        Global.secureStorage.writeSecureData("token", jsonDecode(response.body)['token']);
         setState(() {
           Global.isLoading = true;
         });
 
-        Global.h_get("${Global.baseUrl}/me", appendToken: true)
-            .then((http.Response response) {
+        Global.h_get("${Global.baseUrl}/me", appendToken: true).then((http.Response response) {
           var user = User.fromJson(jsonDecode(response.body)['data']);
 
           Global.secureStorage.writeSecureData("name", user.name);
@@ -85,9 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
         var data = await deviceInfoPlugin.iosInfo;
         return data.identifierForVendor;
       }
-    } on PlatformException {
-      print('Failed to get platform version');
-    }
+    } on PlatformException {}
   }
 
   @override
@@ -119,8 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         Global.isLoading = false;
       });
-      Global.warning(ctx,
-          "Username or password is incorrect! Please check your credentials.");
+      Global.warning(ctx, "Username or password is incorrect! Please check your credentials.");
     } else {
       Global.email = enteredEmail;
       Global.password = enteredPassword;
@@ -130,8 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
         prefs.setString("password", enteredPassword);
         prefs.setBool("rememberMe", rememberMe);
       } else {
-        if (prefs.getString("email") != null ||
-            prefs.getString("password") != null) {
+        if (prefs.getString("email") != null || prefs.getString("password") != null) {
           prefs.remove("email");
           prefs.remove("password");
         }
@@ -271,8 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
-              minimumSize: MaterialStateProperty.all<Size>(
-                  Size(MediaQuery.of(context).size.width * 0.4, 30)),
+              minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.4, 30)),
             ),
             onPressed: () => login(context),
           )
