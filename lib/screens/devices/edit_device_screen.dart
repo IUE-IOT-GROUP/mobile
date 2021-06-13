@@ -1,292 +1,150 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:prototype/SecureStorage.dart';
+import 'package:prototype/models/device.dart';
+import 'package:prototype/models/place.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/services/device.service.dart';
-import '../../models/place.dart';
-import '../../services/place.service.dart';
+import 'package:prototype/services/place.service.dart';
+import 'package:prototype/widgets/navDrawer.dart';
+
 import '../../global.dart';
-import '../../models/device.dart';
-import '../../models/parameter.dart';
 
 class EditDeviceScreen extends StatefulWidget {
+  static var routeName = '/edit-device';
+
   @override
   _EditDeviceScreenState createState() => _EditDeviceScreenState();
 }
 
 class _EditDeviceScreenState extends State<EditDeviceScreen> {
-  var deviceNameController = TextEditingController();
-  var macAddressController = TextEditingController();
-  var ipAddressController = TextEditingController();
-  var paramsOptNameController = TextEditingController();
-  var paramsNameController = TextEditingController();
-  var paramsUnitController = TextEditingController();
+  TextEditingController? nameController;
+  TextEditingController? ipAddressController;
+  TextEditingController? macAddressController;
+  Future<Device>? _device;
+  Device? currDevice;
 
   late Future<List<Place>>? places;
-  List<Parameter> parameters = [];
-
-  static List<String>? beforePlaceNames = ["-Select a place-"];
+  static List<String>? beforePlaceNames = [];
   static late List<Place>? afterPlaceNames;
-  static String selectedPlace = beforePlaceNames![0];
-  @override
-  void initState() {
-    super.initState();
-    places = PlaceService.getPlaces();
+  String? currentPlace;
+  int? _deviceId;
+  Future<Device> fetchDevice() async {
+    var device = await DeviceService.getDeviceById(_deviceId);
+
+    return device;
   }
 
-  void addDevice() async {
-    String name = deviceNameController.text;
-    String ip = ipAddressController.text;
-    String mac = macAddressController.text;
+  void updateDevice() async {
+    var new_name = nameController!.text;
+    var new_mac = ipAddressController!.text;
+    var new_ip = ipAddressController!.text;
     late int? placeId;
     await PlaceService.getChildPlaces().then((value) {
       value.forEach((element) {
-        if (element.name == selectedPlace) placeId = element.id;
+        if (element.name == currentPlace) placeId = element.id;
       });
     });
-
-    if (name.isEmpty || ip.isEmpty || mac.isEmpty) {
-      Global.warning(context, "All fields must be filled!");
+    var params = {};
+    var parameters = currDevice!.parameters!;
+    parameters.forEach((element) {
+      params[element.expectedParameter] = {'name': element.optName, 'unit': element.unit};
+    });
+    var body = {'place_id': placeId, 'mac_address': new_mac, 'ip_address': new_ip, 'name': new_name, 'parameters': params};
+    Center(child: CircularProgressIndicator());
+    var response = await DeviceService.updateDevice(body, currDevice!.id!);
+    if (response) {
+      await Navigator.of(context).popAndPushNamed(MainScreen.routeName);
     } else {
-      if (selectedPlace == "-Select a place-") {
-        Global.warning(context, "Please select a place");
-      } else {
-        var params = {};
-        parameters.forEach((element) {
-          params[element.optName] = {"name": element.expectedParameter, "unit": element.unit};
-        });
-        var body = {"place_id": placeId, "mac_address": mac, "ip_address": ip, "name": name, "parameters": params};
-        bool response = await DeviceService.postDevice(body);
-        if (response)
-          Navigator.of(context).pushNamed(MainScreen.routeName);
-        else {
-          Global.warning(context, "Something went wrong. Failed to add device.");
-        }
-      }
+      Global.warning(context, 'Something went wrong. Failed to add device.');
     }
   }
 
-  var ipFormatter = new MaskTextInputFormatter(mask: "###.###.#.##", filter: {"#": RegExp(r'^[0-9]')});
-  var macFormatter = new MaskTextInputFormatter(mask: "##:##:##:##:##:##", filter: {"#": RegExp(r'^[a-fA-F0-9]')});
+  @override
+  void initState() {
+    super.initState();
+    places = PlaceService.getParentPlaces();
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
+        _deviceId = routeArgs['deviceId'] as int;
+        _device = fetchDevice();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context).size;
-    Color textFieldColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Color.fromRGBO(255, 255, 255, .02) : Color.fromRGBO(220, 220, 220, .02);
-    Color hintColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Colors.white12 : Colors.black12;
     return FutureBuilder(
-      future: places,
+      future: _device,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+          Device currentDevice = snapshot.data;
+          currentPlace = currentDevice.place!;
+          currDevice = snapshot.data;
+          nameController = TextEditingController(text: currentDevice.name);
+          macAddressController = TextEditingController(text: currentDevice.macAddress);
+          ipAddressController = TextEditingController(text: currentDevice.ipAddress);
+
           return Scaffold(
-            resizeToAvoidBottomInset: false,
+            drawer: NavDrawer(),
             backgroundColor: Theme.of(context).primaryColor,
             appBar: AppBar(
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
+              title: Text(currentDevice.name!),
             ),
-            body: Container(
-              margin: EdgeInsets.all(10),
+            body: Padding(
+              padding: EdgeInsets.all(30),
               child: Column(
                 children: [
-                  Text(
-                    "Device Information",
-                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 15,
-                    ),
-                    height: mq.height * 0.04,
-                    width: mq.width * 0.7,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                      color: textFieldColor,
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(hintText: "Name", hintStyle: TextStyle(color: hintColor)),
-                        controller: deviceNameController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                  TextField(
+                    controller: nameController,
+                    style: TextStyle(color: Theme.of(context).accentColor),
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 15,
-                    ),
-                    height: mq.height * 0.04,
-                    width: mq.width * 0.7,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                      color: textFieldColor,
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        inputFormatters: [ipFormatter],
-                        decoration: InputDecoration.collapsed(hintText: "IP Address(ex: 192.168.0.1)", hintStyle: TextStyle(color: hintColor)),
-                        controller: ipAddressController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
+                      hintText: 'Enter device name',
+                      hintStyle: TextStyle(color: Theme.of(context).accentColor),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 15, bottom: 15),
-                    height: mq.height * 0.04,
-                    width: mq.width * 0.7,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                      color: textFieldColor,
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        inputFormatters: [macFormatter],
-                        decoration: InputDecoration.collapsed(hintText: "MAC(ex: xx:xx:xx:xx:xx:xx)", hintStyle: TextStyle(color: hintColor)),
-                        controller: macAddressController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: macAddressController,
+                    style: TextStyle(color: Theme.of(context).accentColor),
+                    decoration: InputDecoration(
+                      labelText: 'MAC',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
-                    ),
-                  ),
-                  Divider(
-                    color: Theme.of(context).accentColor,
-                  ),
-                  Text(
-                    "Parameters",
-                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    height: mq.height * 0.04,
-                    width: mq.width * 0.6,
-                    decoration: BoxDecoration(
-                      color: textFieldColor,
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(hintText: "Name to be displayed(opt.)", hintStyle: TextStyle(color: hintColor)),
-                        controller: paramsOptNameController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
+                      hintText: 'Enter MAC address',
+                      hintStyle: TextStyle(color: Theme.of(context).accentColor),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    height: mq.height * 0.04,
-                    width: mq.width * 0.6,
-                    decoration: BoxDecoration(
-                      color: textFieldColor,
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(hintText: "Parameter name", hintStyle: TextStyle(color: hintColor)),
-                        controller: paramsNameController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: ipAddressController,
+                    style: TextStyle(color: Theme.of(context).accentColor),
+                    decoration: InputDecoration(
+                      labelText: 'IP',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    height: mq.height * 0.04,
-                    width: mq.width * 0.6,
-                    decoration: BoxDecoration(
-                      color: textFieldColor,
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Flexible(
-                          flex: 500,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              decoration: InputDecoration.collapsed(hintText: "Parameter unit(max 3 chars)", hintStyle: TextStyle(color: hintColor)),
-                              controller: paramsUnitController,
-                              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        color: Theme.of(context).accentColor,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
-                      onPressed: () {
-                        String optName = paramsOptNameController.text;
-                        String name = paramsNameController.text;
-                        String unit = paramsUnitController.text;
-                        if (name.isNotEmpty && unit.isNotEmpty) {
-                          if (optName.isEmpty) optName = name;
-                          Parameter parameter = new Parameter(optName: optName, expectedParameter: name, unit: unit);
-                          paramsOptNameController.text = "";
-                          paramsNameController.text = "";
-                          paramsUnitController.text = "";
-                          setState(() {
-                            parameters.add(parameter);
-                          });
-                        } else {
-                          Global.warning(context, "You must fill the required fields!");
-                        }
-                      }),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    width: mq.width * 0.8,
-                    height: mq.height * 0.2,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Card(
-                      elevation: 5,
-                      child: ListView.builder(
-                          itemCount: parameters.length,
-                          itemBuilder: (ctx, index) {
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        parameters[index].optName!,
-                                        style: TextStyle(color: Colors.black, fontSize: 15),
-                                      ),
-                                    ),
-                                    Flexible(
-                                      child: Text(parameters[index].expectedParameter!),
-                                    ),
-                                    Flexible(child: Text(parameters[index].unit!))
-                                  ],
-                                ),
-                                Divider(
-                                  color: Colors.black,
-                                )
-                              ],
-                            );
-                          }),
+                      hintText: 'Enter IP address',
                     ),
                   ),
                   FutureBuilder(
@@ -295,10 +153,10 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                       if (snapshot.hasData) {
                         final List<Place> localPlaces = snapshot.data;
                         afterPlaceNames = localPlaces;
-                        List<Place> childPlaces = [];
+                        var childPlaces = <Place>[];
                         afterPlaceNames!.forEach((element) {
                           if (element.places!.isNotEmpty) {
-                            for (int i = 0; i < element.places!.length; i++) {
+                            for (var i = 0; i < element.places!.length; i++) {
                               childPlaces.add(element.places![i]);
                             }
                           }
@@ -308,7 +166,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         });
                         beforePlaceNames = beforePlaceNames!.toSet().toList();
                         return DropdownButton<String>(
-                          value: selectedPlace,
+                          value: currentPlace,
                           items: beforePlaceNames!.map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -320,7 +178,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                           }).toList(),
                           onChanged: (String? newValue) {
                             setState(() {
-                              selectedPlace = newValue!;
+                              currentPlace = newValue!;
                             });
                           },
                         );
@@ -328,22 +186,14 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                       return CircularProgressIndicator();
                     },
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: ElevatedButton(
-                      child: Icon(Icons.check),
-                      onPressed: addDevice,
-                    ),
-                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(onPressed: updateDevice, child: Text('Update'))
                 ],
               ),
             ),
           );
         }
-        return Center(
-            child: CircularProgressIndicator(
-          backgroundColor: Theme.of(context).accentColor,
-        ));
+        return Center(child: CircularProgressIndicator());
       },
     );
   }

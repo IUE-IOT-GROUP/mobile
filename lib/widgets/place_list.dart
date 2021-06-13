@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/services/place.service.dart';
 import '../global.dart';
-import "../models/place.dart";
-import "./place_item.dart";
+import '../models/place.dart';
+import './place_item.dart';
 import 'dart:async';
 
 class PlaceList extends StatefulWidget {
@@ -20,24 +20,22 @@ class _PlaceListState extends State<PlaceList> {
   }
 
   Future getTimerPlace() async {
-    return PlaceService.getPlaces();
+    return PlaceService.getParentPlaces();
   }
 
   timer() {
-    _future = getTimerPlace();
+    _placesFuture = getTimerPlace();
     Timer.periodic(Duration(seconds: 500), (timer) {
-      setState(() {
-        //_future = getTimerPlace();
-      });
+      setState(() {});
     });
   }
 
-  Future? _future;
+  Future? _placesFuture;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _future,
+      future: _placesFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Place> _places = snapshot.data;
@@ -47,14 +45,10 @@ class _PlaceListState extends State<PlaceList> {
                 children: [
                   Center(
                     child: Container(
-                      padding:
-                          EdgeInsets.only(top: constrainst.maxHeight * 0.05),
+                      padding: EdgeInsets.only(top: constrainst.maxHeight * 0.05),
                       child: Text(
-                        "No places",
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
+                        'No places',
+                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 30, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -65,7 +59,7 @@ class _PlaceListState extends State<PlaceList> {
                     child: Container(
                       height: constrainst.maxHeight * 0.5,
                       child: Image.asset(
-                        "assets/images/waiting.png",
+                        'assets/images/waiting.png',
                         color: Theme.of(context).accentColor,
                         fit: BoxFit.cover,
                       ),

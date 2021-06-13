@@ -1,16 +1,16 @@
-import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:prototype/models/device_data.dart';
-import 'LineTitles.dart';
-import "dart:math";
+import 'package:intl/intl.dart';
+import 'package:prototype/models/device_graph_data.dart';
 
+// ignore: must_be_immutable
 class GraphMonthly extends StatefulWidget {
-  List<DeviceData> data;
-  GraphMonthly(this.data, this.max, this.min);
-  final double min;
-  final double max;
+  List<DeviceGraphData> data;
+  GraphMonthly(this.data, this.max_y, this.min_y, this.max_x, this.min_x);
+  final double? max_y;
+  final double? min_y;
+  final DateTime min_x;
+  final DateTime max_x;
   @override
   _GraphMonthlyState createState() => _GraphMonthlyState();
 }
@@ -18,67 +18,34 @@ class GraphMonthly extends StatefulWidget {
 class _GraphMonthlyState extends State<GraphMonthly> {
   @override
   Widget build(BuildContext context) {
-    Map<String, Map<String, String>> graphData = {};
-    List<double> yValues = [];
-    List<double> xValues = [];
+    var graphData = <int, Map<int, String>>{};
 
+    var xValues = <int, DateTime?>{};
+
+    var i = 4;
     widget.data.forEach((element) {
-      graphData[element.id.toString()] = {element.createdAt!: element.value!};
+      graphData[i] = {i: element.value!};
+      xValues[i] = element.createdAtDate;
+      i--;
     });
-    List<FlSpot> spots = graphData.entries.map((e) {
-      var x =
-          DateTime.parse(e.value.keys.first).millisecondsSinceEpoch.toDouble();
-      var x_h = DateTime.fromMillisecondsSinceEpoch(x.toInt()).hour;
-      var x_m = DateTime.fromMillisecondsSinceEpoch(x.toInt()).minute;
-      var x_d = DateTime.fromMillisecondsSinceEpoch(x.toInt()).day;
-      var x_mn = DateTime.fromMillisecondsSinceEpoch(x.toInt()).month;
 
-      var real_x = x_mn - 1 + x_d / 30 + x_h / 720;
+    var spots = graphData.entries.map((e) {
+      var x = e.value.keys.first.toDouble();
+
       var y = e.value.values.first;
-      yValues.add(double.parse(y));
-      xValues.add(real_x);
 
-      return FlSpot(real_x, double.parse(y));
+      return FlSpot(x, double.parse(y));
     }).toList();
 
     return LineChart(
       LineChartData(
-        minY: widget.min,
-        maxY: widget.max,
+        minY: (widget.min_y! - 5),
+        maxY: (widget.max_y! + 5),
         minX: 0,
-        maxX: 11,
+        maxX: 4,
         titlesData: FlTitlesData(
           show: true,
           bottomTitles: SideTitles(
-            getTitles: (val) {
-              switch (val.toInt()) {
-                case 0:
-                  return "JAN";
-                case 1:
-                  return "FEB";
-                case 2:
-                  return "MAR";
-                case 3:
-                  return "APR";
-                case 4:
-                  return "MAY";
-                case 5:
-                  return "JUN";
-                case 6:
-                  return "JLY";
-                case 7:
-                  return "AUG";
-                case 8:
-                  return "SEP";
-                case 9:
-                  return "OCT";
-                case 10:
-                  return "NOV";
-                case 11:
-                  return "DEC";
-              }
-              return "";
-            },
             showTitles: true,
             reservedSize: 35,
             getTextStyles: (value) => const TextStyle(
@@ -86,15 +53,23 @@ class _GraphMonthlyState extends State<GraphMonthly> {
               fontWeight: FontWeight.bold,
               fontSize: 10,
             ),
+            getTitles: (val) {
+              return DateFormat.Md().format(xValues[val.toInt()]!);
+            },
           ),
           leftTitles: SideTitles(
-            interval: 10,
+            interval: 5,
             showTitles: true,
             getTextStyles: (value) => const TextStyle(
               color: Color(0xff68737d),
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),
+            getTitles: (value) {
+              if (value < widget.min_y!) return '';
+
+              return value.toInt().toString();
+            },
           ),
         ),
         borderData: FlBorderData(
@@ -113,7 +88,10 @@ class _GraphMonthlyState extends State<GraphMonthly> {
             show: true,
             drawVerticalLine: true,
             checkToShowVerticalLine: (val) {
-              return val % 2 == 0;
+              return val % 15 == 0;
+            },
+            checkToShowHorizontalLine: (val) {
+              return val % 5 == 0;
             },
             getDrawingHorizontalLine: (value) {
               return FlLine(
@@ -125,7 +103,7 @@ class _GraphMonthlyState extends State<GraphMonthly> {
               return FlLine(color: Colors.grey, strokeWidth: 0.2);
             }),
         lineBarsData: [
-          LineChartBarData(spots: spots, isCurved: true),
+          LineChartBarData(spots: spots, isCurved: true, dotData: FlDotData(show: false)),
         ],
       ),
     );

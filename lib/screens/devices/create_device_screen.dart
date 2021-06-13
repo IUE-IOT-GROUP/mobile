@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:prototype/SecureStorage.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/services/device.service.dart';
 import '../../models/place.dart';
 import '../../services/place.service.dart';
 import '../../global.dart';
-import '../../models/device.dart';
 import '../../models/parameter.dart';
 
 class CreateDevice extends StatefulWidget {
-  static String routeName = "/create-device";
+  static String routeName = '/create-device';
 
   @override
   _CreateDeviceState createState() => _CreateDeviceState();
@@ -27,19 +25,19 @@ class _CreateDeviceState extends State<CreateDevice> {
 
   List<Parameter> parameters = [];
   late Future<List<Place>>? places;
-  static List<String>? beforePlaceNames = ["-Select a place-"];
+  static List<String>? beforePlaceNames = ['-Select a place-'];
   static late List<Place>? afterPlaceNames;
   static String selectedPlace = beforePlaceNames![0];
   @override
   void initState() {
     super.initState();
-    places = PlaceService.getPlaces();
+    places = PlaceService.getParentPlaces();
   }
 
   void addDevice() async {
-    String name = deviceNameController.text;
-    String ip = ipAddressController.text;
-    String mac = macAddressController.text;
+    var name = deviceNameController.text;
+    var ip = ipAddressController.text;
+    var mac = macAddressController.text;
     late int? placeId;
     await PlaceService.getChildPlaces().then((value) {
       value.forEach((element) {
@@ -48,33 +46,33 @@ class _CreateDeviceState extends State<CreateDevice> {
     });
 
     if (name.isEmpty || ip.isEmpty || mac.isEmpty) {
-      Global.warning(context, "All fields must be filled!");
+      Global.warning(context, 'All fields must be filled!');
     } else {
-      if (selectedPlace == "-Select a place-") {
-        Global.warning(context, "Please select a place");
+      if (selectedPlace == '-Select a place-') {
+        Global.warning(context, 'Please select a place');
       } else {
         var params = {};
         parameters.forEach((element) {
-          params[element.expectedParameter] = {"name": element.optName, "unit": element.unit};
+          params[element.expectedParameter] = {'name': element.optName, 'unit': element.unit};
         });
-        var body = {"place_id": placeId, "mac_address": mac, "ip_address": ip, "name": name, "parameters": params};
-        bool response = await DeviceService.postDevice(body);
-        if (response)
-          Navigator.of(context).pushNamed(MainScreen.routeName);
-        else {
-          Global.warning(context, "Something went wrong. Failed to add device.");
+        var body = {'place_id': placeId, 'mac_address': mac, 'ip_address': ip, 'name': name, 'parameters': params};
+        var response = await DeviceService.postDevice(body);
+        if (response) {
+          await Navigator.of(context).pushNamed(MainScreen.routeName);
+        } else {
+          Global.warning(context, 'Something went wrong. Failed to add device.');
         }
       }
     }
   }
 
-  var ipFormatter = new MaskTextInputFormatter(mask: "###.###.#.##", filter: {"#": RegExp(r'^[0-9]')});
-  var macFormatter = new MaskTextInputFormatter(mask: "##:##:##:##:##:##", filter: {"#": RegExp(r'^[a-fA-F0-9]')});
+  var ipFormatter = MaskTextInputFormatter(mask: '###.###.###.###', filter: {'#': RegExp(r'^[0-9]')});
+  var macFormatter = MaskTextInputFormatter(mask: '##:##:##:##:##:##', filter: {'#': RegExp(r'^[a-fA-F0-9]')});
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
-    Color textFieldColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Color.fromRGBO(255, 255, 255, .02) : Color.fromRGBO(220, 220, 220, .02);
-    Color hintColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Colors.white12 : Colors.black12;
+    var textFieldColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Color.fromRGBO(255, 255, 255, .02) : Color.fromRGBO(220, 220, 220, .02);
+    var hintColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Colors.white12 : Colors.black12;
     return FutureBuilder(
       future: places,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -95,7 +93,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(
-                      "Device Information",
+                      'Device Information',
                       style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                     ),
                   ),
@@ -114,7 +112,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                       padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(hintText: "Name", hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: 'Name', hintStyle: TextStyle(color: hintColor)),
                         controller: deviceNameController,
                         style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
@@ -137,7 +135,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         inputFormatters: [ipFormatter],
-                        decoration: InputDecoration.collapsed(hintText: "IP Address(ex: 192.168.0.1)", hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: 'IP Address(ex: 192.168.0.1)', hintStyle: TextStyle(color: hintColor)),
                         controller: ipAddressController,
                         style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
@@ -157,7 +155,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                       child: TextField(
                         textAlign: TextAlign.center,
                         inputFormatters: [macFormatter],
-                        decoration: InputDecoration.collapsed(hintText: "MAC(ex: xx:xx:xx:xx:xx:xx)", hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(hintText: 'MAC(ex: xx:xx:xx:xx:xx:xx)', hintStyle: TextStyle(color: hintColor)),
                         controller: macAddressController,
                         style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
@@ -169,10 +167,10 @@ class _CreateDeviceState extends State<CreateDevice> {
                       if (snapshot.hasData) {
                         final List<Place> localPlaces = snapshot.data;
                         afterPlaceNames = localPlaces;
-                        List<Place> childPlaces = [];
+                        var childPlaces = <Place>[];
                         afterPlaceNames!.forEach((element) {
                           if (element.places!.isNotEmpty) {
-                            for (int i = 0; i < element.places!.length; i++) {
+                            for (var i = 0; i < element.places!.length; i++) {
                               childPlaces.add(element.places![i]);
                             }
                           }
@@ -209,7 +207,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Parameters",
+                        'Parameters',
                         style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                       IconButton(
@@ -239,7 +237,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                                             padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                                             child: TextField(
                                               textAlign: TextAlign.center,
-                                              decoration: InputDecoration.collapsed(hintText: "Name to be displayed(opt.)", hintStyle: TextStyle(color: hintColor)),
+                                              decoration: InputDecoration.collapsed(hintText: 'Name to be displayed(opt.)', hintStyle: TextStyle(color: hintColor)),
                                               controller: paramsOptNameController,
                                               style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
                                             ),
@@ -258,7 +256,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                                             padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                                             child: TextField(
                                               textAlign: TextAlign.center,
-                                              decoration: InputDecoration.collapsed(hintText: "Parameter name", hintStyle: TextStyle(color: hintColor)),
+                                              decoration: InputDecoration.collapsed(hintText: 'Parameter name', hintStyle: TextStyle(color: hintColor)),
                                               controller: paramsNameController,
                                               style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
                                             ),
@@ -281,7 +279,7 @@ class _CreateDeviceState extends State<CreateDevice> {
                                                   padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                                                   child: TextField(
                                                     textAlign: TextAlign.center,
-                                                    decoration: InputDecoration.collapsed(hintText: "Parameter unit(max 3 chars)", hintStyle: TextStyle(color: hintColor)),
+                                                    decoration: InputDecoration.collapsed(hintText: 'Parameter unit(max 3 chars)', hintStyle: TextStyle(color: hintColor)),
                                                     controller: paramsUnitController,
                                                     style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
                                                   ),
@@ -296,21 +294,21 @@ class _CreateDeviceState extends State<CreateDevice> {
                                               color: Theme.of(context).accentColor,
                                             ),
                                             onPressed: () {
-                                              String optName = paramsOptNameController.text;
-                                              String name = paramsNameController.text;
-                                              String unit = paramsUnitController.text;
+                                              var optName = paramsOptNameController.text;
+                                              var name = paramsNameController.text;
+                                              var unit = paramsUnitController.text;
                                               if (name.isNotEmpty && unit.isNotEmpty) {
                                                 if (optName.isEmpty) optName = name;
-                                                Parameter parameter = new Parameter(optName: optName, expectedParameter: name, unit: unit);
-                                                paramsOptNameController.text = "";
-                                                paramsNameController.text = "";
-                                                paramsUnitController.text = "";
+                                                var parameter = new Parameter(optName: optName, expectedParameter: name, unit: unit);
+                                                paramsOptNameController.text = '';
+                                                paramsNameController.text = '';
+                                                paramsUnitController.text = '';
                                                 setState(() {
                                                   parameters.add(parameter);
                                                 });
                                                 Navigator.of(ctx).pop();
                                               } else {
-                                                Global.warning(context, "You must fill the required fields!");
+                                                Global.warning(context, 'You must fill the required fields!');
                                               }
                                             }),
                                       ],

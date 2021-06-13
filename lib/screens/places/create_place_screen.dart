@@ -22,7 +22,7 @@ class _CreatePlaceState extends State<CreatePlace> {
   @override
   void initState() {
     super.initState();
-    places = PlaceService.getPlaces();
+    places = PlaceService.getParentPlaces();
   }
 
   void createPlace() async {

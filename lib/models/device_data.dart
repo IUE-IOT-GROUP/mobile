@@ -8,12 +8,11 @@ class DeviceData {
     this.id = id;
     this.value = value;
     this.createdAt = createdAt;
-    this.createdAtDate = DateTime.parse(createdAt);
+    createdAtDate = DateTime.parse(createdAt);
   }
 
   factory DeviceData.fromJson(Map<String, dynamic> json) {
-    print("device_datajson $json");
-    DeviceData deviceData = new DeviceData(json["id"], json["value"], json["created_at"]);
+    var deviceData = DeviceData(json['id'], json['value'], json['created_at']);
 
     return deviceData;
   }

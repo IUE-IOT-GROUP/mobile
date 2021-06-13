@@ -3,13 +3,19 @@ import "../models/place.dart";
 import '../screens/places/place_item_screen.dart';
 import "../global.dart";
 
-class PlaceItem extends StatelessWidget {
+class PlaceItem extends StatefulWidget {
   final Place place;
 
   PlaceItem(this.place);
 
-  void selectPlace(BuildContext ctx, Place place) {
-    Navigator.of(ctx).pushNamed(PlaceItemScreen.routeName, arguments: {"place": place});
+  @override
+  _PlaceItemState createState() => _PlaceItemState();
+}
+
+class _PlaceItemState extends State<PlaceItem> {
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -17,7 +23,9 @@ class PlaceItem extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(color: Theme.of(context).accentColor, borderRadius: BorderRadius.all(Radius.circular(15))),
         child: InkWell(
-          onTap: () => selectPlace(context, place),
+          onTap: () => {
+            Navigator.of(context).pushNamed(PlaceItemScreen.routeName, arguments: {'placeId': widget.place.id})
+          },
           splashColor: Colors.grey,
           borderRadius: BorderRadius.circular(15),
           child: Container(
@@ -28,7 +36,7 @@ class PlaceItem extends StatelessWidget {
             child: Center(
               child: Flexible(
                 child: Text(
-                  place.name!,
+                  widget.place.name!,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

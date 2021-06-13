@@ -1,22 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:prototype/models/device.dart';
 import 'devices/create_device_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import "../models/device.dart";
-import "../models/place.dart";
-import "../models/user.dart";
-import "../widgets/device_list.dart";
-import "../widgets/place_list.dart";
-import "dart:math";
+import '../models/user.dart';
+import '../widgets/device_list.dart';
+import '../widgets/place_list.dart';
 import 'places/create_place_screen.dart';
-import 'package:http/http.dart' as http;
 import '../global.dart';
-import "../widgets/navDrawer.dart";
-import "../widgets/custom_appbar.dart";
-import "../services/device.service.dart";
+import '../widgets/navDrawer.dart';
+import '../widgets/custom_appbar.dart';
 
 Future<User> loadUser() async {
-  String url = "${Global.baseUrl}/me";
+  var url = '${Global.baseUrl}/me';
   final response = await Global.h_get(url, appendToken: true);
   if (response.statusCode == 200) {
     return User.fromJson(jsonDecode(response.body)['data']);
@@ -26,8 +21,8 @@ Future<User> loadUser() async {
 }
 
 class MainScreen extends StatefulWidget {
-  static const routeName = "/main-screen";
-  final String username = "";
+  static const routeName = '/main-screen';
+  final String username = '';
 
   MainScreen();
 
@@ -39,9 +34,9 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   late Future<User> futureUser;
 
   String username = '';
-  String new_device_name = "";
-  String new_device_ip = "";
-  String new_device_type = "";
+  String new_device_name = '';
+  String new_device_ip = '';
+  String new_device_type = '';
   List<Widget> widgetOptions = [];
 
   void onItemTapped(int index) {
@@ -54,16 +49,16 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    Global.showCircularProgress();
 
     // Global.getPlaces().then((value) {
     //   setState(() {});
     // });
+
+    var devices = <Device>[];
     futureUser = loadUser();
     widgetOptions = <Widget>[
       PlaceList(),
       DeviceList(
-        Global.devices,
         isGetAllDevices: true,
       ),
     ];
@@ -98,13 +93,13 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: "Places",
+              label: 'Places',
             ),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.monitor,
                 ),
-                label: "Devices"),
+                label: 'Devices'),
           ],
           currentIndex: Global.initialState,
           onTap: onItemTapped,

@@ -1,11 +1,8 @@
-import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:prototype/models/device_graph_data.dart';
-import 'LineTitles.dart';
-import "dart:math";
 
+// ignore: must_be_immutable
 class GraphWeekly extends StatefulWidget {
   List<DeviceGraphData> data;
   GraphWeekly(this.data, this.max_y, this.min_y, this.max_x, this.min_x);
@@ -20,29 +17,21 @@ class GraphWeekly extends StatefulWidget {
 class _GraphWeeklyState extends State<GraphWeekly> {
   @override
   Widget build(BuildContext context) {
-    Map<int, Map<int, String>> graphData = {};
+    var graphData = <int, Map<int, String>>{};
 
-    print("widget.min_x.weekday: ${widget.max_x.weekday}");
-
-    int i = 0;
+    var i = 0;
     widget.data.forEach((element) {
       graphData[i] = {i: element.value!};
       i++;
     });
 
-    print("graphData $graphData");
-
-    List<FlSpot> spots = graphData.entries.map((e) {
+    var spots = graphData.entries.map((e) {
       var x = e.value.keys.first.toDouble();
-
-      print("x: $x");
 
       var y = e.value.values.first;
 
       return FlSpot(x, double.parse(y));
     }).toList();
-
-    print("spots: $spots");
 
     return LineChart(
       LineChartData(
@@ -61,26 +50,25 @@ class _GraphWeeklyState extends State<GraphWeekly> {
               fontSize: 10,
             ),
             getTitles: (value) {
-              int weekday = ((value.toInt() + DateTime.now().weekday) % 7).toInt();
-              print("value: $value $weekday");
+              var weekday = ((value.toInt() + DateTime.now().weekday) % 7).toInt();
 
               switch (weekday) {
                 case 0:
-                  return "MON";
+                  return 'MON';
                 case 1:
-                  return "TUE";
+                  return 'TUE';
                 case 2:
-                  return "WED";
+                  return 'WED';
                 case 3:
-                  return "THU";
+                  return 'THU';
                 case 4:
-                  return "FRI";
+                  return 'FRI';
                 case 5:
-                  return "SAT";
+                  return 'SAT';
                 case 6:
-                  return "SUN";
+                  return 'SUN';
               }
-              return "";
+              return '';
             },
           ),
           leftTitles: SideTitles(

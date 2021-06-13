@@ -1,326 +1,212 @@
 import 'package:flutter/material.dart';
-import "../widgets/navDrawer.dart";
-import "../global.dart";
-import "../widgets/settings_edit_popup.dart";
-import "../widgets/themeChange.dart";
+import 'package:prototype/SecureStorage.dart';
+import 'package:prototype/models/user.dart';
+import 'package:prototype/screens/main_screen.dart';
+import 'package:prototype/services/user.service.dart';
+import '../widgets/navDrawer.dart';
+import '../global.dart';
+import '../widgets/themeChange.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
-  static final routeName = "/settings-screen";
+  static final routeName = '/settings-screen';
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  Future<List<String>>? credentials;
   bool obscure = false;
+  Future<User>? currentUserFuture;
+
+  User? currentUser;
+
+  TextEditingController? nameController;
+  TextEditingController? emailController;
+  TextEditingController? passwordController;
+  TextEditingController? newPasswordController;
+  TextEditingController? newPasswordConfirmationController;
+  TextEditingController? phoneNumberController;
+
+  Future<User> fetchMe() async {
+    var secureStorage = Global.secureStorage;
+    var userId = await secureStorage.readSecureData(('id'));
+
+    var user = await UserService.getUser(userId);
+
+    return user;
+  }
+
+  void updateUserInfo() async {
+    currentUser!.name = nameController!.text;
+    currentUser!.email = emailController!.text;
+    currentUser!.phoneNumber = phoneNumberController!.text;
+
+    if (passwordController!.text.isNotEmpty) {
+      if (newPasswordController!.text == newPasswordConfirmationController!.text) {
+        currentUser!.password = newPasswordController!.text;
+      } else {
+        Global.warning(context, 'Passwords do not match');
+      }
+    }
+    var success = false;
+
+    success = await UserService.updateUser(currentUser);
+
+    if (success) {
+      Navigator.of(context).popAndPushNamed(MainScreen.routeName);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    credentials = Global.getCredentials();
+
+    currentUserFuture = fetchMe();
   }
 
   var newThemeColor;
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context).size;
-    var emailController = TextEditingController(text: Global.email);
-    var passwordController = TextEditingController(text: Global.password);
-    var nameController = TextEditingController(text: "erel");
-    var surnameController = TextEditingController(text: "öztürk");
-    var mobileController = TextEditingController(text: "+905396169835");
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        drawer: NavDrawer(),
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
+    return Scaffold(
+      drawer: NavDrawer(),
+      appBar: AppBar(
+        title: Text('User Settings'),
         backgroundColor: Theme.of(context).primaryColor,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: Text(
-                      "User Credentials",
-                      style: TextStyle(
-                          color: Theme.of(context).accentColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+          future: currentUserFuture,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              currentUser = snapshot.data;
+
+              nameController = TextEditingController(text: currentUser!.name);
+              emailController = TextEditingController(text: currentUser!.email);
+              passwordController = TextEditingController(text: '');
+              newPasswordController = TextEditingController(text: '');
+              newPasswordConfirmationController = TextEditingController(text: '');
+              phoneNumberController = TextEditingController(text: currentUser!.phoneNumber);
+
+              return Padding(
+                padding: EdgeInsets.all(30),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      hintText: 'Enter your name',
                     ),
                   ),
-                ],
-              ),
-              Divider(
-                color: Theme.of(context).accentColor,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "email: ",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        FutureBuilder(
-                          future: credentials,
-                          initialData: null,
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData) {
-                              List<String> localCredentials = snapshot.data;
-                              return Text(localCredentials[0],
-                                  style: TextStyle(
-                                      color: Theme.of(context).accentColor,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold));
-                            }
-                            return CircularProgressIndicator();
-                          },
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(
-                            Icons.edit,
-                            color: Theme.of(context).accentColor,
-                          ),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return EditPopup(
-                                      "email", Global.email, emailController);
-                                });
-                          },
-                        )
-                      ],
+                  Divider(),
+                  TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      hintText: 'Enter your email',
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "password: ",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        FutureBuilder(
-                          future: credentials,
-                          initialData: null,
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData) {
-                              List<String> localCredentials = snapshot.data;
-                              return Text(
-                                obscure
-                                    ? "${localCredentials[1]}"
-                                    : '${localCredentials[1].replaceAll(RegExp(r"."), "*")}',
-                                style: TextStyle(
-                                    color: Theme.of(context).accentColor,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold),
-                              );
-                            }
-                            return CircularProgressIndicator();
-                          },
-                        ),
-                        Spacer(),
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Checkbox(
-                            value: obscure,
-                            onChanged: (_) {
-                              setState(() {
-                                obscure = !obscure;
-                              });
-                            }),
-                        IconButton(
-                          icon: Icon(
-                            Icons.edit,
-                            color: Theme.of(context).accentColor,
-                          ),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return EditPopup(
-                                    "password",
-                                    Global.email,
-                                    passwordController,
-                                  );
-                                });
-                          },
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Divider(
-                color: Theme.of(context).accentColor,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("User Information",
-                      style: TextStyle(
-                          color: Theme.of(context).accentColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold))
-                ],
-              ),
-              Divider(color: Theme.of(context).accentColor),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "name: ",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        Text(
-                          "erel",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return EditPopup(
-                                      "name", Global.email, nameController);
-                                });
-                          },
-                          color: Theme.of(context).accentColor,
-                        )
-                      ],
+                  ),
+                  Divider(),
+                  TextField(
+                    keyboardType: TextInputType.phone,
+                    controller: phoneNumberController,
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      hintText: 'Enter your phone number',
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "surname: ",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        Text(
-                          "öztürk",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return EditPopup(
-                                      "email", Global.email, surnameController);
-                                });
-                          },
-                          color: Theme.of(context).accentColor,
-                        )
-                      ],
+                  ),
+                  Divider(),
+                  Text(
+                    'Change Your Password',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Current Password',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      hintText: 'Current Password',
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "mobile: ",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        Text(
-                          "+905396169835",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return EditPopup(
-                                      "email", Global.email, mobileController);
-                                });
-                          },
-                          color: Theme.of(context).accentColor,
-                        )
-                      ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: newPasswordController,
+                    decoration: InputDecoration(
+                      labelText: 'New Password',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      hintText: 'New Password',
                     ),
-                  ],
-                ),
-              ),
-              // Divider(
-              //   color: Theme.of(context).accentColor,
-              // ),
-              // Text(
-              //   "App Settings",
-              //   style: TextStyle(
-              //       color: Theme.of(context).accentColor,
-              //       fontSize: 24,
-              //       fontWeight: FontWeight.bold),
-              // ),
-              // Divider(
-              //   color: Theme.of(context).accentColor,
-              // ),
-              // Row(
-              //   children: [
-              //     Text(
-              //       "Dark Theme",
-              //       style: TextStyle(
-              //         color: Theme.of(context).accentColor,
-              //         fontSize: 24,
-              //       ),
-              //     ),
-              //     Switch(
-              //         value: Global.isDarkTheme,
-              //         onChanged: (data) {
-              //           setState(() {
-              //             Global.isDarkTheme = !Global.isDarkTheme;
-              //             ThemeChange.of(context).isDark = Global.isDarkTheme;
-              //           });
-              //         })
-              //   ],
-              // ),
-            ],
-          ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: newPasswordConfirmationController,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm New Password',
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      hintText: 'Confirm New Password',
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(onPressed: updateUserInfo, child: Text('Save')),
+                  )
+                ]),
+              );
+            }
+
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
       ),
     );

@@ -20,13 +20,13 @@ class GraphDaily extends StatefulWidget {
 class _GraphDailyState extends State<GraphDaily> {
   @override
   Widget build(BuildContext context) {
-    Map<String, Map<String, String>> graphData = {};
+    var graphData = <String, Map<String, String>>{};
 
     widget.data.forEach((element) {
       graphData[element.createdAt.toString()] = {element.createdAt!: element.value!};
     });
 
-    List<FlSpot> spots = graphData.entries.map((e) {
+    var spots = graphData.entries.map((e) {
       var x = DateTime.parse(e.value.keys.first).millisecondsSinceEpoch.toDouble();
 
       var y = e.value.values.first;

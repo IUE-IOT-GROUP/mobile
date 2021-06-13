@@ -4,18 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'SecureStorage.dart';
-import 'widgets/progress_bar.dart';
-import "./models/device.dart";
-import "./models/place.dart";
-import "./models/user.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Global {
   static var prefs;
-  static var email = "";
-  static var password = "";
-  static final String baseApiUrl = "https://api.iot-ms.xyz/api";
-  static final String baseFogUrl = "https://api.iot-ms.xyz/api";
+  static var id = 0;
+  static var email = '';
+  static var password = '';
+  static final String baseApiUrl = 'https://api.iot-ms.xyz/api';
+  static final String baseFogUrl = 'https://api.iot-ms.xyz/api';
   static final SecureStorage secureStorage = SecureStorage();
   static var initialState = 0;
   static bool isLoading = false;
@@ -27,24 +24,23 @@ class Global {
     // return baseApiUrl;
   }
 
-  static List<Device> devices = [];
   //static List<Place> places = DUMMY_PLACES;
 
   static void setPrefs() async {
     prefs = await SharedPreferences.getInstance();
     while (true) {
-      if (prefs.containsKey("isDark")) {
-        isDarkTheme = prefs.getBool("isDark");
+      if (prefs.containsKey('isDark')) {
+        isDarkTheme = prefs.getBool('isDark');
         break;
       }
     }
   }
 
   static Future<List<String>> getCredentials() async {
-    List<String> retval = [];
+    var retval = <String>[];
     prefs = await SharedPreferences.getInstance();
-    String email = prefs.getString("email");
-    String pw = prefs.getString("password");
+    String email = prefs.getString('email');
+    String pw = prefs.getString('password');
     retval.add(email);
     retval.add(pw);
     return retval;
@@ -55,21 +51,15 @@ class Global {
   //   prefs.setBool("isDark", yes);
   // }
 
-  static Future<Response> h_post(String url, Object body,
-      {bool appendToken = false}) async {
-    Uri uri = Uri.parse(url);
+  static Future<Response> h_post(String url, Object body, {bool appendToken = false}) async {
+    var uri = Uri.parse(url);
     String token;
-    var headers = {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    };
+    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
     if (appendToken) {
-      token = await secureStorage.readSecureData("token");
-      headers.putIfAbsent("Authorization", () => "Bearer " + token);
+      token = await secureStorage.readSecureData('token');
+      headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-    return await http
-        .post(uri, headers: headers, body: jsonEncode(body))
-        .then((http.Response response) {
+    return await http.post(uri, headers: headers, body: jsonEncode(body)).then((http.Response response) {
       return response;
     });
   }
@@ -78,43 +68,33 @@ class Global {
     return Center(child: CircularProgressIndicator());
   }
 
-  static Future<Response> h_update(String url, Object body,
-      {bool appendToken = false}) async {
-    Uri uri = Uri.parse(url);
+  static Future<Response> h_update(String url, Object body, {bool appendToken = false}) async {
+    var uri = Uri.parse(url);
     String token;
-    var headers = {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    };
+    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
     if (appendToken) {
-      token = await secureStorage.readSecureData("token");
-      headers.putIfAbsent("Authorization", () => "Bearer " + token);
+      token = await secureStorage.readSecureData('token');
+      headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-    return await http
-        .put(uri, headers: headers, body: jsonEncode(body))
-        .then((http.Response response) {
+    return await http.put(uri, headers: headers, body: jsonEncode(body)).then((http.Response response) {
       return response;
     });
   }
 
   static Future<Response> h_get(String url, {bool appendToken = false}) async {
-    Uri uri = Uri.parse(url);
+    var uri = Uri.parse(url);
     String token;
 
     // fire loading event
 
-    var headers = {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    };
+    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
 
     if (appendToken) {
-      token = await secureStorage.readSecureData("token");
-      headers.putIfAbsent("Authorization", () => "Bearer " + token);
+      token = await secureStorage.readSecureData('token');
+      headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
 
-    var response =
-        await http.get(uri, headers: headers).then((http.Response response) {
+    var response = await http.get(uri, headers: headers).then((http.Response response) {
       return response;
     });
 
@@ -123,29 +103,24 @@ class Global {
     return response;
   }
 
-  static Future<Response> h_delete(String url,
-      {bool appendToken = false}) async {
-    Uri uri = Uri.parse(url);
+  static Future<Response> h_delete(String url, {bool appendToken = false}) async {
+    var uri = Uri.parse(url);
     String token;
-    var headers = {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    };
+    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
 
     if (appendToken) {
-      token = await secureStorage.readSecureData("token");
-      headers.putIfAbsent("Authorization", () => "Bearer " + token);
+      token = await secureStorage.readSecureData('token');
+      headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
 
-    var response =
-        await http.delete(uri, headers: headers).then((http.Response response) {
+    var response = await http.delete(uri, headers: headers).then((http.Response response) {
       return response;
     });
     return response;
   }
 
   static alert(BuildContext ctx, String title, String message) {
-    AlertDialog alert = AlertDialog(
+    var alert = AlertDialog(
       title: Text(title),
       content: SingleChildScrollView(
         child: ListBody(
@@ -156,10 +131,10 @@ class Global {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('OK'),
           onPressed: () {
             Navigator.of(ctx).pop();
           },
+          child: Text('OK'),
         ),
       ],
     );
@@ -171,11 +146,11 @@ class Global {
   }
 
   static warning(BuildContext ctx, String message) {
-    alert(ctx, "WARNING", message);
+    alert(ctx, 'WARNING', message);
   }
 
   static success(BuildContext ctx, String message) {
-    alert(ctx, "SUCCESS", message);
+    alert(ctx, 'SUCCESS', message);
   }
 
   static Widget showCircularProgress() {

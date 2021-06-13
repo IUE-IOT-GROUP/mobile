@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
-
 class User {
-  final int id;
-  final String email;
-  final String name;
+  int? id;
+  String? email;
+  String? name;
+  String? phoneNumber;
+  String? password;
 
-  User({required this.id, required this.email, required this.name});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-    );
+  User([int? id, String? email, String? name, String? phoneNumber, String? password]) {
+    this.id = id;
+    this.email = email;
+    this.name = name;
+    this.phoneNumber = phoneNumber;
+    this.password = password;
   }
+
+  factory User.fromJson(Map<String, dynamic> json) => User(json['id'], json['email'], json['name'], json['phone_number']);
 }
