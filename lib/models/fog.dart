@@ -7,7 +7,8 @@ class Fog {
   String? ipAddress;
   String? port;
 
-  Fog(String? id, String? name, String? macAddress, String? ipAddress, String? port) {
+  Fog(String? id, String? name, String? macAddress, String? ipAddress,
+      String? port) {
     this.id = id;
     this.name = name;
     this.macAddress = macAddress;
@@ -16,7 +17,8 @@ class Fog {
   }
 
   factory Fog.fromJson(Map<String, dynamic> json) {
-    var fog = Fog(json['id'], json['name'], json['macAddress'], json['ipAddress'], json['port']);
+    var fog = Fog(json['id'], json['name'], json['mac_address'],
+        json['ip_address'], json['portnum']);
 
     return fog;
   }

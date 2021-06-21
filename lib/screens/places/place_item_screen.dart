@@ -3,6 +3,7 @@ import 'package:prototype/screens/places/create_place_screen.dart';
 import 'package:prototype/screens/places/edit_place_screen.dart';
 import 'package:prototype/services/place.service.dart';
 import 'package:prototype/widgets/child_place_list.dart';
+import 'package:prototype/widgets/fog_list.dart';
 import 'package:prototype/widgets/navDrawer.dart';
 import '../../widgets/device_list.dart';
 import '../../models/place.dart';
@@ -16,7 +17,8 @@ class PlaceItemScreen extends StatefulWidget {
   _PlaceItemScreenState createState() => _PlaceItemScreenState();
 }
 
-class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProviderStateMixin {
+class _PlaceItemScreenState extends State<PlaceItemScreen>
+    with SingleTickerProviderStateMixin {
   Future<Place>? _placeFuture;
   String? _placeId;
 
@@ -39,11 +41,12 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController!.addListener(_handleTabSelection);
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
+        final routeArgs =
+            ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
         _placeId = routeArgs['placeId'] as String;
         _placeFuture = fetchPlace();
       });
@@ -88,8 +91,11 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
                   text: 'Places',
                 ),
                 Tab(
+                  text: 'Fogs',
+                ),
+                Tab(
                   text: 'Devices',
-                )
+                ),
               ],
             ),
           ),
@@ -104,10 +110,11 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
                 controller: _tabController,
                 children: [
                   ChildPlaceList(currentPlace!.places),
+                  FogList(currentPlace!.id),
                   DeviceList(
                     isGetAllDevices: false,
                     placeId: currentPlace!.id,
-                  )
+                  ),
                 ],
               );
             }
@@ -121,10 +128,12 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
                     children: [
                       CircleAvatar(
                         radius: 25,
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.yellow,
                         child: InkWell(
                           onTap: () {
-                            Navigator.pushNamed(context, EditPlaceScreen.routeName, arguments: {'placeId': currentPlace!.id});
+                            Navigator.pushNamed(
+                                context, EditPlaceScreen.routeName,
+                                arguments: {'placeId': currentPlace!.id});
                           },
                           child: Icon(Icons.edit),
                         ),
@@ -137,7 +146,9 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
                         backgroundColor: Colors.green,
                         child: InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed(CreatePlace.routeName, arguments: {'parentId': currentPlace!.id});
+                            Navigator.of(context).pushNamed(
+                                CreatePlace.routeName,
+                                arguments: {'parentId': currentPlace!.id});
                           },
                           child: Icon(Icons.add),
                         ),
@@ -213,7 +224,8 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text('If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?'),
+            Text(
+                'If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?'),
           ],
         ),
       ),

@@ -29,7 +29,8 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
 
   String username = '';
@@ -98,8 +99,11 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       Icons.add,
                       color: Theme.of(context).accentColor,
                     ),
-                    onPressed: () =>
-                        Global.initialState == 0 ? Navigator.of(context).pushNamed(CreatePlace.routeName, arguments: {'parentId': 0}) : Navigator.of(context).pushNamed(CreateDevice.routeName),
+                    onPressed: () => Global.initialState == 0
+                        ? Navigator.of(context).pushNamed(CreatePlace.routeName,
+                            arguments: {'parentId': 0})
+                        : Navigator.of(context)
+                            .pushNamed(CreateDevice.routeName),
                   )
                 : Container(),
           ],

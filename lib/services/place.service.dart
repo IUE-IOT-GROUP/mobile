@@ -9,7 +9,8 @@ class PlaceService {
 
   static Future<List<Place>> getParentPlaces() async {
     var places = <Place>[];
-    await Global.h_get('${placesUrl}?with=children', appendToken: true).then((http.Response response) async {
+    await Global.h_get('${placesUrl}?with=children', appendToken: true)
+        .then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
       places = List<Place>.from(data.map((model) {
@@ -18,7 +19,8 @@ class PlaceService {
         List<dynamic> subPlaces = model['places'] ?? {};
 
         if (subPlaces.isNotEmpty) {
-          place.places = List<Place>.from(subPlaces.map((model2) => Place.fromJson(model2)));
+          place.places = List<Place>.from(
+              subPlaces.map((model2) => Place.fromJson(model2)));
         }
         return place;
       }));
@@ -29,7 +31,8 @@ class PlaceService {
 
   static Future<List<Place>> getPlaces() async {
     var parentPlaces = <Place>[];
-    await Global.h_get(placesUrl, appendToken: true).then((http.Response response) async {
+    await Global.h_get(placesUrl, appendToken: true)
+        .then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
       parentPlaces = List<Place>.from(data.map((model) {
@@ -59,7 +62,8 @@ class PlaceService {
   static Future<bool> deletePlace(
     Place place,
   ) async {
-    final response = await Global.h_delete('$placesUrl/${place.id}', appendToken: true);
+    final response =
+        await Global.h_delete('$placesUrl/${place.id}', appendToken: true);
     if (response.statusCode == 404) {
       return false;
     } else {
@@ -100,7 +104,8 @@ class PlaceService {
 
     var place = Place(name: 'sd');
 
-    await Global.h_get(url, appendToken: true).then((http.Response response) async {
+    await Global.h_get(url, appendToken: true)
+        .then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
       place = Place.fromJson(jsonResponse['data']);
@@ -114,13 +119,14 @@ class PlaceService {
 
     var fogs = <Fog>[];
 
-    await Global.h_get(url, appendToken: true).then((http.Response response) async {
+    await Global.h_get(url, appendToken: true)
+        .then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
       print('fogdata $data');
       fogs = List<Fog>.from(data.map((model) {
         var fog = Fog.fromJson(model);
-
+        print('fog port: ${fog.port}');
         return fog;
       }));
     });

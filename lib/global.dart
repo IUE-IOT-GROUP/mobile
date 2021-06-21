@@ -12,7 +12,7 @@ class Global {
   static var email = '';
   static var password = '';
   static final String baseApiUrl = 'https://api.iot-ms.xyz/api';
-  static final String baseFogUrl = 'http://10.0.2.2:8080/api';
+  static final String baseFogUrl = 'https://api.iot-ms.xyz/api';
   static final SecureStorage secureStorage = SecureStorage();
   static var initialState = 0;
   static bool isLoading = false;
@@ -52,15 +52,21 @@ class Global {
   //   prefs.setBool("isDark", yes);
   // }
 
-  static Future<Response> h_post(String url, Object body, {bool appendToken = false}) async {
+  static Future<Response> h_post(String url, Object body,
+      {bool appendToken = false}) async {
     var uri = Uri.parse(url);
     String token;
-    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
     if (appendToken) {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-    return await http.post(uri, headers: headers, body: jsonEncode(body)).then((http.Response response) {
+    return await http
+        .post(uri, headers: headers, body: jsonEncode(body))
+        .then((http.Response response) {
       return response;
     });
   }
@@ -69,15 +75,21 @@ class Global {
     return Center(child: CircularProgressIndicator());
   }
 
-  static Future<Response> h_update(String url, Object body, {bool appendToken = false}) async {
+  static Future<Response> h_update(String url, Object body,
+      {bool appendToken = false}) async {
     var uri = Uri.parse(url);
     String token;
-    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
     if (appendToken) {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-    return await http.put(uri, headers: headers, body: jsonEncode(body)).then((http.Response response) {
+    return await http
+        .put(uri, headers: headers, body: jsonEncode(body))
+        .then((http.Response response) {
       return response;
     });
   }
@@ -88,14 +100,18 @@ class Global {
 
     // fire loading event
 
-    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
 
     if (appendToken) {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
 
-    var response = await http.get(uri, headers: headers).then((http.Response response) {
+    var response =
+        await http.get(uri, headers: headers).then((http.Response response) {
       print('responsebody ${response.body}');
       return response;
     });
@@ -105,17 +121,22 @@ class Global {
     return response;
   }
 
-  static Future<Response> h_delete(String url, {bool appendToken = false}) async {
+  static Future<Response> h_delete(String url,
+      {bool appendToken = false}) async {
     var uri = Uri.parse(url);
     String token;
-    var headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
 
     if (appendToken) {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
 
-    var response = await http.delete(uri, headers: headers).then((http.Response response) {
+    var response =
+        await http.delete(uri, headers: headers).then((http.Response response) {
       return response;
     });
     return response;
