@@ -3,7 +3,7 @@ import 'package:prototype/models/place.dart';
 import 'package:prototype/widgets/place_item.dart';
 
 class ChildPlaceList extends StatefulWidget {
-  List<Place>? places;
+  final List<Place>? places;
   ChildPlaceList(this.places);
 
   @override

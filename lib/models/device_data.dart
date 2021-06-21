@@ -1,10 +1,10 @@
 class DeviceData {
-  int? id;
+  String? id;
   String? value;
   String? createdAt;
   DateTime? createdAtDate;
 
-  DeviceData(int? id, String value, String createdAt) {
+  DeviceData(String? id, String value, String createdAt) {
     this.id = id;
     this.value = value;
     this.createdAt = createdAt;

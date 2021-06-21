@@ -12,9 +12,7 @@ class DeviceDataService {
 
     var deviceDataTypes = <DeviceDataType>[];
 
-    final response = await Global.h_get(url, appendToken: true)
-        .then((http.Response response) async {
-      print('data service 1: ${response.body}');
+    await Global.h_get(url, appendToken: true).then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
 
@@ -27,14 +25,10 @@ class DeviceDataService {
     return deviceDataTypes;
   }
 
-  static Future<DeviceDataType> getDeviceDataByPeriod(
-      DeviceDataType deviceDataType, String period) async {
-    String url =
-        '$deviceDataUrl/${deviceDataType.device!.id}/${deviceDataType.id}?period=$period';
+  static Future<DeviceDataType> getDeviceDataByPeriod(DeviceDataType deviceDataType, String period) async {
+    var url = '$deviceDataUrl/${deviceDataType.device!.id}/${deviceDataType.id}?period=$period';
 
-    await Global.h_get(url, appendToken: true)
-        .then((http.Response response) async {
-      print('data service 2: ${response.body}');
+    await Global.h_get(url, appendToken: true).then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       Map<String, dynamic> data = jsonResponse['data'];
 

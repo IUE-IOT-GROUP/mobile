@@ -3,11 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:prototype/models/device_graph_data.dart';
-import 'LineTitles.dart';
-import "dart:math";
 
 class GraphDaily extends StatefulWidget {
-  List<DeviceGraphData> data;
+  final List<DeviceGraphData> data;
   GraphDaily(this.data, this.max_y, this.min_y, this.max_x, this.min_x);
   final double? max_y;
   final double? min_y;

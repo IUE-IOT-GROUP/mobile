@@ -16,7 +16,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
   Future<List<Place>>? places;
   Future<Place>? place;
   String? currPlace;
-  int? _placeId;
+  String? _placeId;
 
   TextEditingController? nameController;
 
@@ -37,9 +37,8 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
     super.initState();
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs =
-            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
-        _placeId = routeArgs['placeId'] as int;
+        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
+        _placeId = routeArgs['placeId'] as String;
 
         place = fetchPlace();
         places = fetchParentPlaces();
@@ -71,19 +70,15 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
                       labelText: 'Name',
-                      labelStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       hintText: 'Enter device name',
-                      hintStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
+                      hintStyle: TextStyle(color: Theme.of(context).accentColor),
                     ),
                   ),
                 ),
@@ -124,8 +119,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                             ));
                           }).toList();
                         },
-                        items: dropdownlist
-                            .map<DropdownMenuItem<String>>((String value) {
+                        items: dropdownlist.map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(
@@ -135,6 +129,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
+                          print('newValue: $newValue');
                           setState(() {
                             currPlace = newValue!;
                           });
@@ -149,25 +144,19 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                 ),
                 ElevatedButton(
                     onPressed: () async {
-                      int? new_parent_id = 0;
+                      String? new_parent_id = '';
                       currentPlaces!.forEach((element) {
                         if (element.name == currPlace) {
                           new_parent_id = element.id;
                         }
                       });
                       var new_name = nameController!.text;
-                      var body = {
-                        'name': new_name,
-                        'parent': new_parent_id == 0 ? null : new_parent_id
-                      };
-                      final response =
-                          await PlaceService.updatePlace(currentPlace.id, body);
+                      var body = {'name': new_name, 'parent_id': new_parent_id == '' ? null : new_parent_id};
+                      final response = await PlaceService.updatePlace(currentPlace.id, body);
                       if (response) {
-                        Navigator.of(context)
-                            .popAndPushNamed(MainScreen.routeName);
+                        await Navigator.of(context).popAndPushNamed(MainScreen.routeName);
                       } else {
-                        Global.warning(context,
-                            'Something went wrong. Failed to update place');
+                        Global.warning(context, 'Something went wrong. Failed to update place');
                       }
                     },
                     child: Text('Update'))

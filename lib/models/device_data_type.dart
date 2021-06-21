@@ -4,7 +4,7 @@ import 'package:prototype/models/device_graph_data.dart';
 
 class DeviceDataType {
   Device? device;
-  int? id;
+  String? id;
   String? name;
   String? unit;
   String? expectedParameter;
@@ -19,17 +19,7 @@ class DeviceDataType {
   DateTime? max_x_date;
 
   DeviceDataType(
-      Device device,
-      int id,
-      String name,
-      String unit,
-      String expectedParameter,
-      List<DeviceData> data,
-      List<DeviceGraphData> graphData,
-      double min_y,
-      double max_y,
-      String min_x,
-      String max_x) {
+      Device device, String id, String name, String unit, String expectedParameter, List<DeviceData> data, List<DeviceGraphData> graphData, double min_y, double max_y, String min_x, String max_x) {
     this.device = device;
     this.id = id;
     this.name = name;
@@ -55,7 +45,7 @@ class DeviceDataType {
     String min_x = json['min_x'];
     String max_x = json['max_x'];
 
-    int id = details['device_parameter_id'];
+    String id = details['device_parameter_id'];
     String expected = details['expected_parameter'];
     String name = details['name'];
     String unit = details['unit'];
@@ -63,23 +53,19 @@ class DeviceDataType {
     var data = <DeviceData>[];
 
     deviceData.forEach((element) {
-      var devicedata = DeviceData(
-          element['id'], element['value'].toString(), element['created_at']);
+      var devicedata = DeviceData(element['id'], element['value'].toString(), element['created_at']);
 
       data.add(devicedata);
     });
-    print('71: ${data}');
 
     var graphData = <DeviceGraphData>[];
 
     deviceGraphData.forEach((element) {
-      var devicedata =
-          DeviceGraphData(element['value'].toString(), element['created_at']);
+      var devicedata = DeviceGraphData(element['value'].toString(), element['created_at']);
       graphData.add(devicedata);
     });
 
-    var deviceDataType = DeviceDataType(device, id, name, unit, expected, data,
-        graphData, double.parse(min_y), double.parse(max_y), min_x, max_x);
+    var deviceDataType = DeviceDataType(device, id, name, unit, expected, data, graphData, double.parse(min_y), double.parse(max_y), min_x, max_x);
 
     return deviceDataType;
   }

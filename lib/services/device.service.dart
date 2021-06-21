@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DeviceService {
-  static String devicesUrl = '${Global.baseUrl}/userDevices';
+  static String devicesUrl = '${Global.baseUrl}/devices';
 
   static Future<bool> postDevice(Object body) async {
     var responseCode = false;
@@ -18,7 +18,7 @@ class DeviceService {
     return responseCode;
   }
 
-  static Future<bool> updateDevice(Object body, int deviceId) async {
+  static Future<bool> updateDevice(Object body, String deviceId) async {
     var url = '$devicesUrl/$deviceId';
     var responseCode = false;
     final response = await Global.h_update(url, body, appendToken: true);
@@ -44,8 +44,8 @@ class DeviceService {
     return devices;
   }
 
-  static Future<List<Device>> getDevicesByPlace(int placeId) async {
-    var url = '${Global.baseUrl}/places/$placeId/userDevices';
+  static Future<List<Device>> getDevicesByPlace(String placeId) async {
+    var url = '${Global.baseUrl}/places/$placeId/devices';
     var devices = <Device>[];
     await Global.h_get(url, appendToken: true).then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -59,7 +59,7 @@ class DeviceService {
     return devices;
   }
 
-  static Future<Device> getDeviceById(int? deviceId) async {
+  static Future<Device> getDeviceById(String? deviceId) async {
     var url = '$devicesUrl/$deviceId';
 
     var device = Device(name: 'sd');
@@ -73,7 +73,7 @@ class DeviceService {
     return device;
   }
 
-  static Future<bool> deleteDevice(int? deviceId) async {
+  static Future<bool> deleteDevice(String? deviceId) async {
     var url = '$devicesUrl/$deviceId';
     var responseCode = false;
     final response = await Global.h_delete(url, appendToken: true);

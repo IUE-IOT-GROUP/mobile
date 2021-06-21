@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../screens/places/create_place_screen.dart';
-import "../global.dart";
 import '../screens/devices/create_device_screen.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -21,17 +20,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).primaryColor,
-      title: Text("Welcome"),
+      title: Text('Welcome'),
       actions: [
         IconButton(
             icon: Icon(
               Icons.add,
               color: Theme.of(context).accentColor,
             ),
-            onPressed: () => widget.selectedIndex == 0
-                ? Navigator.of(context).pushNamed(CreatePlace.routeName,
-                    arguments: {"parentId", 0})
-                : Navigator.of(context).pushNamed(CreateDevice.routeName))
+            onPressed: () => widget.selectedIndex == 0 ? Navigator.of(context).pushNamed(CreatePlace.routeName, arguments: {'parentId', 0}) : Navigator.of(context).pushNamed(CreateDevice.routeName))
       ],
     );
   }

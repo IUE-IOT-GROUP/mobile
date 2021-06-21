@@ -34,8 +34,7 @@ class _ParameterItemState extends State<ParameterItem> {
   }
 
   void fetchNewData() async {
-    widget.dataType = await DeviceDataService.getDeviceDataByPeriod(
-        widget.dataType, widget.time!);
+    widget.dataType = await DeviceDataService.getDeviceDataByPeriod(widget.dataType, widget.time!);
     setState(() {});
   }
 
@@ -45,26 +44,11 @@ class _ParameterItemState extends State<ParameterItem> {
   @override
   Widget build(BuildContext context) {
     if (widget.time == 'daily' || widget.time == null) {
-      widget.graphWidget = GraphDaily(
-          widget.dataType.graphData!,
-          widget.dataType.max_y!,
-          widget.dataType.min_y!,
-          widget.dataType.max_x_date!,
-          widget.dataType.min_x_date!);
+      widget.graphWidget = GraphDaily(widget.dataType.graphData!, widget.dataType.max_y!, widget.dataType.min_y!, widget.dataType.max_x_date!, widget.dataType.min_x_date!);
     } else if (widget.time == 'weekly') {
-      widget.graphWidget = GraphWeekly(
-          widget.dataType.graphData!,
-          widget.dataType.max_y!,
-          widget.dataType.min_y!,
-          widget.dataType.max_x_date!,
-          widget.dataType.min_x_date!);
+      widget.graphWidget = GraphWeekly(widget.dataType.graphData!, widget.dataType.max_y!, widget.dataType.min_y!, widget.dataType.max_x_date!, widget.dataType.min_x_date!);
     } else if (widget.time == 'monthly') {
-      widget.graphWidget = GraphMonthly(
-          widget.dataType.graphData!,
-          widget.dataType.max_y!,
-          widget.dataType.min_y!,
-          widget.dataType.max_x_date!,
-          widget.dataType.min_x_date!);
+      widget.graphWidget = GraphMonthly(widget.dataType.graphData!, widget.dataType.max_y!, widget.dataType.min_y!, widget.dataType.max_x_date!, widget.dataType.min_x_date!);
     }
 
     final mq = MediaQuery.of(context).size;
@@ -79,16 +63,11 @@ class _ParameterItemState extends State<ParameterItem> {
         Container(
           margin: EdgeInsets.only(top: 20),
           height: mq.height * 0.1,
-          decoration: BoxDecoration(
-              color: Theme.of(context).accentColor,
-              borderRadius: BorderRadius.circular(15)),
+          decoration: BoxDecoration(color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(15)),
           child: Center(
             child: Text(
               '${widget.dataType.data!.first.value}${parseUnit(widget.dataType.unit!)}',
-              style: TextStyle(
-                  fontSize: mq.height * 0.1,
-                  fontFamily: 'Temperature',
-                  color: Theme.of(context).primaryColor),
+              style: TextStyle(fontSize: mq.height * 0.1, fontFamily: 'Temperature', color: Theme.of(context).primaryColor),
             ),
           ),
         ),
@@ -100,8 +79,7 @@ class _ParameterItemState extends State<ParameterItem> {
           children: [
             ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      isDaily ? Colors.grey : Colors.blue),
+                  backgroundColor: MaterialStateProperty.all<Color>(isDaily ? Colors.grey : Colors.blue),
                 ),
                 onPressed: () {
                   setState(() {
@@ -116,8 +94,7 @@ class _ParameterItemState extends State<ParameterItem> {
                 child: Text('Daily')),
             ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      isWeekly ? Colors.grey : Colors.blue),
+                  backgroundColor: MaterialStateProperty.all<Color>(isWeekly ? Colors.grey : Colors.blue),
                 ),
                 onPressed: () {
                   setState(() {
@@ -131,8 +108,7 @@ class _ParameterItemState extends State<ParameterItem> {
                 child: Text('Weekly')),
             ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      isMonthly ? Colors.grey : Colors.blue),
+                  backgroundColor: MaterialStateProperty.all<Color>(isMonthly ? Colors.grey : Colors.blue),
                 ),
                 onPressed: () {
                   setState(() {
@@ -154,8 +130,7 @@ class _ParameterItemState extends State<ParameterItem> {
               List<String?>? lastTenValue = [];
               List<String?>? lastTenCreatedAt = [];
               widget.dataType.data!.forEach((element) {
-                String createdValue =
-                    '${element.createdAtDate!.hour}:${element.createdAtDate!.minute}:${element.createdAtDate!.second}';
+                var createdValue = '${element.createdAtDate!.hour}:${element.createdAtDate!.minute}:${element.createdAtDate!.second}';
                 lastTenCreatedAt.add(createdValue);
                 lastTenValue.add(element.value!);
               });
@@ -170,12 +145,7 @@ class _ParameterItemState extends State<ParameterItem> {
                             itemBuilder: (BuildContext context, index) {
                               return ListTile(
                                 title: Row(
-                                  children: [
-                                    Text('${lastTenCreatedAt[index]!}->'),
-                                    Spacer(),
-                                    Text(
-                                        '${lastTenValue[index]!}${parseUnit(widget.dataType.unit!)}')
-                                  ],
+                                  children: [Text('${lastTenCreatedAt[index]!}->'), Spacer(), Text('${lastTenValue[index]!}${parseUnit(widget.dataType.unit!)}')],
                                 ),
                                 subtitle: Divider(
                                   color: Colors.black,
@@ -184,7 +154,7 @@ class _ParameterItemState extends State<ParameterItem> {
                             }));
                   });
             },
-            child: Text("Show recent")),
+            child: Text('Show recent')),
         SizedBox(
           height: mq.height * 0.05,
         ),

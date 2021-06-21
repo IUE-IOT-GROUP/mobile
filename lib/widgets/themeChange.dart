@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prototype/global.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeChange extends ChangeNotifier {
@@ -14,36 +12,32 @@ class ThemeChange extends ChangeNotifier {
   Color accentColor = ACCENT;
 
   void changeColor() {
-    this.isDark = !this.isDark;
+    isDark = !isDark;
 
-    this.primaryColor = this.isDark ? PRIMARY : ACCENT;
-    this.accentColor = this.isDark ? ACCENT : PRIMARY;
+    primaryColor = isDark ? PRIMARY : ACCENT;
+    accentColor = isDark ? ACCENT : PRIMARY;
     notifyListeners();
 
-    _prefs.setBool('isDark', this.isDark);
+    _prefs.setBool('isDark', isDark);
   }
 
   ThemeChange(this._prefs) {
-    this.isDark = _prefs.getBool('isDark') ?? true;
-    this.primaryColor = this.isDark ? PRIMARY : ACCENT;
-    this.accentColor = this.isDark ? ACCENT : PRIMARY;
+    isDark = _prefs.getBool('isDark') ?? true;
+    primaryColor = isDark ? PRIMARY : ACCENT;
+    accentColor = isDark ? ACCENT : PRIMARY;
   }
 
   static ThemeChange of(BuildContext context) {
-    final provider =
-        context.dependOnInheritedWidgetOfExactType<ThemeChangeProvider>();
+    final provider = context.dependOnInheritedWidgetOfExactType<ThemeChangeProvider>();
     return provider!.controller;
   }
 }
 
 class ThemeChangeProvider extends InheritedWidget {
-  const ThemeChangeProvider(
-      {Key? key, required this.controller, required Widget child})
-      : super(key: key, child: child);
+  const ThemeChangeProvider({Key? key, required this.controller, required Widget child}) : super(key: key, child: child);
 
   final ThemeChange controller;
 
   @override
-  bool updateShouldNotify(ThemeChangeProvider old) =>
-      controller != old.controller;
+  bool updateShouldNotify(ThemeChangeProvider old) => controller != old.controller;
 }

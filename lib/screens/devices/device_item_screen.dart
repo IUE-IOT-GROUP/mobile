@@ -17,7 +17,7 @@ class DeviceItemScreen extends StatefulWidget {
 class _DeviceItemScreenState extends State<DeviceItemScreen> {
   Future? _deviceData;
   Future<Device>? _device;
-  int? _deviceId;
+  String? _deviceId;
   Device? currentDevice;
 
   Future<Device> fetchDevice() async {
@@ -26,8 +26,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     return device;
   }
 
-  Future<List<DeviceDataType>> fetchData(Device device,
-      [String filter = 'daily']) async {
+  Future<List<DeviceDataType>> fetchData(Device device, [String filter = 'daily']) async {
     var deviceDataType = await DeviceDataService.getDeviceData(device);
 
     return deviceDataType;
@@ -38,9 +37,8 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     super.initState();
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs =
-            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
-        _deviceId = routeArgs['deviceId'] as int;
+        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
+        _deviceId = routeArgs['deviceId'] as String;
         _device = fetchDevice();
       });
     });
@@ -50,7 +48,6 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -74,8 +71,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
               ? IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(EditDeviceScreen.routeName,
-                        arguments: {'deviceId': _deviceId});
+                    Navigator.of(context).pushNamed(EditDeviceScreen.routeName, arguments: {'deviceId': _deviceId});
                   })
               : Container(),
         ],
@@ -124,17 +120,13 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "IP Address: ",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                      'IP Address: ',
+                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.ipAddress!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                                     )
                                   ],
                                 ),
@@ -144,17 +136,13 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "MAC Address: ",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                      'MAC Address: ',
+                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.macAddress!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                                     )
                                   ],
                                 ),
@@ -164,17 +152,13 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Place: ",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                      'Place: ',
+                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.place!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
                                     )
                                   ],
                                 ),

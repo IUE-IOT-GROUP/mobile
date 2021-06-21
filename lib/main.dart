@@ -3,24 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:prototype/screens/devices/edit_device_screen.dart';
 import 'package:prototype/screens/places/edit_place_screen.dart';
-import 'package:prototype/widgets/child_place_list.dart';
 import 'screens/devices/create_device_screen.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/widgets/themeChange.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/login_screen.dart';
 import 'screens/places/create_place_screen.dart';
 import 'screens/devices/device_item_screen.dart';
 import 'screens/places/place_item_screen.dart';
-import "screens/settings_screen.dart";
-import "./global.dart";
-import "./widgets/themeChange.dart";
-import "./preferencesController.dart";
+import 'screens/settings_screen.dart';
+import './global.dart';
+import './widgets/themeChange.dart';
+import './preferencesController.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
@@ -29,11 +27,11 @@ void main() async {
   Global.isLocal = connectivityResult == ConnectivityResult.wifi;
 
   // listen to loading event
-  bool isLoading = false;
+  var isLoading = false;
 
   final prefs = await SharedPreferences.getInstance();
   final themeChange = ThemeChange(prefs);
-  SharedPreferences.getInstance().then((instance) => PreferecesController.sharedPreferencesInstance = instance);
+  await SharedPreferences.getInstance().then((instance) => PreferecesController.sharedPreferencesInstance = instance);
 
   runApp(MyApp(themeChange: themeChange));
 }
@@ -63,7 +61,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   bool? isRemember() {
-    return PreferecesController.sharedPreferencesInstance!.getBool("rememberMe") ?? false;
+    return PreferecesController.sharedPreferencesInstance!.getBool('rememberMe') ?? false;
   }
 
   late bool remember = false;
@@ -74,7 +72,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, child) {
           return ThemeChangeProvider(
               controller: widget.themeChange,
-              child: MaterialApp(theme: _buildCurrentTheme(), home: isRemember()! ? MainScreen() : LoginScreen(), initialRoute: "/", routes: {
+              child: MaterialApp(theme: _buildCurrentTheme(), home: isRemember()! ? MainScreen() : LoginScreen(), initialRoute: '/', routes: {
                 LoginScreen.routeName: (ctx) => LoginScreen(),
                 MainScreen.routeName: (ctx) => MainScreen(),
                 CreateDevice.routeName: (ctx) => CreateDevice(),

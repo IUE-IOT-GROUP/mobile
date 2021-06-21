@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/services/place.service.dart';
-import '../global.dart';
 import '../models/place.dart';
 import './place_item.dart';
 import 'dart:async';
@@ -23,7 +22,7 @@ class _PlaceListState extends State<PlaceList> {
     return PlaceService.getParentPlaces();
   }
 
-  timer() {
+  void timer() {
     _placesFuture = getTimerPlace();
     Timer.periodic(Duration(seconds: 500), (timer) {
       setState(() {});

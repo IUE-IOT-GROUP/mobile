@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:prototype/screens/devices/create_device_screen.dart';
 import 'package:prototype/screens/places/create_place_screen.dart';
 import 'package:prototype/screens/places/edit_place_screen.dart';
 import 'package:prototype/services/place.service.dart';
 import 'package:prototype/widgets/child_place_list.dart';
 import 'package:prototype/widgets/navDrawer.dart';
-import '../../widgets/place_item.dart';
 import '../../widgets/device_list.dart';
 import '../../models/place.dart';
 import '../../global.dart';
@@ -18,10 +16,9 @@ class PlaceItemScreen extends StatefulWidget {
   _PlaceItemScreenState createState() => _PlaceItemScreenState();
 }
 
-class _PlaceItemScreenState extends State<PlaceItemScreen>
-    with SingleTickerProviderStateMixin {
+class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProviderStateMixin {
   Future<Place>? _placeFuture;
-  int? _placeId;
+  String? _placeId;
 
   Place? currentPlace;
 
@@ -32,7 +29,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
   }
 
   int _currentIndex = 0;
-  _handleTabSelection() {
+  void _handleTabSelection() async {
     setState(() {
       _currentIndex = _tabController!.index;
     });
@@ -46,9 +43,8 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
     _tabController!.addListener(_handleTabSelection);
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs =
-            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
-        _placeId = routeArgs['placeId'] as int;
+        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
+        _placeId = routeArgs['placeId'] as String;
         _placeFuture = fetchPlace();
       });
     });
@@ -56,16 +52,12 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
 
   @override
   void dispose() {
-    print("index on disposed: ${_tabController!.index}");
     _tabController!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("index: ${_tabController!.index}");
-    final mq = MediaQuery.of(context).size;
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -93,10 +85,10 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
               indicatorColor: Theme.of(context).accentColor,
               tabs: [
                 Tab(
-                  text: "Places",
+                  text: 'Places',
                 ),
                 Tab(
-                  text: "Devices",
+                  text: 'Devices',
                 )
               ],
             ),
@@ -132,9 +124,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
                         backgroundColor: Colors.green,
                         child: InkWell(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, EditPlaceScreen.routeName,
-                                arguments: {'placeId': currentPlace!.id});
+                            Navigator.pushNamed(context, EditPlaceScreen.routeName, arguments: {'placeId': currentPlace!.id});
                           },
                           child: Icon(Icons.edit),
                         ),
@@ -147,9 +137,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
                         backgroundColor: Colors.green,
                         child: InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed(
-                                CreatePlace.routeName,
-                                arguments: {"parentId": currentPlace!.id});
+                            Navigator.of(context).pushNamed(CreatePlace.routeName, arguments: {'parentId': currentPlace!.id});
                           },
                           child: Icon(Icons.add),
                         ),
@@ -225,8 +213,7 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text(
-                'If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?'),
+            Text('If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?'),
           ],
         ),
       ),

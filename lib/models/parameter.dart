@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Parameter {
   final String? optName;
   final String? expectedParameter;

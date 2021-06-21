@@ -6,7 +6,7 @@ import '../../global.dart';
 import '../../services/place.service.dart';
 
 class CreatePlace extends StatefulWidget {
-  static const routeName = "/create-place";
+  static const routeName = '/create-place';
 
   @override
   _CreatePlaceState createState() => _CreatePlaceState();
@@ -14,21 +14,18 @@ class CreatePlace extends StatefulWidget {
 
 class _CreatePlaceState extends State<CreatePlace> {
   var nameController = TextEditingController();
-  int? parentPlaceId = 0;
+  String? parentPlaceId = '';
   Future<Place?>? parentPlaceFuture;
 
   @override
   void initState() {
     super.initState();
-    print("1");
     Future.delayed(Duration.zero, () {
-      final routeArgs =
-          ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
+      final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
 
-      parentPlaceId = routeArgs["parentId"];
+      parentPlaceId = routeArgs['parentId'];
 
-      print("parent place id: $parentPlaceId");
-      if (parentPlaceId != 0) {
+      if (parentPlaceId != '') {
         parentPlaceFuture = PlaceService.getPlaceById(parentPlaceId);
         setState(() {});
       }
@@ -36,12 +33,12 @@ class _CreatePlaceState extends State<CreatePlace> {
   }
 
   void createPlace() async {
-    var body = {"name": nameController.text, "parent": parentPlaceId};
-    bool response = await PlaceService.postPlace(body);
-    if (response)
-      Navigator.of(context).pushNamed(MainScreen.routeName);
-    else {
-      Global.warning(context, "Something went wrong. Failed to add device.");
+    var body = {'name': nameController.text, 'parent_id': parentPlaceId};
+    var response = await PlaceService.postPlace(body);
+    if (response) {
+      await Navigator.of(context).pushNamed(MainScreen.routeName);
+    } else {
+      Global.warning(context, 'Something went wrong. Failed to add device.');
     }
   }
 
@@ -65,7 +62,7 @@ class _CreatePlaceState extends State<CreatePlace> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: Text("Add Place"),
+        title: Text('Add Place'),
         backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           icon: Icon(
@@ -87,49 +84,36 @@ class _CreatePlaceState extends State<CreatePlace> {
                 style: TextStyle(color: Theme.of(context).accentColor),
                 controller: nameController,
                 decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).accentColor)),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor)),
                   labelText: 'Name',
                   labelStyle: TextStyle(color: Theme.of(context).accentColor),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).accentColor, width: 1),
+                    borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).accentColor, width: 1),
+                    borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                   ),
                 ),
               ),
               SizedBox(
                 height: 30,
               ),
-              parentPlaceId != 0
+              parentPlaceId != ''
                   ? FutureBuilder(
                       future: parentPlaceFuture,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        print("111");
                         if (snapshot.hasData) {
                           Place parentPlace = snapshot.data;
                           return Container(
                             height: mq.height * 0.08,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Theme.of(context).accentColor)),
+                            decoration: BoxDecoration(border: Border.all(color: Theme.of(context).accentColor)),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  Text("Parent Place: ",
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17)),
+                                  Text('Parent Place: ', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17)),
                                   Spacer(),
-                                  Text(parentPlace.name!,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 17)),
+                                  Text(parentPlace.name!, style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17)),
                                 ],
                               ),
                             ),
@@ -140,23 +124,16 @@ class _CreatePlaceState extends State<CreatePlace> {
                     )
                   : Container(
                       height: mq.height * 0.08,
-                      decoration: BoxDecoration(
-                          border:
-                              Border.all(color: Theme.of(context).accentColor)),
+                      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).accentColor)),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Text("Parent Place: ",
-                                style: TextStyle(
-                                    color: Theme.of(context).accentColor,
-                                    fontSize: 17)),
+                            Text('Parent Place: ', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17)),
                             Spacer(),
                             Text(
-                              "None",
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor,
-                                  fontSize: 17),
+                              'None',
+                              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
                             ),
                           ],
                         ),
@@ -164,8 +141,7 @@ class _CreatePlaceState extends State<CreatePlace> {
                     ),
               Padding(
                 padding: const EdgeInsets.all(30),
-                child: ElevatedButton(
-                    onPressed: createPlace, child: Icon(Icons.check)),
+                child: ElevatedButton(onPressed: createPlace, child: Icon(Icons.check)),
               )
             ],
           ),

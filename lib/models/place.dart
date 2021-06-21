@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:prototype/models/device.dart';
 
 class Place {
-  final int? id;
-  int? parentId;
+  final String? id;
+  String? parentId;
   final String? name;
   List<Place>? places;
   final List<Device>? deviceList;
 
-  Place({this.id, this.parentId = -1, this.name, this.places, this.deviceList});
+  Place({this.id, this.parentId, this.name, this.places, this.deviceList});
 
   factory Place.fromJson(Map<String, dynamic> json) {
     var places = <Place>[];

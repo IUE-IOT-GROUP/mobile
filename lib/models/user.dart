@@ -1,11 +1,11 @@
 class User {
-  int? id;
+  String? id;
   String? email;
   String? name;
   String? phoneNumber;
   String? password;
 
-  User([int? id, String? email, String? name, String? phoneNumber, String? password]) {
+  User([String? id, String? email, String? name, String? phoneNumber, String? password]) {
     this.id = id;
     this.email = email;
     this.name = name;

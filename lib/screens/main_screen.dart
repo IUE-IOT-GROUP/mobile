@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:prototype/models/device.dart';
 import 'package:prototype/services/user.service.dart';
 import 'devices/create_device_screen.dart';
 import '../models/user.dart';
@@ -30,8 +29,7 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
 
   String username = '';
@@ -56,7 +54,6 @@ class _MainScreenState extends State<MainScreen>
     //   setState(() {});
     // });
 
-    var devices = <Device>[];
     futureUser = loadUser();
     widgetOptions = <Widget>[
       PlaceList(),
@@ -89,7 +86,7 @@ class _MainScreenState extends State<MainScreen>
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 User user = snapshot.data;
-                return Text("Welcome ${user.name}");
+                return Text('Welcome ${user.name}');
               }
               return Container();
             },
@@ -101,11 +98,8 @@ class _MainScreenState extends State<MainScreen>
                       Icons.add,
                       color: Theme.of(context).accentColor,
                     ),
-                    onPressed: () => Global.initialState == 0
-                        ? Navigator.of(context).pushNamed(CreatePlace.routeName,
-                            arguments: {"parentId": 0})
-                        : Navigator.of(context)
-                            .pushNamed(CreateDevice.routeName),
+                    onPressed: () =>
+                        Global.initialState == 0 ? Navigator.of(context).pushNamed(CreatePlace.routeName, arguments: {'parentId': 0}) : Navigator.of(context).pushNamed(CreateDevice.routeName),
                   )
                 : Container(),
           ],

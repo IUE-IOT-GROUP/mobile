@@ -26,7 +26,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
   static List<String>? beforePlaceNames = [];
   static late List<Place>? afterPlaceNames;
   String? currentPlace;
-  int? _deviceId;
+  String? _deviceId;
   Future<Device> fetchDevice() async {
     var device = await DeviceService.getDeviceById(_deviceId);
 
@@ -37,7 +37,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
     var new_name = nameController!.text;
     var new_mac = ipAddressController!.text;
     var new_ip = ipAddressController!.text;
-    late int? placeId;
+    late String? placeId;
     await PlaceService.getPlaces().then((value) {
       value.forEach((element) {
         if (element.name == currentPlace) placeId = element.id;
@@ -46,18 +46,9 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
     var params = {};
     var parameters = currDevice!.parameters!;
     parameters.forEach((element) {
-      params[element.expectedParameter] = {
-        'name': element.optName,
-        'unit': element.unit
-      };
+      params[element.expectedParameter] = {'name': element.optName, 'unit': element.unit};
     });
-    var body = {
-      'place_id': placeId,
-      'mac_address': new_mac,
-      'ip_address': new_ip,
-      'name': new_name,
-      'parameters': params
-    };
+    var body = {'place_id': placeId, 'mac_address': new_mac, 'ip_address': new_ip, 'name': new_name, 'parameters': params};
     Center(child: CircularProgressIndicator());
     var response = await DeviceService.updateDevice(body, currDevice!.id!);
     if (response) {
@@ -73,9 +64,8 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
     places = PlaceService.getParentPlaces();
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs =
-            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
-        _deviceId = routeArgs['deviceId'] as int;
+        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
+        _deviceId = routeArgs['deviceId'] as String;
         _device = fetchDevice();
       });
     });
@@ -91,10 +81,8 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
           currentPlace = currentDevice.place!;
           currDevice = snapshot.data;
           nameController = TextEditingController(text: currentDevice.name);
-          macAddressController =
-              TextEditingController(text: currentDevice.macAddress);
-          ipAddressController =
-              TextEditingController(text: currentDevice.ipAddress);
+          macAddressController = TextEditingController(text: currentDevice.macAddress);
+          ipAddressController = TextEditingController(text: currentDevice.ipAddress);
 
           return Scaffold(
             drawer: NavDrawer(),
@@ -111,19 +99,15 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     style: TextStyle(color: Theme.of(context).accentColor),
                     decoration: InputDecoration(
                       labelText: 'Name',
-                      labelStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       hintText: 'Enter device name',
-                      hintStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
+                      hintStyle: TextStyle(color: Theme.of(context).accentColor),
                     ),
                   ),
                   SizedBox(
@@ -134,19 +118,15 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     style: TextStyle(color: Theme.of(context).accentColor),
                     decoration: InputDecoration(
                       labelText: 'MAC',
-                      labelStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       hintText: 'Enter MAC address',
-                      hintStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
+                      hintStyle: TextStyle(color: Theme.of(context).accentColor),
                     ),
                   ),
                   SizedBox(
@@ -157,15 +137,12 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                     style: TextStyle(color: Theme.of(context).accentColor),
                     decoration: InputDecoration(
                       labelText: 'IP',
-                      labelStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
+                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
                       ),
                       hintText: 'Enter IP address',
                     ),
@@ -189,8 +166,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                         });
                         beforePlaceNames = beforePlaceNames!.toSet().toList();
                         return DropdownButton<String>(
-                          style:
-                              TextStyle(color: Theme.of(context).accentColor),
+                          style: TextStyle(color: Theme.of(context).accentColor),
                           dropdownColor: Colors.white,
                           value: currentPlace,
                           selectedItemBuilder: (BuildContext context) {
@@ -203,8 +179,7 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
                               );
                             }).toList();
                           },
-                          items: beforePlaceNames!
-                              .map<DropdownMenuItem<String>>((String value) {
+                          items: beforePlaceNames!.map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(

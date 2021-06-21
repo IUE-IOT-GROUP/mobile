@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prototype/screens/places/create_place_screen.dart';
-import '../screens/devices/create_device_screen.dart';
 
 //https://stackoverflow.com/questions/53399223/flutter-different-floating-action-button-in-tabbar
 //I have taken the "different FAB onPressed() function on different tabs" structure from this site.
