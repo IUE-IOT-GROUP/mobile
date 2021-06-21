@@ -20,7 +20,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color.fromRGBO(255, 255, 255, .02),
+      backgroundColor: Theme.of(context).primaryColor,
       title: Text("Welcome"),
       actions: [
         IconButton(
@@ -29,7 +29,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
               color: Theme.of(context).accentColor,
             ),
             onPressed: () => widget.selectedIndex == 0
-                ? Navigator.of(context).pushNamed(CreatePlace.routeName)
+                ? Navigator.of(context).pushNamed(CreatePlace.routeName,
+                    arguments: {"parentId", 0})
                 : Navigator.of(context).pushNamed(CreateDevice.routeName))
       ],
     );

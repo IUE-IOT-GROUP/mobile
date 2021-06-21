@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:prototype/models/device.dart';
+import 'package:prototype/services/user.service.dart';
 import 'devices/create_device_screen.dart';
 import '../models/user.dart';
 import '../widgets/device_list.dart';
@@ -8,7 +9,6 @@ import '../widgets/place_list.dart';
 import 'places/create_place_screen.dart';
 import '../global.dart';
 import '../widgets/navDrawer.dart';
-import '../widgets/custom_appbar.dart';
 
 Future<User> loadUser() async {
   var url = '${Global.baseUrl}/me';
@@ -30,7 +30,8 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
   late Future<User> futureUser;
 
   String username = '';
@@ -38,6 +39,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   String new_device_ip = '';
   String new_device_type = '';
   List<Widget> widgetOptions = [];
+  Future<User>? currentUserFuture;
 
   void onItemTapped(int index) {
     setState(() {
@@ -49,7 +51,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-
+    currentUserFuture = fetchMe();
     // Global.getPlaces().then((value) {
     //   setState(() {});
     // });
@@ -64,16 +66,13 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     ];
   }
 
-  void startAddNewDevice(BuildContext ctx) {
-    Navigator.of(ctx).popAndPushNamed(
-      CreateDevice.routeName,
-    );
-  }
+  Future<User> fetchMe() async {
+    var secureStorage = Global.secureStorage;
+    var userId = await secureStorage.readSecureData(('id'));
 
-  void startAddNewPlace(BuildContext ctx) {
-    Navigator.of(ctx).popAndPushNamed(
-      CreatePlace.routeName,
-    );
+    var user = await UserService.getUser(userId);
+
+    return user;
   }
 
   @override
@@ -83,7 +82,34 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         drawer: NavDrawer(),
-        appBar: CustomAppBar(Global.initialState),
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          title: FutureBuilder(
+            future: currentUserFuture,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                User user = snapshot.data;
+                return Text("Welcome ${user.name}");
+              }
+              return Container();
+            },
+          ),
+          actions: [
+            Global.isFog
+                ? IconButton(
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).accentColor,
+                    ),
+                    onPressed: () => Global.initialState == 0
+                        ? Navigator.of(context).pushNamed(CreatePlace.routeName,
+                            arguments: {"parentId": 0})
+                        : Navigator.of(context)
+                            .pushNamed(CreateDevice.routeName),
+                  )
+                : Container(),
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white12,
           selectedItemColor: Theme.of(context).accentColor,

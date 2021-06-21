@@ -25,20 +25,20 @@ class _NavDrawerState extends State<NavDrawer> {
           children: [
             Container(
               height: MediaQuery.of(context).size.height * 0.6,
-              child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+              child: ListView(padding: EdgeInsets.zero, children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: 200,
                   child: DrawerHeader(
-                    child: Text(
-                      'Burada logo olacak',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
-                    ),
                     decoration: BoxDecoration(
-                      color: Colors.purple,
+                      color: Theme.of(context).primaryColor,
                       image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage('assets/images/cover.jpg'),
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage('assets/images/iotms.png'),
                       ),
+                    ),
+                    child: Text(
+                      '',
+                      style: TextStyle(color: Colors.white, fontSize: 25),
                     ),
                   ),
                 ),

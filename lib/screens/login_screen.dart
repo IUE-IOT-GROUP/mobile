@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var enteredEmail;
   var enteredPassword;
   var errors = [];
-
+  bool rememberMe = false;
   void initFieldsIfRemember() async {
     var prefs = await SharedPreferences.getInstance();
     var rememberedEmail = prefs.getString('email');
@@ -36,6 +36,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  bool isFog = true;
+  void fogOrCloud() async {
+    var prefs = await SharedPreferences.getInstance();
+    isFog = prefs.getBool('isFog') ?? isFog;
+  }
+
   Future<bool> postRequest() async {
     var success = false;
     setState(() {
@@ -43,15 +49,23 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     var url = '${Global.baseUrl}/login';
-    var body = {'email': enteredEmail, 'password': enteredPassword, 'device_name': await getDeviceId()};
+    var body = {
+      'email': enteredEmail,
+      'password': enteredPassword,
+      'device_name': await getDeviceId()
+    };
 
     await Global.h_post(url, body).then((http.Response response) {
       if (response.statusCode == 200) {
         success = true;
-        Global.secureStorage.writeSecureData('token', jsonDecode(response.body)['token']);
-        Global.secureStorage.writeSecureData('name', jsonDecode(response.body)['username']);
-        Global.secureStorage.writeSecureData('email', jsonDecode(response.body)['email']);
-        Global.secureStorage.writeSecureData('id', jsonDecode(response.body)['id'].toString());
+        Global.secureStorage
+            .writeSecureData('token', jsonDecode(response.body)['token']);
+        Global.secureStorage
+            .writeSecureData('name', jsonDecode(response.body)['username']);
+        Global.secureStorage
+            .writeSecureData('email', jsonDecode(response.body)['email']);
+        Global.secureStorage
+            .writeSecureData('id', jsonDecode(response.body)['id'].toString());
         setState(() {
           Global.isLoading = true;
         });
@@ -92,7 +106,13 @@ class _LoginScreenState extends State<LoginScreen> {
     var prefs = await SharedPreferences.getInstance();
 
     initCredentials();
-
+    if (isFog) {
+      await prefs.setBool('isFog', isFog);
+      Global.isFog = isFog;
+    } else {
+      await prefs.setBool('isFog', isFog);
+      Global.isFog = isFog;
+    }
     var isAuthenticated = await postRequest();
     if (enteredEmail == '' || enteredPassword == '') {
       setState(() {
@@ -103,7 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         Global.isLoading = false;
       });
-      Global.warning(ctx, 'Username or password is incorrect! Please check your credentials.');
+
+      Global.warning(ctx,
+          'Username or password is incorrect! Please check your credentials.');
     } else {
       Global.email = enteredEmail;
       Global.password = enteredPassword;
@@ -113,7 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
         await prefs.setString('password', enteredPassword);
         await prefs.setBool('rememberMe', rememberMe);
       } else {
-        if (prefs.getString('email') != null || prefs.getString('password') != null) {
+        if (prefs.getString('email') != null ||
+            prefs.getString('password') != null) {
           await prefs.remove('email');
           await prefs.remove('password');
         }
@@ -123,23 +146,32 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  bool rememberMe = false;
+  var fog = 'Fog';
+  var cloud = 'Cloud';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Stack(
-        children: <Widget>[bodyCard(), Global.showCircularProgress()],
-      ),
-    );
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).primaryColor,
+        body: bodyCard());
   }
 
   Widget bodyCard() {
     return Card(
       color: Theme.of(context).primaryColor,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Container(
+            margin: EdgeInsets.only(top: 40),
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.2,
+            child: Card(
+              elevation: 40,
+              color: Theme.of(context).primaryColor,
+              child: Image.asset('assets/images/iotms.png'),
+            ),
+          ),
           Padding(
             padding: EdgeInsets.all(50),
             child: Text(
@@ -147,6 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 color: Theme.of(context).accentColor,
                 fontFamily: 'Raleway',
+                fontWeight: FontWeight.bold,
                 fontSize: 24,
                 //fontWeight: FontWeight.bold,
               ),
@@ -162,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             child: TextField(
+              keyboardType: TextInputType.emailAddress,
               autofocus: false,
               textAlign: TextAlign.center,
               style: TextStyle(color: Theme.of(context).accentColor),
@@ -249,14 +283,57 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
-              minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.4, 30)),
+              minimumSize: MaterialStateProperty.all<Size>(
+                  Size(MediaQuery.of(context).size.width * 0.4, 30)),
             ),
             onPressed: () => login(context),
             child: Text(
               'Sign In',
               style: TextStyle(color: Colors.black),
             ),
-          )
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Current status: ',
+                style: TextStyle(
+                    color: Theme.of(context).accentColor, fontSize: 17),
+              ),
+              Text(
+                '${isFog ? fog : cloud}',
+                style: TextStyle(
+                    color: Theme.of(context).accentColor, fontSize: 17),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.cloud,
+                color: Theme.of(context).accentColor,
+              ),
+              Switch(
+                  value: isFog,
+                  onChanged: (data) {
+                    setState(() {
+                      isFog = !isFog;
+                    });
+                  }),
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Image.asset(
+                  'assets/images/fog.png',
+                  fit: BoxFit.cover,
+                  color: Theme.of(context).accentColor,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

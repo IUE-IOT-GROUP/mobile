@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeChange extends ChangeNotifier {
-  static const PRIMARY = Color.fromRGBO(17, 24, 39, 1);
-  static const ACCENT = Color.fromRGBO(235, 237, 243, 1);
+  static const PRIMARY = Color.fromRGBO(28, 28, 46, 1);
+  static const ACCENT = Colors.white;
 
   bool isDark = true;
   final SharedPreferences _prefs;
@@ -30,16 +30,20 @@ class ThemeChange extends ChangeNotifier {
   }
 
   static ThemeChange of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<ThemeChangeProvider>();
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<ThemeChangeProvider>();
     return provider!.controller;
   }
 }
 
 class ThemeChangeProvider extends InheritedWidget {
-  const ThemeChangeProvider({Key? key, required this.controller, required Widget child}) : super(key: key, child: child);
+  const ThemeChangeProvider(
+      {Key? key, required this.controller, required Widget child})
+      : super(key: key, child: child);
 
   final ThemeChange controller;
 
   @override
-  bool updateShouldNotify(ThemeChangeProvider old) => controller != old.controller;
+  bool updateShouldNotify(ThemeChangeProvider old) =>
+      controller != old.controller;
 }

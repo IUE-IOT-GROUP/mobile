@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prototype/models/device_data.dart';
 import 'package:prototype/models/device_data_type.dart';
-import 'package:prototype/models/place.dart';
 import 'package:prototype/screens/devices/edit_device_screen.dart';
 import 'package:prototype/services/device.service.dart';
 import 'package:prototype/services/device_data.service.dart';
-import 'package:prototype/services/place.service.dart';
-import '../../global.dart';
 import '../../widgets/custom device items/parameter_item.dart';
 import '../../models/device.dart';
-import '../../SecureStorage.dart';
+import '../../global.dart';
 
 class DeviceItemScreen extends StatefulWidget {
   static const routeName = '/device-item-screen';
@@ -29,7 +26,8 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     return device;
   }
 
-  Future<List<DeviceDataType>> fetchData(Device device, [String filter = 'daily']) async {
+  Future<List<DeviceDataType>> fetchData(Device device,
+      [String filter = 'daily']) async {
     var deviceDataType = await DeviceDataService.getDeviceData(device);
 
     return deviceDataType;
@@ -40,7 +38,8 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     super.initState();
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
+        final routeArgs =
+            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
         _deviceId = routeArgs['deviceId'] as int;
         _device = fetchDevice();
       });
@@ -55,18 +54,30 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
+        title: FutureBuilder(
+          future: _device,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            currentDevice = snapshot.data;
+            if (snapshot.hasData) {
+              return Text(currentDevice!.name!);
+            }
+            return Container();
+          },
+        ),
         backgroundColor: Color.fromRGBO(255, 255, 255, .02),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                Navigator.of(context).pushNamed(EditDeviceScreen.routeName, arguments: {'deviceId': _deviceId});
-              }),
-          IconButton(icon: Icon(Icons.refresh), onPressed: () => Navigator.of(context).popAndPushNamed(DeviceItemScreen.routeName))
+          Global.isFog
+              ? IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(EditDeviceScreen.routeName,
+                        arguments: {'deviceId': _deviceId});
+                  })
+              : Container(),
         ],
       ),
       body: SingleChildScrollView(
@@ -83,6 +94,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
                     List<DeviceDataType> dataTypes = snapshot.data;
+
                     var dataList = <List<DeviceData>?>[];
                     dataTypes.forEach((element) {
                       dataList.add(element.data);
@@ -106,19 +118,6 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                             margin: EdgeInsets.all(20),
                             child: Column(
                               children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Name: ',
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      currentDevice!.name!,
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
-                                    )
-                                  ],
-                                ),
                                 SizedBox(
                                   height: 20,
                                 ),
@@ -126,12 +125,16 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                   children: [
                                     Text(
                                       "IP Address: ",
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.ipAddress!,
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     )
                                   ],
                                 ),
@@ -142,12 +145,16 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                   children: [
                                     Text(
                                       "MAC Address: ",
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.macAddress!,
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     )
                                   ],
                                 ),
@@ -158,12 +165,16 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                   children: [
                                     Text(
                                       "Place: ",
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.place!,
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     )
                                   ],
                                 ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:prototype/screens/main_screen.dart';
 import 'package:prototype/services/device.service.dart';
 import '../../models/place.dart';
@@ -25,7 +24,7 @@ class _CreateDeviceState extends State<CreateDevice> {
 
   List<Parameter> parameters = [];
   late Future<List<Place>>? places;
-  static List<String>? beforePlaceNames = ['-Select a place-'];
+  static List<String>? beforePlaceNames = [];
   static late List<Place>? afterPlaceNames;
   static String selectedPlace = beforePlaceNames![0];
   @override
@@ -39,7 +38,7 @@ class _CreateDeviceState extends State<CreateDevice> {
     var ip = ipAddressController.text;
     var mac = macAddressController.text;
     late int? placeId;
-    await PlaceService.getChildPlaces().then((value) {
+    await PlaceService.getPlaces().then((value) {
       value.forEach((element) {
         if (element.name == selectedPlace) placeId = element.id;
       });
@@ -53,26 +52,40 @@ class _CreateDeviceState extends State<CreateDevice> {
       } else {
         var params = {};
         parameters.forEach((element) {
-          params[element.expectedParameter] = {'name': element.optName, 'unit': element.unit};
+          params[element.expectedParameter] = {
+            'name': element.optName,
+            'unit': element.unit
+          };
         });
-        var body = {'place_id': placeId, 'mac_address': mac, 'ip_address': ip, 'name': name, 'parameters': params};
+        var body = {
+          'place_id': placeId,
+          'mac_address': mac,
+          'ip_address': ip,
+          'name': name,
+          'parameters': params
+        };
         var response = await DeviceService.postDevice(body);
         if (response) {
           await Navigator.of(context).pushNamed(MainScreen.routeName);
         } else {
-          Global.warning(context, 'Something went wrong. Failed to add device.');
+          Global.warning(
+              context, 'Something went wrong. Failed to add device.');
         }
       }
     }
   }
 
-  var ipFormatter = MaskTextInputFormatter(mask: '###.###.###.###', filter: {'#': RegExp(r'^[0-9]')});
-  var macFormatter = MaskTextInputFormatter(mask: '##:##:##:##:##:##', filter: {'#': RegExp(r'^[a-fA-F0-9]')});
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
-    var textFieldColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Color.fromRGBO(255, 255, 255, .02) : Color.fromRGBO(220, 220, 220, .02);
-    var hintColor = Theme.of(context).primaryColor == Color.fromRGBO(17, 24, 39, 1) ? Colors.white12 : Colors.black12;
+    var textFieldColor =
+        Theme.of(context).primaryColor == Color.fromRGBO(28, 28, 46, 1)
+            ? Color.fromRGBO(255, 255, 255, .02)
+            : Color.fromRGBO(220, 220, 220, .02);
+    var hintColor =
+        Theme.of(context).primaryColor == Color.fromRGBO(28, 28, 46, 1)
+            ? Colors.white12
+            : Colors.black12;
     return FutureBuilder(
       future: places,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -94,7 +107,8 @@ class _CreateDeviceState extends State<CreateDevice> {
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(
                       'Device Information',
-                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                      style: TextStyle(
+                          color: Theme.of(context).accentColor, fontSize: 20),
                     ),
                   ),
                   Container(
@@ -104,17 +118,22 @@ class _CreateDeviceState extends State<CreateDevice> {
                     height: mq.height * 0.04,
                     width: mq.width * 0.7,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(
+                          color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                       color: textFieldColor,
                     ),
                     child: Container(
-                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration.collapsed(hintText: 'Name', hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(
+                            hintText: 'Name',
+                            hintStyle: TextStyle(color: hintColor)),
                         controller: deviceNameController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(
+                            color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                     ),
                   ),
@@ -125,19 +144,23 @@ class _CreateDeviceState extends State<CreateDevice> {
                     height: mq.height * 0.04,
                     width: mq.width * 0.7,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(
+                          color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                       color: textFieldColor,
                     ),
                     child: Container(
-                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
-                        inputFormatters: [ipFormatter],
-                        decoration: InputDecoration.collapsed(hintText: 'IP Address(ex: 192.168.0.1)', hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(
+                            hintText: 'IP Address(ex: 192.168.0.1)',
+                            hintStyle: TextStyle(color: hintColor)),
                         controller: ipAddressController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(
+                            color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                     ),
                   ),
@@ -146,18 +169,22 @@ class _CreateDeviceState extends State<CreateDevice> {
                     height: mq.height * 0.04,
                     width: mq.width * 0.7,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
+                      border: Border.all(
+                          color: Theme.of(context).accentColor, width: 0.5),
                       borderRadius: BorderRadius.circular(10),
                       color: textFieldColor,
                     ),
                     child: Container(
-                      padding: EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
                       child: TextField(
                         textAlign: TextAlign.center,
-                        inputFormatters: [macFormatter],
-                        decoration: InputDecoration.collapsed(hintText: 'MAC(ex: xx:xx:xx:xx:xx:xx)', hintStyle: TextStyle(color: hintColor)),
+                        decoration: InputDecoration.collapsed(
+                            hintText: 'MAC(ex: xx:xx:xx:xx:xx:xx)',
+                            hintStyle: TextStyle(color: hintColor)),
                         controller: macAddressController,
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(
+                            color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                     ),
                   ),
@@ -166,6 +193,10 @@ class _CreateDeviceState extends State<CreateDevice> {
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
                         final List<Place> localPlaces = snapshot.data;
+                        var dropdownList = <String>[];
+                        localPlaces.forEach((element) {
+                          dropdownList.add(element.name!);
+                        });
                         afterPlaceNames = localPlaces;
                         var childPlaces = <Place>[];
                         afterPlaceNames!.forEach((element) {
@@ -179,16 +210,36 @@ class _CreateDeviceState extends State<CreateDevice> {
                           beforePlaceNames!.add(element.name!);
                         });
                         beforePlaceNames = beforePlaceNames!.toSet().toList();
+
+                        dropdownList += beforePlaceNames!;
+                        dropdownList.forEach((element) {
+                          print("asd: $element");
+                        });
                         return DropdownButton<String>(
+                          style:
+                              TextStyle(color: Theme.of(context).accentColor),
+                          elevation: 24,
+                          dropdownColor: Colors.white,
                           value: selectedPlace,
-                          items: beforePlaceNames!.map<DropdownMenuItem<String>>((String value) {
+                          selectedItemBuilder: (BuildContext context) {
+                            return dropdownList.map<Widget>((String item) {
+                              return Center(
+                                  child: Text(
+                                item,
+                                style: TextStyle(fontSize: 17),
+                              ));
+                            }).toList();
+                          },
+                          items: dropdownList
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                style: TextStyle(color: Theme.of(context).accentColor),
-                              ),
-                            );
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ));
                           }).toList(),
                           onChanged: (String? newValue) {
                             setState(() {
@@ -208,7 +259,8 @@ class _CreateDeviceState extends State<CreateDevice> {
                     children: [
                       Text(
                         'Parameters',
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                        style: TextStyle(
+                            color: Theme.of(context).accentColor, fontSize: 20),
                       ),
                       IconButton(
                           icon: Icon(
@@ -230,16 +282,30 @@ class _CreateDeviceState extends State<CreateDevice> {
                                           width: mq.width * 0.6,
                                           decoration: BoxDecoration(
                                             color: textFieldColor,
-                                            border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                                            padding: const EdgeInsets.only(
+                                                top: 5,
+                                                bottom: 2,
+                                                right: 2,
+                                                left: 2),
                                             child: TextField(
                                               textAlign: TextAlign.center,
-                                              decoration: InputDecoration.collapsed(hintText: 'Name to be displayed(opt.)', hintStyle: TextStyle(color: hintColor)),
-                                              controller: paramsOptNameController,
-                                              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+                                              decoration: InputDecoration.collapsed(
+                                                  hintText:
+                                                      'Name to be displayed(opt.)',
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.grey)),
+                                              controller:
+                                                  paramsOptNameController,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 17),
                                             ),
                                           ),
                                         ),
@@ -249,39 +315,72 @@ class _CreateDeviceState extends State<CreateDevice> {
                                           width: mq.width * 0.6,
                                           decoration: BoxDecoration(
                                             color: textFieldColor,
-                                            border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                                            padding: const EdgeInsets.only(
+                                                top: 5,
+                                                bottom: 2,
+                                                right: 2,
+                                                left: 2),
                                             child: TextField(
                                               textAlign: TextAlign.center,
-                                              decoration: InputDecoration.collapsed(hintText: 'Parameter name', hintStyle: TextStyle(color: hintColor)),
+                                              decoration:
+                                                  InputDecoration.collapsed(
+                                                      hintText:
+                                                          'Parameter name',
+                                                      hintStyle: TextStyle(
+                                                          color: Colors.grey)),
                                               controller: paramsNameController,
-                                              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 17),
                                             ),
                                           ),
                                         ),
                                         Container(
-                                          margin: EdgeInsets.only(top: 20, bottom: 15),
+                                          margin: EdgeInsets.only(
+                                              top: 20, bottom: 15),
                                           height: mq.height * 0.04,
                                           width: mq.width * 0.6,
                                           decoration: BoxDecoration(
                                             color: textFieldColor,
-                                            border: Border.all(color: Theme.of(context).accentColor, width: 0.5),
-                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                           ),
                                           child: Row(
                                             children: [
                                               Flexible(
                                                 flex: 500,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(top: 5, bottom: 2, right: 2, left: 2),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 5,
+                                                          bottom: 2,
+                                                          right: 2,
+                                                          left: 2),
                                                   child: TextField(
                                                     textAlign: TextAlign.center,
-                                                    decoration: InputDecoration.collapsed(hintText: 'Parameter unit(max 3 chars)', hintStyle: TextStyle(color: hintColor)),
-                                                    controller: paramsUnitController,
-                                                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+                                                    decoration: InputDecoration
+                                                        .collapsed(
+                                                            hintText:
+                                                                'Parameter unit(max 3 chars)',
+                                                            hintStyle: TextStyle(
+                                                                color: Colors
+                                                                    .grey)),
+                                                    controller:
+                                                        paramsUnitController,
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .accentColor,
+                                                        fontSize: 17),
                                                   ),
                                                 ),
                                               ),
@@ -291,16 +390,25 @@ class _CreateDeviceState extends State<CreateDevice> {
                                         IconButton(
                                             icon: Icon(
                                               Icons.add,
-                                              color: Theme.of(context).accentColor,
+                                              color: Colors.black,
                                             ),
                                             onPressed: () {
-                                              var optName = paramsOptNameController.text;
-                                              var name = paramsNameController.text;
-                                              var unit = paramsUnitController.text;
-                                              if (name.isNotEmpty && unit.isNotEmpty) {
-                                                if (optName.isEmpty) optName = name;
-                                                var parameter = new Parameter(optName: optName, expectedParameter: name, unit: unit);
-                                                paramsOptNameController.text = '';
+                                              var optName =
+                                                  paramsOptNameController.text;
+                                              var name =
+                                                  paramsNameController.text;
+                                              var unit =
+                                                  paramsUnitController.text;
+                                              if (name.isNotEmpty &&
+                                                  unit.isNotEmpty) {
+                                                if (optName.isEmpty)
+                                                  optName = name;
+                                                var parameter = new Parameter(
+                                                    optName: optName,
+                                                    expectedParameter: name,
+                                                    unit: unit);
+                                                paramsOptNameController.text =
+                                                    '';
                                                 paramsNameController.text = '';
                                                 paramsUnitController.text = '';
                                                 setState(() {
@@ -308,7 +416,8 @@ class _CreateDeviceState extends State<CreateDevice> {
                                                 });
                                                 Navigator.of(ctx).pop();
                                               } else {
-                                                Global.warning(context, 'You must fill the required fields!');
+                                                Global.warning(context,
+                                                    'You must fill the required fields!');
                                               }
                                             }),
                                       ],
@@ -333,18 +442,22 @@ class _CreateDeviceState extends State<CreateDevice> {
                             return Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Flexible(
                                       child: Text(
                                         parameters[index].optName!,
-                                        style: TextStyle(color: Colors.black, fontSize: 15),
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 15),
                                       ),
                                     ),
                                     Flexible(
-                                      child: Text(parameters[index].expectedParameter!),
+                                      child: Text(
+                                          parameters[index].expectedParameter!),
                                     ),
-                                    Flexible(child: Text(parameters[index].unit!))
+                                    Flexible(
+                                        child: Text(parameters[index].unit!))
                                   ],
                                 ),
                                 Divider(

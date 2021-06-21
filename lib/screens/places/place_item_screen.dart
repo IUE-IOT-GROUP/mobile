@@ -18,7 +18,8 @@ class PlaceItemScreen extends StatefulWidget {
   _PlaceItemScreenState createState() => _PlaceItemScreenState();
 }
 
-class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProviderStateMixin {
+class _PlaceItemScreenState extends State<PlaceItemScreen>
+    with SingleTickerProviderStateMixin {
   Future<Place>? _placeFuture;
   int? _placeId;
 
@@ -45,7 +46,8 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
     _tabController!.addListener(_handleTabSelection);
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
+        final routeArgs =
+            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
         _placeId = routeArgs['placeId'] as int;
         _placeFuture = fetchPlace();
       });
@@ -66,41 +68,47 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
 
     return DefaultTabController(
       length: 2,
-      child: FutureBuilder(
-        future: _placeFuture,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            currentPlace = snapshot.data;
-
-            print(currentPlace!.places);
-
-            return Scaffold(
-              drawer: NavDrawer(),
-              appBar: AppBar(
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.of(context).pop(),
+      child: Scaffold(
+        drawer: NavDrawer(),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: FutureBuilder(
+            future: _placeFuture,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                currentPlace = snapshot.data;
+                return Text(currentPlace!.name!);
+              }
+              return Container();
+            },
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(30),
+            child: TabBar(
+              controller: _tabController,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Theme.of(context).accentColor,
+              tabs: [
+                Tab(
+                  text: "Places",
                 ),
-                title: Text(currentPlace!.name!),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(30),
-                  child: TabBar(
-                    controller: _tabController,
-                    unselectedLabelColor: Colors.white.withOpacity(0.3),
-                    indicatorColor: Colors.white,
-                    tabs: [
-                      Tab(
-                        text: "Places",
-                      ),
-                      Tab(
-                        text: "Devices",
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              backgroundColor: Theme.of(context).primaryColor,
-              body: TabBarView(
+                Tab(
+                  text: "Devices",
+                )
+              ],
+            ),
+          ),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        body: FutureBuilder(
+          future: _placeFuture,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              currentPlace = snapshot.data;
+              return TabBarView(
                 controller: _tabController,
                 children: [
                   ChildPlaceList(currentPlace!.places),
@@ -109,56 +117,61 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
                     placeId: currentPlace!.id,
                   )
                 ],
-              ),
-              floatingActionButton: _currentIndex == 0
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.green,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(context, EditPlaceScreen.routeName, arguments: {'placeId': currentPlace!.id});
-                            },
-                            child: Icon(Icons.edit),
-                          ),
+              );
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
+        floatingActionButton: _currentIndex == 0
+            ? Global.isFog
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.green,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, EditPlaceScreen.routeName,
+                                arguments: {'placeId': currentPlace!.id});
+                          },
+                          child: Icon(Icons.edit),
                         ),
-                        SizedBox(
-                          height: 15,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.green,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                CreatePlace.routeName,
+                                arguments: {"parentId": currentPlace!.id});
+                          },
+                          child: Icon(Icons.add),
                         ),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.green,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(CreatePlace.routeName);
-                            },
-                            child: Icon(Icons.add),
-                          ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.red,
+                        child: InkWell(
+                          onTap: () {
+                            ensureDelete();
+                          },
+                          child: Icon(Icons.delete),
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.red,
-                          child: InkWell(
-                            onTap: () {
-                              ensureDelete();
-                            },
-                            child: Icon(Icons.delete),
-                          ),
-                        ),
-                      ],
-                    )
-                  : null,
-              floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-            );
-          }
-
-          return Center(child: CircularProgressIndicator());
-        },
+                      ),
+                    ],
+                  )
+                : null
+            : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
   }
@@ -212,7 +225,8 @@ class _PlaceItemScreenState extends State<PlaceItemScreen> with SingleTickerProv
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text('If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?'),
+            Text(
+                'If you delete a place with subplaces or devices, they will be deleted as well. Are you sure?'),
           ],
         ),
       ),

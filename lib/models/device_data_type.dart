@@ -10,6 +10,7 @@ class DeviceDataType {
   String? expectedParameter;
   List<DeviceData>? data;
   List<DeviceGraphData>? graphData;
+  List<double?>? lastTen;
   double? min_y;
   double? max_y;
   String? min_x;
@@ -18,7 +19,17 @@ class DeviceDataType {
   DateTime? max_x_date;
 
   DeviceDataType(
-      Device device, int id, String name, String unit, String expectedParameter, List<DeviceData> data, List<DeviceGraphData> graphData, double min_y, double max_y, String min_x, String max_x) {
+      Device device,
+      int id,
+      String name,
+      String unit,
+      String expectedParameter,
+      List<DeviceData> data,
+      List<DeviceGraphData> graphData,
+      double min_y,
+      double max_y,
+      String min_x,
+      String max_x) {
     this.device = device;
     this.id = id;
     this.name = name;
@@ -31,40 +42,44 @@ class DeviceDataType {
     this.max_x = max_x;
     this.min_x = min_x;
 
-    this.min_x_date = DateTime.parse(min_x);
-    this.max_x_date = DateTime.parse(max_x);
+    min_x_date = DateTime.parse(min_x);
+    max_x_date = DateTime.parse(max_x);
   }
 
   factory DeviceDataType.fromJson(Device device, Map<String, dynamic> json) {
-    Map<String, dynamic> details = json["details"];
-    List<dynamic> deviceData = json["data"];
-    List<dynamic> deviceGraphData = json["graphData"];
-    String min_y = json["min_y"].toString();
-    String max_y = json["max_y"].toString();
-    String min_x = json["min_x"];
-    String max_x = json["max_x"];
+    Map<String, dynamic> details = json['details'];
+    List<dynamic> deviceData = json['data'];
+    List<dynamic> deviceGraphData = json['graphData'];
+    var min_y = json['min_y'].toString();
+    var max_y = json['max_y'].toString();
+    String min_x = json['min_x'];
+    String max_x = json['max_x'];
 
-    int id = details["device_parameter_id"];
-    String expected = details["expected_parameter"];
-    String name = details["name"];
-    String unit = details["unit"];
+    int id = details['device_parameter_id'];
+    String expected = details['expected_parameter'];
+    String name = details['name'];
+    String unit = details['unit'];
 
-    List<DeviceData> data = [];
+    var data = <DeviceData>[];
 
     deviceData.forEach((element) {
-      DeviceData devicedata = new DeviceData(element["id"], element["value"].toString(), element["created_at"]);
+      var devicedata = DeviceData(
+          element['id'], element['value'].toString(), element['created_at']);
 
       data.add(devicedata);
     });
+    print('71: ${data}');
 
-    List<DeviceGraphData> graphData = [];
+    var graphData = <DeviceGraphData>[];
 
     deviceGraphData.forEach((element) {
-      DeviceGraphData devicedata = new DeviceGraphData(element["value"].toString(), element["created_at"]);
+      var devicedata =
+          DeviceGraphData(element['value'].toString(), element['created_at']);
       graphData.add(devicedata);
     });
 
-    DeviceDataType deviceDataType = new DeviceDataType(device, id, name, unit, expected, data, graphData, double.parse(min_y), double.parse(max_y), min_x, max_x);
+    var deviceDataType = DeviceDataType(device, id, name, unit, expected, data,
+        graphData, double.parse(min_y), double.parse(max_y), min_x, max_x);
 
     return deviceDataType;
   }

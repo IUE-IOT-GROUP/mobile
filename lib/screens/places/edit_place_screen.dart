@@ -12,10 +12,10 @@ class EditPlaceScreen extends StatefulWidget {
 }
 
 class _EditPlaceScreenState extends State<EditPlaceScreen> {
-  List<Place>? currentParentPlaces;
-  Future<List<Place>>? parentPlaces;
+  List<Place>? currentPlaces;
+  Future<List<Place>>? places;
   Future<Place>? place;
-  String? currentParentPlace;
+  String? currPlace;
   int? _placeId;
 
   TextEditingController? nameController;
@@ -27,7 +27,7 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
   }
 
   Future<List<Place>> fetchParentPlaces() async {
-    var places = await PlaceService.getParentPlaces();
+    var places = await PlaceService.getPlaces();
 
     return places;
   }
@@ -37,11 +37,12 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
     super.initState();
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
+        final routeArgs =
+            ModalRoute.of(context)?.settings.arguments as Map<String, int?>;
         _placeId = routeArgs['placeId'] as int;
 
         place = fetchPlace();
-        parentPlaces = fetchParentPlaces();
+        places = fetchParentPlaces();
       });
     });
   }
@@ -56,59 +57,86 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
 
           nameController = TextEditingController(text: currentPlace.name!);
           return Scaffold(
+            backgroundColor: Theme.of(context).primaryColor,
             appBar: AppBar(
               title: Text(currentPlace.name!),
             ),
             body: Column(
               children: [
-                TextField(
-                  controller: nameController,
-                  style: TextStyle(color: Theme.of(context).accentColor),
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                Container(
+                  padding: EdgeInsets.all(20),
+                  child: TextField(
+                    controller: nameController,
+                    style: TextStyle(color: Theme.of(context).accentColor),
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      labelStyle:
+                          TextStyle(color: Theme.of(context).accentColor),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).accentColor, width: 1),
+                      ),
+                      hintText: 'Enter device name',
+                      hintStyle:
+                          TextStyle(color: Theme.of(context).accentColor),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
-                    ),
-                    hintText: 'Enter device name',
-                    hintStyle: TextStyle(color: Theme.of(context).accentColor),
                   ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 FutureBuilder(
-                  future: parentPlaces,
+                  future: places,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      currentParentPlaces = snapshot.data;
-                      currentParentPlaces!.forEach((element) {
+                      currentPlaces = snapshot.data;
+                      var dropdownlist = <String>[];
+                      currentPlaces!.forEach((element) {
+                        dropdownlist.add(element.name!);
+                      });
+
+                      currentPlaces!.forEach((element) {
                         if (element.id == currentPlace.id) {
-                          currentParentPlace = element.name!;
+                          currPlace = element.name!;
                         }
                       });
                       var parentPlaceNames = <String>[];
-                      currentParentPlaces!.forEach((element) {
+                      currentPlaces!.forEach((element) {
                         parentPlaceNames.add(element.name!);
                       });
-                      currentParentPlaces!.toSet().toList();
+                      dropdownlist += parentPlaceNames;
+                      dropdownlist = dropdownlist.toSet().toList();
                       return DropdownButton<String>(
-                        value: currentParentPlace,
-                        items: parentPlaceNames.map<DropdownMenuItem<String>>((String value) {
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                        value: currPlace,
+                        dropdownColor: Colors.white,
+                        selectedItemBuilder: (BuildContext context) {
+                          return dropdownlist.map<Widget>((String item) {
+                            return Center(
+                                child: Text(
+                              item,
+                              style: TextStyle(fontSize: 17),
+                            ));
+                          }).toList();
+                        },
+                        items: dropdownlist
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(
                               value,
-                              style: TextStyle(color: Theme.of(context).accentColor),
+                              style: TextStyle(color: Colors.black),
                             ),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
                           setState(() {
-                            currentParentPlace = newValue!;
+                            currPlace = newValue!;
                           });
                         },
                       );
@@ -117,23 +145,29 @@ class _EditPlaceScreenState extends State<EditPlaceScreen> {
                   },
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 ElevatedButton(
                     onPressed: () async {
                       int? new_parent_id = 0;
-                      currentParentPlaces!.forEach((element) {
-                        if (element.name == currentParentPlace) {
+                      currentPlaces!.forEach((element) {
+                        if (element.name == currPlace) {
                           new_parent_id = element.id;
                         }
                       });
                       var new_name = nameController!.text;
-                      var body = {'name': new_name, 'parent': new_parent_id == 0 ? null : new_parent_id};
-                      final response = await PlaceService.updatePlace(currentPlace.id, body);
+                      var body = {
+                        'name': new_name,
+                        'parent': new_parent_id == 0 ? null : new_parent_id
+                      };
+                      final response =
+                          await PlaceService.updatePlace(currentPlace.id, body);
                       if (response) {
-                        Navigator.of(context).popAndPushNamed(MainScreen.routeName);
+                        Navigator.of(context)
+                            .popAndPushNamed(MainScreen.routeName);
                       } else {
-                        Global.warning(context, 'Something went wrong. Failed to update place');
+                        Global.warning(context,
+                            'Something went wrong. Failed to update place');
                       }
                     },
                     child: Text('Update'))

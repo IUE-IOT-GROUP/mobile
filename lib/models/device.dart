@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import './place.dart';
 import './parameter.dart';
 
 class Device {
@@ -10,11 +9,17 @@ class Device {
   final String? place;
   final List<Parameter>? parameters;
 
-  const Device({this.id, @required this.name, this.ipAddress, this.macAddress, this.place, this.parameters});
+  const Device(
+      {this.id,
+      @required this.name,
+      this.ipAddress,
+      this.macAddress,
+      this.place,
+      this.parameters});
 
   @override
   String toString() {
-    return this.id.toString();
+    return id.toString();
   }
 
   factory Device.fromJson(Map<String, dynamic> json) {
@@ -26,7 +31,8 @@ class Device {
         String name = element.values.first['name'];
         String unit = element.values.first['unit'];
 
-        var parameter = Parameter(optName: name, expectedParameter: expected, unit: unit);
+        var parameter =
+            Parameter(optName: name, expectedParameter: expected, unit: unit);
 
         parameters.add(parameter);
       });

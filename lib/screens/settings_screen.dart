@@ -43,7 +43,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     currentUser!.phoneNumber = phoneNumberController!.text;
 
     if (passwordController!.text.isNotEmpty) {
-      if (newPasswordController!.text == newPasswordConfirmationController!.text) {
+      if (newPasswordController!.text ==
+          newPasswordConfirmationController!.text) {
         currentUser!.password = newPasswordController!.text;
       } else {
         Global.warning(context, 'Passwords do not match');
@@ -87,119 +88,172 @@ class _SettingsScreenState extends State<SettingsScreen> {
               emailController = TextEditingController(text: currentUser!.email);
               passwordController = TextEditingController(text: '');
               newPasswordController = TextEditingController(text: '');
-              newPasswordConfirmationController = TextEditingController(text: '');
-              phoneNumberController = TextEditingController(text: currentUser!.phoneNumber);
+              newPasswordConfirmationController =
+                  TextEditingController(text: '');
+              phoneNumberController =
+                  TextEditingController(text: currentUser!.phoneNumber);
 
               return Padding(
                 padding: EdgeInsets.all(30),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
+                          labelText: 'Name',
+                          labelStyle:
+                              TextStyle(color: Theme.of(context).accentColor),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          hintText: 'Enter your name',
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      Divider(),
+                      TextField(
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                        keyboardType: TextInputType.emailAddress,
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
+                          labelText: 'Email',
+                          labelStyle:
+                              TextStyle(color: Theme.of(context).accentColor),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          hintText: 'Enter your email',
+                        ),
                       ),
-                      hintText: 'Enter your name',
-                    ),
-                  ),
-                  Divider(),
-                  TextField(
-                    keyboardType: TextInputType.emailAddress,
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      Divider(),
+                      TextField(
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                        keyboardType: TextInputType.phone,
+                        controller: phoneNumberController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
+                          labelText: 'Phone Number',
+                          labelStyle:
+                              TextStyle(color: Theme.of(context).accentColor),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          hintText: 'Enter your phone number',
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      Text(
+                        'Change Your Password',
+                        style: TextStyle(
+                            fontSize: 25, color: Theme.of(context).accentColor),
                       ),
-                      hintText: 'Enter your email',
-                    ),
-                  ),
-                  Divider(),
-                  TextField(
-                    keyboardType: TextInputType.phone,
-                    controller: phoneNumberController,
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      SizedBox(
+                        height: 10,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      TextField(
+                        obscureText: true,
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                        textAlign: TextAlign.center,
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
+                          labelText: 'Current Password',
+                          labelStyle:
+                              TextStyle(color: Theme.of(context).accentColor),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                        ),
                       ),
-                      hintText: 'Enter your phone number',
-                    ),
-                  ),
-                  Divider(),
-                  Text(
-                    'Change Your Password',
-                    style: TextStyle(fontSize: 25),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Current Password',
-                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      SizedBox(
+                        height: 10,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      TextField(
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                        obscureText: true,
+                        controller: newPasswordController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
+                          labelText: 'New Password',
+                          labelStyle:
+                              TextStyle(color: Theme.of(context).accentColor),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                        ),
                       ),
-                      hintText: 'Current Password',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: newPasswordController,
-                    decoration: InputDecoration(
-                      labelText: 'New Password',
-                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      SizedBox(
+                        height: 10,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
+                      TextField(
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                        obscureText: true,
+                        controller: newPasswordConfirmationController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
+                          labelText: 'Confirm New Password',
+                          labelStyle:
+                              TextStyle(color: Theme.of(context).accentColor),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor, width: 1),
+                          ),
+                        ),
                       ),
-                      hintText: 'New Password',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: newPasswordConfirmationController,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm New Password',
-                      labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1),
-                      ),
-                      hintText: 'Confirm New Password',
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Center(
-                    child: ElevatedButton(onPressed: updateUserInfo, child: Text('Save')),
-                  )
-                ]),
+                      SizedBox(height: 20),
+                      Center(
+                        child: ElevatedButton(
+                            onPressed: updateUserInfo, child: Text('Save')),
+                      )
+                    ]),
               );
             }
 
