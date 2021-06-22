@@ -31,7 +31,8 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final themeChange = ThemeChange(prefs);
-  await SharedPreferences.getInstance().then((instance) => PreferecesController.sharedPreferencesInstance = instance);
+  await SharedPreferences.getInstance().then(
+      (instance) => PreferecesController.sharedPreferencesInstance = instance);
 
   runApp(MyApp(themeChange: themeChange));
 }
@@ -50,7 +51,17 @@ class _MyAppState extends State<MyApp> {
     var prefs = await SharedPreferences.getInstance();
     remember = prefs.getBool('rememberMe') ?? false;
     if (remember) {
-      await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainScreen()));
+      await Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => MainScreen()));
+    }
+  }
+
+  void fetchIsFog() async {
+    var prefs = await SharedPreferences.getInstance();
+    isFog = prefs.getBool("isFog") ?? isFog;
+    print("main isFog: $isFog");
+    if (!isFog) {
+      Global.isFog = isFog;
     }
   }
 
@@ -61,9 +72,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   bool? isRemember() {
-    return PreferecesController.sharedPreferencesInstance!.getBool('rememberMe') ?? false;
+    return PreferecesController.sharedPreferencesInstance!
+            .getBool('rememberMe') ??
+        false;
   }
 
+  late bool isFog = true;
   late bool remember = false;
   @override
   Widget build(BuildContext context) {
@@ -72,21 +86,27 @@ class _MyAppState extends State<MyApp> {
         builder: (context, child) {
           return ThemeChangeProvider(
               controller: widget.themeChange,
-              child: MaterialApp(theme: _buildCurrentTheme(), home: isRemember()! ? MainScreen() : LoginScreen(), initialRoute: '/', routes: {
-                LoginScreen.routeName: (ctx) => LoginScreen(),
-                MainScreen.routeName: (ctx) => MainScreen(),
-                CreateDevice.routeName: (ctx) => CreateDevice(),
-                CreatePlace.routeName: (ctx) => CreatePlace(),
-                DeviceItemScreen.routeName: (ctx) => DeviceItemScreen(),
-                PlaceItemScreen.routeName: (ctx) => PlaceItemScreen(),
-                SettingsScreen.routeName: (ctx) => SettingsScreen(),
-                EditDeviceScreen.routeName: (ctx) => EditDeviceScreen(),
-                EditPlaceScreen.routeName: (ctx) => EditPlaceScreen(),
-              }));
+              child: MaterialApp(
+                  theme: _buildCurrentTheme(),
+                  home: isRemember()! ? MainScreen() : LoginScreen(),
+                  initialRoute: '/',
+                  routes: {
+                    LoginScreen.routeName: (ctx) => LoginScreen(),
+                    MainScreen.routeName: (ctx) => MainScreen(),
+                    CreateDevice.routeName: (ctx) => CreateDevice(),
+                    CreatePlace.routeName: (ctx) => CreatePlace(),
+                    DeviceItemScreen.routeName: (ctx) => DeviceItemScreen(),
+                    PlaceItemScreen.routeName: (ctx) => PlaceItemScreen(),
+                    SettingsScreen.routeName: (ctx) => SettingsScreen(),
+                    EditDeviceScreen.routeName: (ctx) => EditDeviceScreen(),
+                    EditPlaceScreen.routeName: (ctx) => EditPlaceScreen(),
+                  }));
         });
   }
 
   ThemeData _buildCurrentTheme() {
-    return ThemeData(primaryColor: widget.themeChange.primaryColor, accentColor: widget.themeChange.accentColor);
+    return ThemeData(
+        primaryColor: widget.themeChange.primaryColor,
+        accentColor: widget.themeChange.accentColor);
   }
 }

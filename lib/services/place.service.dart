@@ -126,7 +126,7 @@ class PlaceService {
       print('fogdata $data');
       fogs = List<Fog>.from(data.map((model) {
         var fog = Fog.fromJson(model);
-        print('fog port: ${fog.port}');
+
         return fog;
       }));
     });

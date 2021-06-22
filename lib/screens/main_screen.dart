@@ -46,10 +46,10 @@ class _MainScreenState extends State<MainScreen>
     });
   }
 
-  bool remember = false;
   @override
   void initState() {
     super.initState();
+    print("main screen isFog: ${Global.isFog}");
     currentUserFuture = fetchMe();
     // Global.getPlaces().then((value) {
     //   setState(() {});

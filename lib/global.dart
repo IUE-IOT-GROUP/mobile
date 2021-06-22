@@ -18,7 +18,7 @@ class Global {
   static bool isLoading = false;
   static bool isDarkTheme = true;
   static bool isLocal = true;
-  static bool isFog = true;
+  static bool isFog = false;
 
   static String get baseUrl {
     return isLocal ? baseFogUrl : baseApiUrl;

@@ -49,15 +49,23 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     var url = '${Global.baseUrl}/login';
-    var body = {'email': enteredEmail, 'password': enteredPassword, 'device_name': await getDeviceId()};
+    var body = {
+      'email': enteredEmail,
+      'password': enteredPassword,
+      'device_name': await getDeviceId()
+    };
 
     await Global.h_post(url, body).then((http.Response response) {
       if (response.statusCode == 200) {
         success = true;
-        Global.secureStorage.writeSecureData('token', jsonDecode(response.body)['token']);
-        Global.secureStorage.writeSecureData('name', jsonDecode(response.body)['username']);
-        Global.secureStorage.writeSecureData('email', jsonDecode(response.body)['email']);
-        Global.secureStorage.writeSecureData('id', jsonDecode(response.body)['id'].toString());
+        Global.secureStorage
+            .writeSecureData('token', jsonDecode(response.body)['token']);
+        Global.secureStorage
+            .writeSecureData('name', jsonDecode(response.body)['username']);
+        Global.secureStorage
+            .writeSecureData('email', jsonDecode(response.body)['email']);
+        Global.secureStorage
+            .writeSecureData('id', jsonDecode(response.body)['id'].toString());
         setState(() {
           Global.isLoading = true;
         });
@@ -87,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Global.isLoading = false;
     });
     initFieldsIfRemember();
+    fogOrCloud();
   }
 
   void initCredentials() {
@@ -116,7 +125,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Global.isLoading = false;
       });
 
-      Global.warning(ctx, 'Username or password is incorrect! Please check your credentials.');
+      Global.warning(ctx,
+          'Username or password is incorrect! Please check your credentials.');
     } else {
       Global.email = enteredEmail;
       Global.password = enteredPassword;
@@ -126,7 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
         await prefs.setString('password', enteredPassword);
         await prefs.setBool('rememberMe', rememberMe);
       } else {
-        if (prefs.getString('email') != null || prefs.getString('password') != null) {
+        if (prefs.getString('email') != null ||
+            prefs.getString('password') != null) {
           await prefs.remove('email');
           await prefs.remove('password');
         }
@@ -140,7 +151,10 @@ class _LoginScreenState extends State<LoginScreen> {
   var cloud = 'Cloud';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Theme.of(context).primaryColor, body: bodyCard());
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).primaryColor,
+        body: bodyCard());
   }
 
   Widget bodyCard() {
@@ -270,7 +284,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
-              minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.4, 30)),
+              minimumSize: MaterialStateProperty.all<Size>(
+                  Size(MediaQuery.of(context).size.width * 0.4, 30)),
             ),
             onPressed: () => login(context),
             child: Text(
@@ -286,11 +301,13 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Text(
                 'Current status: ',
-                style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+                style: TextStyle(
+                    color: Theme.of(context).accentColor, fontSize: 17),
               ),
               Text(
                 '${isFog ? fog : cloud}',
-                style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+                style: TextStyle(
+                    color: Theme.of(context).accentColor, fontSize: 17),
               ),
             ],
           ),
@@ -306,6 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onChanged: (data) {
                     setState(() {
                       isFog = !isFog;
+                      print("login screen isFog: $isFog");
                     });
                   }),
               Padding(

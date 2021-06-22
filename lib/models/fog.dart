@@ -1,5 +1,3 @@
-import 'package:prototype/models/place.dart';
-
 class Fog {
   String? id;
   String? name;
@@ -19,7 +17,7 @@ class Fog {
   factory Fog.fromJson(Map<String, dynamic> json) {
     var fog = Fog(json['id'], json['name'], json['mac_address'],
         json['ip_address'], json['portnum']);
-
+    print('fog port: ${fog.port}');
     return fog;
   }
 }
