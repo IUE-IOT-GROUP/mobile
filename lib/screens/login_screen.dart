@@ -56,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
     };
 
     await Global.h_post(url, body).then((http.Response response) {
+      print('59: ${response.body}');
       if (response.statusCode == 200) {
         success = true;
         Global.secureStorage
@@ -152,9 +153,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
         backgroundColor: Theme.of(context).primaryColor,
-        body: bodyCard());
+        body: SingleChildScrollView(child: bodyCard()));
   }
 
   Widget bodyCard() {

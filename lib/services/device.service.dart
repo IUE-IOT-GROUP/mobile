@@ -9,6 +9,7 @@ class DeviceService {
   static Future<bool> postDevice(Object body) async {
     var responseCode = false;
     final response = await Global.h_post(devicesUrl, body, appendToken: true);
+    print('post device response code: ${response.statusCode}');
     if (200 <= response.statusCode && response.statusCode <= 300) {
       responseCode = true;
     } else {
@@ -32,7 +33,8 @@ class DeviceService {
 
   static Future<List<Device>> getDevices() async {
     var devices = <Device>[];
-    await Global.h_get(devicesUrl, appendToken: true).then((http.Response response) async {
+    await Global.h_get(devicesUrl, appendToken: true)
+        .then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
       devices = List<Device>.from(data.map((model) {
@@ -47,7 +49,8 @@ class DeviceService {
   static Future<List<Device>> getDevicesByPlace(String placeId) async {
     var url = '${Global.baseUrl}/places/$placeId/devices';
     var devices = <Device>[];
-    await Global.h_get(url, appendToken: true).then((http.Response response) async {
+    await Global.h_get(url, appendToken: true)
+        .then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
 
@@ -64,7 +67,8 @@ class DeviceService {
 
     var device = Device(name: 'sd');
 
-    await Global.h_get(url, appendToken: true).then((http.Response response) async {
+    await Global.h_get(url, appendToken: true)
+        .then((http.Response response) async {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
       device = Device.fromJson(jsonResponse['data']);

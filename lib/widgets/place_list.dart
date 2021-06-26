@@ -12,12 +12,6 @@ class PlaceList extends StatefulWidget {
 class _PlaceListState extends State<PlaceList> {
   late Future<List<dynamic>> places;
 
-  @override
-  void initState() {
-    super.initState();
-    timer();
-  }
-
   Future getTimerPlace() async {
     return PlaceService.getParentPlaces();
   }
@@ -27,6 +21,12 @@ class _PlaceListState extends State<PlaceList> {
     Timer.periodic(Duration(seconds: 500), (timer) {
       setState(() {});
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    timer();
   }
 
   Future? _placesFuture;
@@ -44,10 +44,14 @@ class _PlaceListState extends State<PlaceList> {
                 children: [
                   Center(
                     child: Container(
-                      padding: EdgeInsets.only(top: constrainst.maxHeight * 0.05),
+                      padding:
+                          EdgeInsets.only(top: constrainst.maxHeight * 0.05),
                       child: Text(
                         'No places',
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 30, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Theme.of(context).accentColor,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),

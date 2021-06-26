@@ -48,12 +48,17 @@ class PlaceService {
     });
     var childPlaces = <Place>[];
     parentPlaces.forEach((element) {
+      print('51: ${element.places}');
       if (element.places!.isNotEmpty) {
+        print("${element.name} isimli place if'e girdi");
         element.places!.forEach((e) {
+          print('Child placese ${e.name} isimli place eklendi');
           childPlaces.add(e);
         });
       }
     });
+    print('555 child places: $childPlaces');
+    print('555 parent places: $parentPlaces');
     var allPlaces = childPlaces + parentPlaces;
 
     return allPlaces;

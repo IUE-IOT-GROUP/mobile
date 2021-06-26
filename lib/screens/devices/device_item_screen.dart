@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:prototype/models/device_data.dart';
 import 'package:prototype/models/device_data_type.dart';
@@ -26,18 +28,19 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
     return device;
   }
 
-  Future<List<DeviceDataType>> fetchData(Device device, [String filter = 'daily']) async {
-    var deviceDataType = await DeviceDataService.getDeviceData(device);
-
-    return deviceDataType;
+  Future<List<DeviceDataType>> fetchData(Device device,
+      [String filter = 'daily']) async {
+    return DeviceDataService.getDeviceData(device);
   }
 
   @override
   void initState() {
     super.initState();
+    Device currentDevice;
     Future.delayed(Duration.zero, () {
       setState(() {
-        final routeArgs = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
+        final routeArgs =
+            ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
         _deviceId = routeArgs['deviceId'] as String;
         _device = fetchDevice();
       });
@@ -71,7 +74,8 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
               ? IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(EditDeviceScreen.routeName, arguments: {'deviceId': _deviceId});
+                    Navigator.of(context).pushNamed(EditDeviceScreen.routeName,
+                        arguments: {'deviceId': _deviceId});
                   })
               : Container(),
         ],
@@ -100,7 +104,7 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                     dataTypes.forEach((element) {
                       var paddingWidget = Padding(
                         padding: EdgeInsets.only(top: 5, left: 5),
-                        child: ParameterItem(element, 'daily'),
+                        child: ParameterItem(element, 'daily', currentDevice!),
                       );
                       widgets.add(paddingWidget);
                     });
@@ -121,12 +125,16 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                   children: [
                                     Text(
                                       'IP Address: ',
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.ipAddress!,
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     )
                                   ],
                                 ),
@@ -137,12 +145,16 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                   children: [
                                     Text(
                                       'MAC Address: ',
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.macAddress!,
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     )
                                   ],
                                 ),
@@ -153,12 +165,16 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                   children: [
                                     Text(
                                       'Place: ',
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.place!,
-                                      style: TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 20),
                                     )
                                   ],
                                 ),
@@ -180,7 +196,6 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
           },
         ),
       ),
-      // TemperatureItem(25),
     );
   }
 }
