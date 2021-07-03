@@ -64,11 +64,15 @@ class Global {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-    return await http
-        .post(uri, headers: headers, body: jsonEncode(body))
-        .then((http.Response response) {
-      return response;
-    });
+    try {
+      return await http
+          .post(uri, headers: headers, body: jsonEncode(body))
+          .then((http.Response response) {
+        return response;
+      });
+    } catch (error) {
+      throw (error);
+    }
   }
 
   static Widget showCircular(BuildContext context) {
@@ -87,11 +91,15 @@ class Global {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-    return await http
-        .put(uri, headers: headers, body: jsonEncode(body))
-        .then((http.Response response) {
-      return response;
-    });
+    try {
+      return await http
+          .put(uri, headers: headers, body: jsonEncode(body))
+          .then((http.Response response) {
+        return response;
+      });
+    } catch (error) {
+      throw (error);
+    }
   }
 
   static Future<Response> h_get(String url, {bool appendToken = false}) async {
@@ -109,14 +117,15 @@ class Global {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-
-    var response =
-        await http.get(uri, headers: headers).then((http.Response response) {
-      print('responsebody ${response.body}');
-      return response;
-    });
-
-    // fire loading finished event
+    var response;
+    try {
+      response =
+          await http.get(uri, headers: headers).then((http.Response response) {
+        return response;
+      });
+    } catch (error) {
+      throw (error);
+    }
 
     return response;
   }
@@ -134,11 +143,16 @@ class Global {
       token = await secureStorage.readSecureData('token');
       headers.putIfAbsent('Authorization', () => 'Bearer ' + token);
     }
-
-    var response =
-        await http.delete(uri, headers: headers).then((http.Response response) {
-      return response;
-    });
+    var response;
+    try {
+      response = await http
+          .delete(uri, headers: headers)
+          .then((http.Response response) {
+        return response;
+      });
+    } catch (error) {
+      throw (error);
+    }
     return response;
   }
 

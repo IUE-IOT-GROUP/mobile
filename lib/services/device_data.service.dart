@@ -14,33 +14,34 @@ class DeviceDataService {
 
     await Global.h_get(url, appendToken: true)
         .then((http.Response response) async {
+      // print('getDeviceData body: ${response.body}');
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       List<dynamic> data = jsonResponse['data'];
+      // print('getDeviceData data $data');
 
       deviceDataTypes = List<DeviceDataType>.from(data.map((model) {
         var deviceDataType = DeviceDataType.fromJson(device, model);
+        print('getDeviceData $deviceDataType');
+        print('getDeviceData device $device');
+        print('getDeviceData model $model');
         return deviceDataType;
       }));
     });
+    print('getDeviceData $deviceDataTypes');
 
     return deviceDataTypes;
   }
 
   static Future<DeviceDataType> getDeviceDataByPeriod(
       DeviceDataType deviceDataType, String period) async {
-    print('içeri girildi');
     var url =
         '$deviceDataUrl/${deviceDataType.device!.id}/${deviceDataType.id}?period=$period';
 
     await Global.h_get(url, appendToken: true)
         .then((http.Response response) async {
-      print('asda ${response.body}');
-      print('here 1');
+      print('Device Data service 37: ${response.body}');
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      print('here 2');
       Map<String, dynamic> data = jsonResponse['data'];
-      print('here 3');
-
       deviceDataType = DeviceDataType.fromJson(deviceDataType.device!, data);
       print('device data service 40: $deviceDataType');
     });

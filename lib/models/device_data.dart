@@ -13,7 +13,7 @@ class DeviceData {
 
   factory DeviceData.fromJson(Map<String, dynamic> json) {
     var deviceData = DeviceData(json['id'], json['value'], json['created_at']);
-
+    print('1666 $deviceData');
     return deviceData;
   }
 }

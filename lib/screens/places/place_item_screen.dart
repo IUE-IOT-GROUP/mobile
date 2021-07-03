@@ -169,7 +169,49 @@ class _PlaceItemScreenState extends State<PlaceItemScreen>
                     ],
                   )
                 : null
-            : null,
+            : _currentIndex == 1
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.yellow,
+                        child: InkWell(
+                          onTap: () {},
+                          child: Icon(Icons.edit),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.green,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                CreatePlace.routeName,
+                                arguments: {'parentId': currentPlace!.id});
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.red,
+                        child: InkWell(
+                          onTap: () {
+                            ensureDelete();
+                          },
+                          child: Icon(Icons.delete),
+                        ),
+                      ),
+                    ],
+                  )
+                : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );

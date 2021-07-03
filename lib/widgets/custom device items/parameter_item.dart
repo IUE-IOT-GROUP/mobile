@@ -27,6 +27,7 @@ class ParameterItem extends StatefulWidget {
 class _ParameterItemState extends State<ParameterItem> {
   Future? _deviceDataTypeFuture;
   DeviceDataType? currentDataType;
+  Timer? timerInstance;
   Future getTimerDataType() async {
     return DeviceDataService.getDeviceDataByPeriod(
         widget.dataType, widget.time!);
@@ -34,9 +35,10 @@ class _ParameterItemState extends State<ParameterItem> {
 
   void timer() {
     _deviceDataTypeFuture = getTimerDataType();
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    timerInstance = Timer.periodic(Duration(seconds: 5), (timer) {
+      print('çekti');
       _deviceDataTypeFuture = getTimerDataType();
-      print('called setstate');
+
       setState(() {});
     });
   }
@@ -44,7 +46,16 @@ class _ParameterItemState extends State<ParameterItem> {
   @override
   void initState() {
     super.initState();
-    timer();
+    if(mounted){
+      timer();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _deviceDataTypeFuture = null;
+    timerInstance!.cancel();
   }
 
   String parseUnit(String unit) {
@@ -100,11 +111,15 @@ class _ParameterItemState extends State<ParameterItem> {
     String appendText(List<String?>? values) {
       String retVal = '';
       for (int i = 0; i < values!.length; i++) {
-        double.parse(values[i]!).toInt().toString();
+        double.parse(values[i]!).toStringAsFixed(1);
         if (retVal == '') {
           retVal = '${values[i]}';
         } else {
-          retVal = '$retVal, ${values[i]}';
+          if (i % 5 == 0) {
+            retVal = '$retVal,\n\n${values[i]}';
+          } else {
+            retVal = '$retVal, ${values[i]}';
+          }
         }
       }
       return retVal;
@@ -335,7 +350,7 @@ class _ParameterItemState extends State<ParameterItem> {
                                       appendText(lastTenValue),
                                       style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 12,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -394,7 +409,7 @@ class _ParameterItemState extends State<ParameterItem> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '27${parseUnit(currentDataType!.unit!)}',
+                                    '${currentDataType!.min}${parseUnit(currentDataType!.unit!)}',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 21,
@@ -404,7 +419,7 @@ class _ParameterItemState extends State<ParameterItem> {
                                     height: 20,
                                   ),
                                   Text(
-                                    '40${parseUnit(currentDataType!.unit!)}',
+                                    '${currentDataType!.max}${parseUnit(currentDataType!.unit!)}',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 21,
@@ -414,7 +429,7 @@ class _ParameterItemState extends State<ParameterItem> {
                                     height: 20,
                                   ),
                                   Text(
-                                    '33.7${parseUnit(currentDataType!.unit!)}',
+                                    '${currentDataType!.average}${parseUnit(currentDataType!.unit!)}',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 21,
@@ -427,7 +442,7 @@ class _ParameterItemState extends State<ParameterItem> {
                                     appendText(lastTenValue),
                                     style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],

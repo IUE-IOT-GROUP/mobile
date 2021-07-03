@@ -92,9 +92,9 @@ class _DeviceListState extends State<DeviceList> {
                                   Text(
                                     'Name:',
                                     style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12),
                                   ),
                                   SizedBox(
                                     height: 10,
@@ -102,9 +102,9 @@ class _DeviceListState extends State<DeviceList> {
                                   Text(
                                     'Params:',
                                     style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12),
                                   ),
                                 ],
                               ),
@@ -115,7 +115,7 @@ class _DeviceListState extends State<DeviceList> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _devices[index].name!.length <= 15
+                                  _devices[index].name!.length <= 13
                                       ? Text(
                                           _devices[index].name!,
                                           style: TextStyle(

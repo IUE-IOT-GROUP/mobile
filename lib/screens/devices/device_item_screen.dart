@@ -85,6 +85,8 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
           future: _device,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
+              print('device geldi');
+
               currentDevice = snapshot.data;
 
               _deviceData = fetchData(currentDevice!);
@@ -93,13 +95,12 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                 future: _deviceData,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
+                    print('device data geldi');
                     List<DeviceDataType> dataTypes = snapshot.data;
-
                     var dataList = <List<DeviceData>?>[];
                     dataTypes.forEach((element) {
                       dataList.add(element.data);
                     });
-
                     var widgets = <Padding>[];
                     dataTypes.forEach((element) {
                       var paddingWidget = Padding(
@@ -108,7 +109,6 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                       );
                       widgets.add(paddingWidget);
                     });
-
                     return Container(
                       padding: EdgeInsets.only(left: 10, top: 10),
                       child: Column(
@@ -127,14 +127,14 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                       'IP Address: ',
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                          fontSize: 17),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.ipAddress!,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                          fontSize: 17),
                                     )
                                   ],
                                 ),
@@ -147,14 +147,14 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                       'MAC Address: ',
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                          fontSize: 17),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.macAddress!,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                          fontSize: 17),
                                     )
                                   ],
                                 ),
@@ -167,14 +167,14 @@ class _DeviceItemScreenState extends State<DeviceItemScreen> {
                                       'Place: ',
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                          fontSize: 17),
                                     ),
                                     Spacer(),
                                     Text(
                                       currentDevice!.place!,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
-                                          fontSize: 20),
+                                          fontSize: 17),
                                     )
                                   ],
                                 ),

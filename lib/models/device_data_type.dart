@@ -11,6 +11,9 @@ class DeviceDataType {
   List<DeviceData>? data;
   List<DeviceGraphData>? graphData;
   List<double?>? lastTen;
+  double? min;
+  double? max;
+  double? average;
   double? min_y;
   double? max_y;
   String? min_x;
@@ -19,7 +22,20 @@ class DeviceDataType {
   DateTime? max_x_date;
 
   DeviceDataType(
-      Device device, String id, String name, String unit, String expectedParameter, List<DeviceData> data, List<DeviceGraphData> graphData, double min_y, double max_y, String min_x, String max_x) {
+      Device device,
+      String id,
+      String name,
+      String unit,
+      String expectedParameter,
+      List<DeviceData> data,
+      List<DeviceGraphData> graphData,
+      double min,
+      double max,
+      double average,
+      double min_y,
+      double max_y,
+      String min_x,
+      String max_x) {
     this.device = device;
     this.id = id;
     this.name = name;
@@ -27,6 +43,9 @@ class DeviceDataType {
     this.expectedParameter = expectedParameter;
     this.data = data;
     this.graphData = graphData;
+    this.min = min;
+    this.max = max;
+    this.average = average;
     this.max_y = max_y;
     this.min_y = min_y;
     this.max_x = max_x;
@@ -44,6 +63,11 @@ class DeviceDataType {
     var max_y = json['max_y'].toString();
     String min_x = json['min_x'];
     String max_x = json['max_x'];
+    print("min 66: ${json['min']}");
+    var min = double.parse(json['min'].toString());
+    print('min 68: $min');
+    var max = double.parse(json['max'].toString());
+    var average = double.parse(json['average'].toString());
 
     String id = details['device_parameter_id'];
     String expected = details['expected_parameter'];
@@ -53,7 +77,8 @@ class DeviceDataType {
     var data = <DeviceData>[];
 
     deviceData.forEach((element) {
-      var devicedata = DeviceData(element['id'], element['value'].toString(), element['created_at']);
+      var devicedata = DeviceData(
+          element['id'], element['value'].toString(), element['created_at']);
 
       data.add(devicedata);
     });
@@ -61,12 +86,25 @@ class DeviceDataType {
     var graphData = <DeviceGraphData>[];
 
     deviceGraphData.forEach((element) {
-      var devicedata = DeviceGraphData(element['value'].toString(), element['created_at']);
+      var devicedata =
+          DeviceGraphData(element['value'].toString(), element['created_at']);
       graphData.add(devicedata);
     });
-
-    var deviceDataType = DeviceDataType(device, id, name, unit, expected, data, graphData, double.parse(min_y), double.parse(max_y), min_x, max_x);
-
+    var deviceDataType = DeviceDataType(
+        device,
+        id,
+        name,
+        unit,
+        expected,
+        data,
+        graphData,
+        min,
+        max,
+        average,
+        double.parse(min_y),
+        double.parse(max_y),
+        min_x,
+        max_x);
     return deviceDataType;
   }
 }
